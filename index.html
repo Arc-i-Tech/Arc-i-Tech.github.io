@@ -14,46 +14,45 @@
   </head>
 
   <body>
+    <nav class=" navbar navbar-expand-md fixed-top text-white bg-primary">
+      <button class="navbar-toggler me-3 " type="button" data-bs-toggle="collapse" data-bs-target="#btn">
+        <span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon" <i
+          class="bx bx-menu bx-md me-5"></i>
 
-    <nav class="navbar navbar-expand-md fixed-top">
-      <button class="navbar-toggler me-3 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#btn">
-        <i class="bx bx-menu bx-md me-5"></i>
-        <label id="brand-name">
-          <h3>Arc-I-Tech</h3>
-        </label>
       </button>
       <div class="collapse navbar-collapse" id="btn">
-        <div class="row w-100" style="height: 100%">
-          <div class="col-lg-6 col-md-12 fs-2 col-sm-12 text-white ms-2">
+        <div class="row w-100 ">
+          <div class="col-lg-6 col-md-12 fs-2 col-sm-12 ms-2">
             <img src="https://avatars.githubusercontent.com/u/71009131?s=200&v=4" alt="Logo" width="45" height="45"
               class="d-inline-block
-              align-text-top">
-            <label id="brand-name"> Arc-I-Tech</label>
+                align-text-top">
+            <label class="brand-name fw-bold"> Arc-i-Tech</label>
+
           </div>
-          <div class="col-lg-1 col-md-2 col-sm-12 align-self-end text-white
-            fs-6">
-            <li class="nav-item list-style-type-none">
-              <a class="nav-link" href="#">Home</a>
-            </li>
-          </div>
-          <div class="col-lg-1 col-md-2 col-sm-12 align-self-end text-white
-            fs-6">
-            <li class="nav-item">
-              <a class="nav-link" href="#">About</a>
-            </li>
-          </div>
-          <div class="col-lg-1 col-md-2 col-sm-12 align-self-end text-white fs-6
-            font-weight-bolder">
-            <li class="nav-item">
-              <a class="nav-link" href="#">Projects</a>
-            </li>
-          </div>
-          <div class="col-lg-2 col-md-2 col-sm-12 align-self-end text-white
-            fs-6">
-            <li class="nav-item">
-              <a class="nav-link" href="#">Contact Us</a>
-            </li>
-          </div>
+          <ul
+            class="row d-flex justify-content-end  align-items-end  list-unstyled fs-5 fw-bold col-sm-12 mx-auto d-md-flex ">
+            <div class="col-lg-1 col-md-2 ">
+
+              <li class="nav-item">
+                <a class="nav-link" href="#">Home</a>
+              </li>
+            </div>
+            <div class="col-lg-1 col-md-2 col-sm-12 ms-1">
+              <li class="nav-item">
+                <a class="nav-link" href="#">About</a>
+              </li>
+            </div>
+            <div class="col-lg-1 col-md-2">
+              <li class="nav-item">
+                <a class="nav-link" href="#">Projects</a>
+              </li>
+            </div>
+            <div class="col-lg-2 col-md-2">
+              <li class="nav-item">
+                <a class="nav-link" href="#">Contact Us</a>
+              </li>
+            </div>
+          </ul>
         </div>
       </div>
     </nav>
@@ -62,20 +61,20 @@
         <div class="row p-3 text-center">
           <div class="col-4">
             <ul class="list-group list-group-flush">
-              <li class="list-group-item bg-secondary text-white">about</li>
+              <li class="list-group-item bg-secondary">about</li>
               <li class="list-group-item bg-secondary">tell us about</li>
             </ul>
           </div>
           <!-- https://getbootstrap.com/docs/5.0/components/list-group/ -->
           <div class="col-4">
             <ul class="list-group list-group-flush">
-              <li class="list-group-item bg-secondary text-white">career</li>
+              <li class="list-group-item bg-secondary">career</li>
               <li class="list-group-item bg-secondary">your career</li>
             </ul>
           </div>
           <div class="col-4">
             <ul class="list-group list-group-flush">
-              <li class="list-group-item bg-secondary text-white">contact</li>
+              <li class="list-group-item bg-secondary">contact</li>
               <li class="list-group-item bg-secondary"> and contact.</li>
             </ul>
           </div>
@@ -86,11 +85,13 @@
         <div class="row">
           <div class="col-4">
             <!-- <nav class="navbar fixed-bottom navbar-light bg-lightgreen"> -->
-            <a class="navbar-brand fixed-bottom" href="#">Arc-i-Tech</a>
+            <a class="navbar-arc-i-tech fixed-bottom" href="#">Arc-i-Tech</a>
             <!-- navbar-brand for your company,project and project-name.  -->
             <!-- </nav>  -->
           </div>
         </div>
+      </div>
+      <div>
       </div>
     </footer>
     <script src="./js/index.js"></script>
