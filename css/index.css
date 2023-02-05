@@ -1,32 +1,62 @@
-
-body{
-
-    font-family: astera;
-    margin: 0px;
-    padding: 0px;
- background-color: black;
-    background-repeat: round;
-}
-a:hover {
-  color: crimson!important;
+.w-fit-content {
+    width: fit-content !important;
 }
 
-li{
-    list-style-type: none;
+/* Social media icons */
+/* Linkedin */
+.linkedin-link,
+.linkedin-icon,
+.linkedin {
+    color: grey !important;
 }
 
-#brand-name::first-letter{
-    color: red;
+.linkedin-link:hover,
+.linkedin-icon:hover,
+.linkedin:hover {
+    color: #0077b5 !important;
 }
 
-nav.sticky {
-    background-color: #0b4f6c!important;
-    width: 100%;
-    transition: 1s;
+/* Facebook */
+.facebook-link,
+.facebook-icon,
+.facebook {
+    color: grey !important;
 }
 
-nav.sticky ul li a {
-    color: white!important;
-    font: 1vh;
+.facebook-link:hover,
+.facebook-icon:hover,
+.facebook:hover {
+    color: #2b5fd1 !important;
+}
 
+/* Instagram */
+.instagram-link,
+.instagram-icon,
+.instagram {
+    color: grey;
+}
+
+.instagram-link:hover,
+.instagram-icon:hover,
+.instagram:hover {
+    background: #f09433;
+    background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    background: -webkit-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f09433', endColorstr='#bc1888', GradientType=1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Github */
+.github-link,
+.github-icon,
+.github {
+    color: grey !important;
+}
+
+.github-link:hover,
+.github-icon:hover,
+.github:hover {
+    color: #171515 !important;
 }

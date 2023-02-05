@@ -7,95 +7,104 @@
     <meta charset="UTF-8">
     <meta http-equiv="refresh" content="900">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/index.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./css/border.css">
   </head>
 
   <body>
-
-    <nav class="navbar navbar-expand-md fixed-top">
-      <button class="navbar-toggler me-3 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#btn">
-        <i class="bx bx-menu bx-md me-5"></i>
-        <label id="brand-name">
-          <h3>Arc-I-Tech</h3>
-        </label>
+    <div id="menubar"
+      class="nav navbar navbar-dark navbar-expand-lg sticky-top bg-success text-white fs-5 fw-bold px-5">
+      <img src="./images/Arc-i-Tech-logo-wo-bg.png" alt="Logo" width="50" height="50"
+        class="d-inline-block align-text-bottom">
+      <label class="brand-name fw-bolder fs-1 ms-2"> Arc-i-Tech</label>
+      <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navbarNav">
+        <span class="visually-hidden">Toggle navigation</span>
+        <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="btn">
-        <div class="row w-100" style="height: 100%">
-          <div class="col-lg-6 col-md-12 fs-2 col-sm-12 text-white ms-2">
-            <img src="https://avatars.githubusercontent.com/u/71009131?s=200&v=4" alt="Logo" width="45" height="45"
-              class="d-inline-block
-              align-text-top">
-            <label id="brand-name"> Arc-I-Tech</label>
-          </div>
-          <div class="col-lg-1 col-md-2 col-sm-12 align-self-end text-white
-            fs-6">
-            <li class="nav-item list-style-type-none">
-              <a class="nav-link" href="#">Home</a>
-            </li>
-          </div>
-          <div class="col-lg-1 col-md-2 col-sm-12 align-self-end text-white
-            fs-6">
-            <li class="nav-item">
-              <a class="nav-link" href="#">About</a>
-            </li>
-          </div>
-          <div class="col-lg-1 col-md-2 col-sm-12 align-self-end text-white fs-6
-            font-weight-bolder">
-            <li class="nav-item">
-              <a class="nav-link" href="#">Projects</a>
-            </li>
-          </div>
-          <div class="col-lg-2 col-md-2 col-sm-12 align-self-end text-white
-            fs-6">
-            <li class="nav-item">
-              <a class="nav-link" href="#">Contact Us</a>
-            </li>
-          </div>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link active" href="#">Contact Us</a></li>
+            <li class="nav-item"><a class="nav-link active" href="#">About Us</a></li>
+          </ul>
         </div>
       </div>
-    </nav>
-    <footer>
-      <div class="container-fluid mb-1 pb-2 navbar-light bg-secondary">
-        <div class="row p-3 text-center">
-          <div class="col-4">
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item bg-secondary text-white">about</li>
-              <li class="list-group-item bg-secondary">tell us about</li>
-            </ul>
-          </div>
-          <!-- https://getbootstrap.com/docs/5.0/components/list-group/ -->
-          <div class="col-4">
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item bg-secondary text-white">career</li>
-              <li class="list-group-item bg-secondary">your career</li>
-            </ul>
-          </div>
-          <div class="col-4">
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item bg-secondary text-white">contact</li>
-              <li class="list-group-item bg-secondary"> and contact.</li>
-            </ul>
+    </div>
+    <div class="container-fluid bg-info-subtle p-5">
+      <p>Temp Text</p>
+    </div>
+    <footer class="text-center text-dark border-secondary border-top p-5 pb-3">
+      <div class="row">
+        <div class="col-lg-7 col-md-8">
+          <a href="." class="">
+            <img src="./images/Arc-i-Tech-logo-wo-bg.png" class="img-fluid d-inline-block align-bottom border rounded-3"
+              width="45px"><span class="px-2 fw-bold fs-2">Arc-i-Tech</span>
+          </a>
+          <p class="mx-5 py-2">
+            To empower businesses and individuals with innovative software solutions that streamline
+            processes and optimize performance.
+          </p>
+          <div class="container">
+            <div class="section-title">
+              <h4>Contact Us</h4>
+            </div>
+            <div class="row bor">
+              <div class="col-md-4">
+                <div class="contact-address">
+                  <i class="bi bi-geo-alt fs-3"></i>
+                  <h5>Address</h5>
+                  <address>Pune, IN</address>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="contact-phone">
+                  <i class="bi bi-phone fs-3"></i>
+                  <p><a href="tel:+917972978178">Give us a call</a></p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="contact-email">
+                  <i class="bi bi-envelope fs-3"></i>
+                  <p><a href="mailto:ajayg.2808@gmail.com">Write a mail</a></p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+        <div
+          class="col-lg-5 col-md-4 text-start border-md-start border-md-primary border-primary border-md-top-0 border-top">
+          <h4 class="m-5 mb-0 text-decoration-underline">Quick Links</h4>
+          <ul class="list-unstyled d-grid m-5 mt-3">
+            <li class="list-inline-item"><a href="">Contact</a></li>
+            <li class="list-inline-item"><a href="">Services</a></li>
+            <li class="list-inline-item"><a href="">Team</a></li>
+            <li class="list-inline-item"><a href="">Career</a></li>
+          </ul>
+        </div>
       </div>
-      <div class="container-fluid m-0 p-3 fixed-bottom navbar-light bg-primary
-        font-weight-bold">
-        <div class="row">
-          <div class="col-4">
-            <!-- <nav class="navbar fixed-bottom navbar-light bg-lightgreen"> -->
-            <a class="navbar-brand fixed-bottom" href="#">Arc-i-Tech</a>
-            <!-- navbar-brand for your company,project and project-name.  -->
-            <!-- </nav>  -->
-          </div>
+      <div class="row mt-4 pt-3 border-top">
+        <h4><u>Follow Us</u></h4>
+        <div class="fs-2">
+          <a href="https://www.linkedin.com/company/arc-i-tech/" class="linkedin-link"><i
+              class="bi bi-linkedin"></i></a>
+          <a href="https://www.facebook.com/Arc.i.Tech.Soft" class="facebook-link"><i class="bi bi-facebook"></i></a>
+          <a href="https://www.instagram.com/arc.i.tech/" class="instagram-link"><i class="bi bi-instagram"></i></a>
+          <a href="https://github.com/Arc-i-Tech" class="github-link"><i class="bi bi-github"></i></a>
         </div>
       </div>
     </footer>
+
+    <div class="container-fluid sticky-bottom bg-info text-dark w-fit-content rounded-2">
+      <span>&#169 Copyright <strong>Arc-i-Tech</strong>. All Rights Reserved <b>2023</b>.</span>
+    </div>
+
     <script src="./js/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
       crossorigin="anonymous"></script>
+  </body>
 
 </html>
