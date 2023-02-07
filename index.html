@@ -3,43 +3,56 @@
 
   <head>
     <title>Arc-I-Tech</title>
-    <base href="https://arc-i-tech.github.io/" target="_blank">
+    <!-- <base href="https://arc-i-tech.github.io/" target="_blank"> -->
     <meta charset="UTF-8">
     <meta http-equiv="refresh" content="900">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./css/theme.css">
+    <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/border.css">
   </head>
 
   <body>
-    <div id="menubar"
-      class="nav navbar navbar-dark navbar-expand-lg sticky-top bg-success text-white fs-5 fw-bold px-5">
+    <div id="menubar" class="nav navbar navbar-expand-lg sticky-top px-5 fw-bolder theme-bg-tertiary theme-primary">
       <img src="./images/Arc-i-Tech-logo-wo-bg.png" alt="Logo" width="50" height="50"
-        class="d-inline-block align-text-bottom">
-      <label class="brand-name fw-bolder fs-1 ms-2"> Arc-i-Tech</label>
+        class="d-inline-block align-text-bottom border theme-border-primary rounded-3">
+      <label class="brand-name fs-1 ms-2">Arc-i-Tech</label>
       <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navbarNav">
         <span class="visually-hidden">Toggle navigation</span>
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item"><a class="nav-link active" href="#">Contact Us</a></li>
-            <li class="nav-item"><a class="nav-link active" href="#">About Us</a></li>
-          </ul>
-        </div>
+        <ul class="navbar-nav ms-auto fs-4">
+          <li class="nav-link"><a class="theme-link-light nav-link active" href="#">Contact Us</a></li>
+          <li class="nav-link"><a class="theme-link-light nav-link active" href="#">About Us</a></li>
+        </ul>
       </div>
     </div>
-    <div class="container-fluid bg-info-subtle p-5">
-      <p>Temp Text</p>
+    <div class="container-fluid p-5 theme-bg-tertiary theme-primary">
+      <p>The Information Technology (IT) revolution has greatly impacted various industries and transformed the way
+        people live and work. With the rapid advancement of technology, there has been an increase in new devices,
+        applications, and services that make life easier and more convenient. </p>
+      <p>The growth of the internet and mobile technology has led to the development of cloud computing, allowing
+        individuals and businesses to store and access their data from anywhere in the world, thus improving efficiency,
+        collaboration, and accessibility. The widespread use of social media has also changed the way people communicate
+        and interact. </p>
+      <p>Big data and advanced analytics have allowed businesses to make data-driven decisions and gain valuable
+        insights into consumer behavior and market trends. The rise of e-commerce has revolutionized the retail
+        industry, making it easier for consumers to shop online and receive products at their doorstep. </p>
+      <p>The IT revolution has also had a significant impact on education, with online learning and distance education
+        becoming more popular. The use of technology in the classroom has transformed the way students learn, with
+        interactive multimedia and educational software providing engaging and interactive learning experiences. </p>
+      <p>In conclusion, the IT revolution has brought about significant changes in many aspects of life and work. It has
+        improved efficiency, accessibility, and communication, and has created new opportunities for individuals and
+        businesses. </p>
     </div>
-    <footer class="text-center text-dark border-secondary border-top p-5 pb-3">
-      <div class="row">
+    <footer class="container-fluid text-center theme-bg-primary theme-text-light-secondary">
+      <div class="row p-5 pb-4">
         <div class="col-lg-7 col-md-8">
-          <a href="." class="">
+          <a href="." class="theme-a-dark">
             <img src="./images/Arc-i-Tech-logo-wo-bg.png" class="img-fluid d-inline-block align-bottom border rounded-3"
               width="45px"><span class="px-2 fw-bold fs-2">Arc-i-Tech</span>
           </a>
@@ -47,28 +60,28 @@
             To empower businesses and individuals with innovative software solutions that streamline
             processes and optimize performance.
           </p>
-          <div class="container">
+          <div class="container mt-5">
             <div class="section-title">
-              <h4>Contact Us</h4>
+              <h4><u>Contact Us</u></h4>
             </div>
             <div class="row bor">
               <div class="col-md-4">
                 <div class="contact-address">
-                  <i class="bi bi-geo-alt fs-3"></i>
+                  <i class="bi bi-geo-alt fs-2"></i>
                   <h5>Address</h5>
                   <address>Pune, IN</address>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="contact-phone">
-                  <i class="bi bi-phone fs-3"></i>
-                  <p><a href="tel:+917972978178">Give us a call</a></p>
+                  <i class="bi bi-phone fs-2"></i>
+                  <p><a href="tel:+917972978178" class="theme-a-dark">Give us a call</a></p>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="contact-email">
-                  <i class="bi bi-envelope fs-3"></i>
-                  <p><a href="mailto:ajayg.2808@gmail.com">Write a mail</a></p>
+                  <i class="bi bi-envelope fs-2"></i>
+                  <p><a href="mailto:ajayg.2808@gmail.com" class="theme-a-dark">Write a mail</a></p>
                 </div>
               </div>
             </div>
@@ -78,26 +91,33 @@
           class="col-lg-5 col-md-4 text-start border-md-start border-md-primary border-primary border-md-top-0 border-top">
           <h4 class="m-5 mb-0 text-decoration-underline">Quick Links</h4>
           <ul class="list-unstyled d-grid m-5 mt-3">
-            <li class="list-inline-item"><a href="">Contact</a></li>
-            <li class="list-inline-item"><a href="">Services</a></li>
-            <li class="list-inline-item"><a href="">Team</a></li>
-            <li class="list-inline-item"><a href="">Career</a></li>
+            <li class="list-inline-item"><a href="" class="theme-a-dark">Contact</a></li>
+            <li class="list-inline-item"><a href="" class="theme-a-dark">Services</a></li>
+            <li class="list-inline-item"><a href="" class="theme-a-dark">Team</a></li>
+            <li class="list-inline-item"><a href="" class="theme-a-dark">Career</a></li>
           </ul>
         </div>
       </div>
-      <div class="row mt-4 pt-3 border-top">
+      <div class="row py-3 border-top theme-bg-light-secondary theme-text-dark-primary">
         <h4><u>Follow Us</u></h4>
         <div class="fs-2">
-          <a href="https://www.linkedin.com/company/arc-i-tech/" class="linkedin-link"><i
-              class="bi bi-linkedin"></i></a>
-          <a href="https://www.facebook.com/Arc.i.Tech.Soft" class="facebook-link"><i class="bi bi-facebook"></i></a>
-          <a href="https://www.instagram.com/arc.i.tech/" class="instagram-link"><i class="bi bi-instagram"></i></a>
-          <a href="https://github.com/Arc-i-Tech" class="github-link"><i class="bi bi-github"></i></a>
+          <a href="https://www.linkedin.com/company/arc-i-tech/" class="social-media-icons linkedin-link">
+            <i class="bi bi-linkedin"></i>
+          </a>
+          <a href="https://www.facebook.com/Arc.i.Tech.Soft" class="social-media-icons facebook-link">
+            <i class="bi bi-facebook"></i>
+          </a>
+          <a href="https://www.instagram.com/arc.i.tech/" class="social-media-icons instagram-link">
+            <i class="bi bi-instagram"></i>
+          </a>
+          <a href="https://github.com/Arc-i-Tech" class="social-media-icons github-link">
+            <i class="bi bi-github"></i>
+          </a>
         </div>
       </div>
     </footer>
 
-    <div class="container-fluid sticky-bottom bg-info text-dark w-fit-content rounded-2">
+    <div class="container-fluid sticky-bottom text-dark w-fit-content rounded-2 theme-quaternary theme-bg-secondary">
       <span>&#169 Copyright <strong>Arc-i-Tech</strong>. All Rights Reserved <b>2023</b>.</span>
     </div>
 
