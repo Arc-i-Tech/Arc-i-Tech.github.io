@@ -110,28 +110,12 @@
 
 .theme-a-dark,
 .theme-link-dark {
-    color: #7aa9ec !important;
+    color: #9bb8ee !important;
     text-decoration: none !important;
 }
 
 .theme-a-dark:hover,
 .theme-link-dark:hover {
-    color: #538ed7 !important;
+    color: #438be3 !important;
     text-decoration: underline !important;
-}
-
-/* Additional anchor designs */
-
-button,
-input[type="submit"] {
-    background-color: #06283d !important;
-    color: #ffdff6 !important;
-    border: 2px solid #256d85 !important;
-    padding: 0.5rem 1rem !important;
-    border-radius: 4px !important;
-}
-
-button:hover,
-input[type="submit"]:hover {
-    background-color: #256d85 !important;
 }
