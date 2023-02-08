@@ -1,0 +1,121 @@
+/* Background Color */
+.theme-bg-primary {
+    background-color: #112d4e !important;
+}
+
+.theme-bg-secondary {
+    background-color: #3F72AF !important;
+}
+
+.theme-bg-tertiary {
+    background-color: #DBE2EF !important;
+}
+
+.theme-bg-quaternary {
+    background-color: #F9F7F7 !important;
+}
+
+.theme-bg-quinary {
+    background-color: transparent !important;
+}
+
+/* Background Color (Light, Dark Mode) */
+.theme-bg-dark-primary {
+    background-color: #112D4E !important;
+}
+
+.theme-bg-dark-secondary {
+    background-color: #3F72AF !important;
+}
+
+.theme-bg-light-primary {
+    background-color: #F9F7F7 !important;
+}
+
+.theme-bg-light-secondary {
+    background-color: #DBE2EF !important;
+}
+
+/* Text Color */
+.theme-primary {
+    color: #112d4e !important;
+}
+
+.theme-secondary {
+    color: #3F72AF !important;
+}
+
+.theme-tertiary {
+    color: #DBE2EF !important;
+}
+
+.theme-quaternary {
+    color: #F9F7F7 !important;
+}
+
+.theme-quinary {
+    color: transparent !important;
+}
+
+/* Text Color (Dark, light mode) */
+.theme-text-dark-primary {
+    color: #112D4E !important;
+}
+
+.theme-text-dark-secondary {
+    color: #3F72AF !important;
+}
+
+.theme-text-light-primary {
+    color: #F9F7F7 !important;
+}
+
+.theme-text-light-secondary {
+    color: #DBE2EF !important;
+}
+
+/* Border Color */
+.theme-border-primary {
+    border-color: #112d4e !important;
+}
+
+.theme-border-secondary {
+    border-color: #3F72AF !important;
+}
+
+.theme-border-tertiary {
+    border-color: #DBE2EF !important;
+}
+
+.theme-border-quaternary {
+    border-color: #F9F7F7 !important;
+}
+
+.theme-border-quinary {
+    border-color: transparent !important;
+}
+
+/* Anchor or links */
+.theme-a-light,
+.theme-link-light {
+    color: #3F72AF !important;
+    text-decoration: none !important;
+}
+
+.theme-a-light:hover,
+.theme-link-light:hover {
+    color: #0c6adc !important;
+    text-decoration: underline !important;
+}
+
+.theme-a-dark,
+.theme-link-dark {
+    color: #9bb8ee !important;
+    text-decoration: none !important;
+}
+
+.theme-a-dark:hover,
+.theme-link-dark:hover {
+    color: #438be3 !important;
+    text-decoration: underline !important;
+}

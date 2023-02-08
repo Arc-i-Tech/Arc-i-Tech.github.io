@@ -1,0 +1,74 @@
+.w-fit-content {
+    width: fit-content !important;
+}
+
+
+/* Navbar animation */
+.navbar-scroll {
+    box-shadow: 1px 0px 10px 0px #3f72af;
+}
+
+/* Social media icons */
+
+.social-media-icons {
+    padding: 0 0.5rem 0 0.5rem !important;
+    text-decoration: none !important;
+}
+
+/* Linkedin */
+.linkedin-link,
+.linkedin-icon,
+.linkedin {
+    color: grey !important;
+}
+
+.linkedin-link:hover,
+.linkedin-icon:hover,
+.linkedin:hover {
+    color: #0077b5 !important;
+}
+
+/* Facebook */
+.facebook-link,
+.facebook-icon,
+.facebook {
+    color: grey !important;
+}
+
+.facebook-link:hover,
+.facebook-icon:hover,
+.facebook:hover {
+    color: #2b5fd1 !important;
+}
+
+/* Instagram */
+.instagram-link,
+.instagram-icon,
+.instagram {
+    color: grey !important;
+}
+
+.instagram-link:hover,
+.instagram-icon:hover,
+.instagram:hover {
+    background: #f09433 !important;
+    background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
+    background: -webkit-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f09433', endColorstr='#bc1888', GradientType=1) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+/* Github */
+.github-link,
+.github-icon,
+.github {
+    color: grey !important;
+}
+
+.github-link:hover,
+.github-icon:hover,
+.github:hover {
+    color: #171515 !important;
+}
