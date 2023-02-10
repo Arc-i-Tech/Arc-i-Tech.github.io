@@ -57,7 +57,6 @@
         align-items: center;
         justify-content: center;
         display: none;
-        background-color: aquamarine !important;
     }
 
     #project-profile-carousel .carousel-item:after {
