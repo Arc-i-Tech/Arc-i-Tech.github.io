@@ -1,31 +1,5 @@
-(function () {
-    "use strict";
-
-    const select = (el, all = false) => {
-        el = el.trim()
-        if (all) {
-            return [...document.querySelectorAll(el)]
-        } else {
-            return document.querySelector(el)
-        }
-    }
-
-    let countdown = select('.countdown');
-
-    const countDownDate = function () {
-        let timeleft = new Date(countdown.getAttribute('data-count')).getTime() - new Date().getTime();
-
-        let weeks = Math.floor(timeleft / (1000 * 60 * 60 * 24 * 7));
-        let days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
-        let hours = Math.floor((timeleft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        let minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
-        let seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
-
-        let output = countdown.getAttribute('data-template');
-        output = output.replace('%w', weeks).replace('%d', days).replace('%h', hours).replace('%m', minutes).replace('%s', seconds);
-        countdown.innerHTML = "<span>" + output + "<span>";
-    }
-    countDownDate();
-    setInterval(countDownDate, 1000);
-
-})()
+console.log(window.innerWidth);
+window.addEventListener("scroll", function () {
+    var header = document.querySelector("#menubar");
+    header.classList.toggle("navbar-scroll", window.scrollY > header.offsetHeight * 0);
+})
