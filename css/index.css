@@ -1,4 +1,8 @@
 .project-card {
-    height: 350px !important;
+    height: 400px !important;
     padding: 3rem !important;
+}
+
+.about-us {
+    font-style: italic;
 }
