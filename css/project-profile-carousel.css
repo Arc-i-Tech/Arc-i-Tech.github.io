@@ -1,0 +1,121 @@
+/* Extra small devices (phones, less than 768px) */
+/* No media query since this is the default in Bootstrap */
+
+#project-profile-carousel {
+    height: 400px;
+    width: 100%;
+}
+
+#project-profile-carousel .carousel-inner {
+    height: 100%;
+    width: 100%;
+}
+
+#project-profile-carousel .carousel-item-start,
+#project-profile-carousel .carousel-item-end {
+    transform: translateX(0%) !important;
+}
+
+#project-profile-carousel .carousel-control-prev,
+#project-profile-carousel .carousel-control-next {
+    background-color: black !important;
+    opacity: 1 !important;
+    height: 35px !important;
+    width: 35px !important;
+    margin: auto !important;
+    font-weight: 700 !important;
+    border-radius: 50% !important;
+}
+
+#project-profile-carousel .carousel-control-prev {
+    left: 0 !important;
+}
+
+#project-profile-carousel .carousel-control-next {
+    right: 0 !important;
+}
+
+/* Small devices */
+@media (min-width: 576px) {}
+
+/* Mediam devices (tablets, 768px and up) */
+@media (min-width: 768px) {}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+
+    #project-profile-carousel .carousel-item {
+        height: 100%;
+        width: 60%;
+        position: absolute;
+        z-index: 1;
+        -webkit-transform: scale(0.6) translateY(-2rem) !important;
+        transform: scale(0.6) translateY(-2rem) !important;
+        opacity: 0;
+        cursor: pointer;
+        pointer-events: none;
+        transition: 1s;
+        align-items: center;
+        justify-content: center;
+        display: none;
+    }
+
+    #project-profile-carousel .carousel-item:after {
+        position: absolute;
+        height: 2px;
+        width: 100%;
+        border-radius: 100%;
+        bottom: -5rem;
+        -webkit-filter: blur(4px);
+        filter: blur(4px);
+    }
+
+    #project-profile-carousel .carousel-item:before {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translateX(-50%) translateY(-50%) !important;
+        transform: translateX(-50%) translateY(-50%) !important;
+        font-size: 3rem;
+        font-weight: 300;
+        color: rgb(180, 56, 56);
+    }
+
+    #project-profile-carousel .carousel-item.active {
+        z-index: 3;
+        left: 20%;
+        top: 0;
+        -webkit-transform: scale(1) translateY(0) translateX(0) !important;
+        transform: scale(1) translateY(0) translateX(0) !important;
+        opacity: 1;
+        pointer-events: auto;
+        transition: 1s;
+        cursor: default;
+        position: absolute;
+        display: flex !important;
+    }
+
+    #project-profile-carousel .carousel-item.prev,
+    #project-profile-carousel .carousel-item.next {
+        z-index: 2;
+        -webkit-transform: scale(0.8) translateY(0) translateX(0) !important;
+        transform: scale(0.8) translateY(0) translateX(0) !important;
+        opacity: 0.6;
+        pointer-events: auto;
+        transition: 1s;
+        position: absolute;
+        display: flex !important;
+    }
+
+    #project-profile-carousel .carousel-item.prev {
+        left: -5%;
+    }
+
+    #project-profile-carousel .carousel-item.next {
+        left: 45%;
+    }
+
+}
+
+/* Extra Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {}
