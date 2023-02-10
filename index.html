@@ -3,7 +3,7 @@
 
   <head>
     <title>Arc-I-Tech</title>
-    <base href="https://arc-i-tech.github.io/" target="_blank">
+    <!-- <base href="https://arc-i-tech.github.io/" target="_blank"> -->
     <meta charset="UTF-8">
     <meta http-equiv="refresh" content="900">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +12,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="./css/theme.css">
     <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/border.css">
+    <link rel="stylesheet" href="./css/project-profile-carousel.css">
   </head>
 
   <body>
@@ -33,9 +35,42 @@
       </div>
     </div>
 
-    <div class="container-fluid p-5 theme-bg-light-secondary">
-      <div class="container-fluid p-5 bg-light">
+    <!-- Project Profiles -->
+    <div class="bg-light container-fluid p-5 theme-bg-light-secondary theme-text-dark-primary" id="project-profiles">
+      <div class="row m-0 p-0">
+        <div class="m-0 p-3 text-center col">
+        </div>
+      </div>
+      <div class="row m-0 pb-5 min-height-2">
+        <div class="col-12 col-md-6 col-lg-4 p-0">
+          <p class="mx-5 d-flex flex-column justify-content-between">
 
+          </p>
+        </div>
+        <div class="col-12 col-md-6 col-lg-8 p-0">
+          <div class="row m-auto justify-content-center">
+            <div id="project-profile-carousel" class="carousel slide p-0" data-bs-ride="carousel" data-interval="1000">
+              <div class="carousel-inner text-center m-0">
+                <div class="carousel-item">
+                </div>
+                <div class="carousel-item">
+                </div>
+                <div class="carousel-item">
+                </div>
+              </div>
+              <button class="carousel-control-prev border border-dark" type="button"
+                data-bs-target="#project-profile-carousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next border border-dark" type="button"
+                data-bs-target="#project-profile-carousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <!-- Footer -->
@@ -116,6 +151,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
       crossorigin="anonymous"></script>
+    <script type="text/javascript" src="./js/project-profile-carousel.js"></script>
   </body>
 
 </html>
