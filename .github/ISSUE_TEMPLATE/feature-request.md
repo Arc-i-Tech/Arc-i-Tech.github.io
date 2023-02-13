@@ -1,6 +1,6 @@
 ---
-name: Feature Request
-about: Valuable suggetion or feature for project.
+name: ':rocket: Feature Request'
+about: 'Valuable :chart_with_upwards_trend: suggetion or feature for project.'
 title: '[Feature/ Enhancement]'
 labels: 'feature/ enhancement'
 assignees: ''
