@@ -1,6 +1,10 @@
-**As a `<your role>`,
-I want `<objective>`,
-so I `<benefits>`.**
+**As a `<your role>`,**
+
+**I want `<objective>`,**
+
+**so I `<benefits>`.**
+
+--- 
 
 ### Description
 <!-- Short and concise description -->
