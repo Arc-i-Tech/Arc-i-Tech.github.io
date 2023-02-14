@@ -1,3 +1,13 @@
+
+---
+name: 'User Story'
+about: 'Trouble in your way?'
+title: '[User-Story]'
+labels: 'user-story'
+assignees: ''
+
+---
+
 **As a `<your role>`,**
 
 **I want `<objective>`,**

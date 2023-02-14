@@ -1,4 +1,14 @@
+---
+name: ':file_cabinet: Epic'
+about: 'Create EPIC'
+title: '[EPIC]'
+labels: 'epic'
+assignees: ''
+
+---
+
 ## EPIC
+
 
 ### Background
 <!-- Description about epic, why it is needed -->
