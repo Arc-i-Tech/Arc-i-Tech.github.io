@@ -3,30 +3,36 @@ Please, go through these steps before you start working on any issue.
 
 1. Make sure that you have necessory branch created for issue.
 2. If not, then make sure:
-
-    a. Issue/ Task you are working on is independent.
-
-    b. Issue/ Task is just a tiny part of `epic` or `user-story`.
-
-    c. Less than 2 `story-points`.
-
-    d. If any of the above is applicable for `issue`/ task you are working on. Then its optional to create `branch`.
-    
-    e. You can even consider additional factors such as `merge-conflict` or many people working on same part, or you can concern with `product owner`
+   - Issue/ Task you are working on is independent.
+   - Issue/ Task is just a tiny part of `epic` or `user-story`.
+   - Less than 2 `story-points`.
+   - If any of the above is applicable for `issue`/ task you are working on. Then its optional to create `branch`.
+   - You can even consider additional factors such as `merge-conflict` or many people working on same part, or you can concern with `product owner`
 
 3. To create branch,
+   - Follow branch naming convention as follows.
+     > `issue-number`-`issue-type-code`-`short-description`
+     
+      * Issue type code: is a 1 or 2 char based on issue type as follows:
+             
+        | Sr. No. 	| Issue Type 	| Description                	| Issue type code 	|
+        |---------	|------------	|----------------------------	|-----------------	|
+        | 1       	| Feature    	| Configuration feature      	| cf/ fc            |
+        |         	|            	| Configuration              	| c               	|
+        |         	|            	| normal/ new feature (code) 	| f               	|
+        | 2       	| Bug        	| Bug (code)                 	| b               	|
+        |         	|            	| configuration bug          	| cb              	|
+        | 3       	| Epic       	| Epic                       	| F               	|
+        | 4       	| User Story 	| User Story                 	| us              	|
 
-    a. Follow branch naming convention as follows.
-        > `issue-number`-`issue-type`-`short-description`
-        - Issue type: is a 1 or 2 char based on issue type as follows:
-            * Feature 
-            * Bug 
-            * Epic
-            * User Story
-
-    b. Select base branch.
-
-    c. Commit all changes for this issue in a `branch` which is created for it.
+     * Example
+       - `25-fc-github-template`
+       - `25` represents -> #25
+       - `fc` represents -> configuration feature
+       - `github-templates` -> short descritpion of issue #25
+        
+   - Select base branch.
+   - Commit all changes for this issue in a `branch` which is created for it.
 
 
 _Thank You! Happy Coding!_
