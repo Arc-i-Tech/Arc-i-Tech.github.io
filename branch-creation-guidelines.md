@@ -22,7 +22,7 @@ Please, go through these steps before you start working on any issue.
         |         	|            	| normal/ new feature (code) 	| f               	|
         | 2       	| Bug        	| Bug (code)                 	| b               	|
         |         	|            	| configuration bug          	| cb              	|
-        | 3       	| Epic       	| Epic                       	| F               	|
+        | 3       	| Epic       	| Epic                       	| E               	|
         | 4       	| User Story 	| User Story                 	| us              	|
 
      * Example
