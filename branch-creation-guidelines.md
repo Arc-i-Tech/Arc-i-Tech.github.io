@@ -31,7 +31,7 @@ Please, go through these steps before you start working on any issue.
        - `fc` represents -> configuration feature
        - `github-templates` -> short descritpion of issue #25
         
-   - Select base branch.
+   - Select base branch/ source branch.
      * Base branch is a branch from which branch you are creating new branch.
      * Base branch can be your `epic` branch or `user-story` branch of your Issue/ Task.
      * If there is no `epic` or `user-story` for your Issue/ Task then use `main` branch as base branch.
