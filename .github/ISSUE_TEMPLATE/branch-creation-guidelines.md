@@ -32,7 +32,10 @@ Please, go through these steps before you start working on any issue.
        - `github-templates` -> short descritpion of issue #25
         
    - Select base branch.
-   - Commit all changes for this issue in a `branch` which is created for it.
+     * Base branch is a branch from which branch you are creating new branch.
+     * Base brach can be your `epic` branch or `user-story` branch or `main` branch if      there is no `epic` or `user-story` for your Issue/ Task
+
+   - Commit all changes to your `branch` for which issue it is created.
 
 
 _Thank You! Happy Coding!_
