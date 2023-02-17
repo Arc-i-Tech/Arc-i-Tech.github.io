@@ -1,5 +1,5 @@
 ---
-name: ':file_cabinet: Epic'
+name: 'Epic'
 about: 'Create EPIC'
 title: '[EPIC]'
 labels: 'epic'
