@@ -33,7 +33,7 @@ Please, go through these steps before you start working on any issue.
         
    - Select base branch.
      * Base branch is a branch from which branch you are creating new branch.
-     * Base brach can be your `epic` branch or `user-story` branch or `main` branch if      there is no `epic` or `user-story` for your Issue/ Task
+     * Base branch can be your `epic` branch or `user-story` branch or `main` branch (_if there is no `epic` or `user-story` for your Issue/ Task_)
 
    - Commit all changes to your `branch` for which issue it is created.
 
