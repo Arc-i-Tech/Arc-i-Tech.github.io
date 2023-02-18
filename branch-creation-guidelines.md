@@ -6,7 +6,7 @@ Please, go through these steps before you start working on any issue.
    - Issue/ Task you are working on is independent.
    - Issue/ Task is just a tiny part of `epic` or `user-story`.
    - Less than 2 `story-points`.
-   - If any of the above is true for `issue`/ task you are working on. Then its optional to create `branch`. You can even consider additional factors such as `merge-conflict` or how many people working on it, or you can consult with `product owner` _([Ajay G.](www.github.com/ajayg2808))_.
+   - If any of the above is true for `issue`/ task you are working on. Then its optional to create `branch`. You can even consider additional factors such as `merge-conflict` or how many people working on it, or you can consult with `product owner` _([Ajay G.](https://www.github.com/ajayg2808))_.
 
 3. To create branch,
    - Follow branch naming convention as follows.
