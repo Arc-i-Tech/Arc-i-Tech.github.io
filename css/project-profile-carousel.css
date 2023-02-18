@@ -107,13 +107,17 @@
     }
 
     #project-profile-carousel .carousel-item.prev {
-        left: -5%;
+        left: -10%;
     }
 
-    #project-profile-carousel .carousel-item.next {
-        left: 45%;
-    }
+  #project-profile-carousel .carousel-item.next {
+                left: 50%;
+                z-index: auto;
+            }
 
+#project-profile-carousel .card-text {
+            width: 50vh;
+        }
 }
 
 /* Extra Large devices (large desktops, 1200px and up) */
