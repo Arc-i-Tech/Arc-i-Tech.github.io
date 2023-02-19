@@ -1,4 +1,4 @@
-## Pull Request Guidelines
+## Pull Request Guidelines _(PR-Pull Request)_
 Please, go through these steps before you submit a PR.
 
 1. Make sure that your PR is not a duplicate.
@@ -14,8 +14,12 @@ Please, go through these steps before you submit a PR.
 
 3. **After** these steps, you're ready to open a pull request.
 
-    a. Your pull request MUST NOT target the `deployment` branch on this repository. You probably want to target `main` instead or any `epic` or `base-branch` if any from **epic/ user strory**.
-
+    a. Your pull request MUST NOT target the `deployment` branch on this repository. 
+    
+    b. You should probably target to `epic` or `user-story` branch _(Branch which you selected as base/ source branch)_.
+    
+    c. OR `main` branch if your task is not linked to any **epic/ userstory**.
+    
     b. Give a descriptive title to your PR.
 
     c. Provide a description of your changes.
