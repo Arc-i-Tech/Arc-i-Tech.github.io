@@ -8,15 +8,15 @@ Please, go through these steps before you submit a PR.
 
     b. You have a descriptive commit message with a short title (first line).
 
-    c. You have only one commit (if not, squash them into one commit).
+    ~~c. You have only one commit (if not, squash them into one commit).~~
 
-    d. Changes done doesn't throw any error. If it does, fix them first and amend your commit (`git commit --amend`).
+    ~~d. Changes done doesn't throw any error. If it does, fix them first and amend your commit (`git commit --amend`).~~
 
 3. **After** these steps, you're ready to open a pull request.
 
     a. Your pull request MUST NOT target the `deployment` branch on this repository. 
     
-    b. You should probably target to `epic` or `user-story` branch _(Branch which you selected as base/ source branch)_.
+    b. You should probably target to `epic` or `user-story` branch _(Branch which you selected as base/ source branch while creating your issue/ task branch)_.
     
     c. OR `main` branch if your task is not linked to any **epic/ userstory**.
     
