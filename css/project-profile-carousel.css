@@ -106,14 +106,19 @@
         display: flex !important;
     }
 
+    #project-profile-carousel carousel-item.card-text {
+        width: 50vh;
+        text-align: justify;
+    }
+
     #project-profile-carousel .carousel-item.prev {
-        left: -5%;
+        left: -10%;
     }
 
     #project-profile-carousel .carousel-item.next {
-        left: 45%;
-    }
+        left: 50%;
 
+    }
 }
 
 /* Extra Large devices (large desktops, 1200px and up) */
