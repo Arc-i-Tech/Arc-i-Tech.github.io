@@ -1,7 +1,7 @@
 /* Extra small devices (phones, less than 768px) */
 /* No media query since this is the default in Bootstrap */
 #project-profile-carousel {
-    height: 400px;
+    height: fit-content;
     width: 100%;
 }
 
@@ -42,6 +42,10 @@
 
 /* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) {
+    #project-profile-carousel {
+        height: 500px;
+        width: 100%;
+    }
 
     #project-profile-carousel .carousel-item {
         height: 100%;
@@ -106,17 +110,12 @@
         display: flex !important;
     }
 
-    #project-profile-carousel carousel-item.card-text {
-        width: 50vh;
-        text-align: justify;
-    }
-
     #project-profile-carousel .carousel-item.prev {
-        left: -10%;
+        left: -5%;
     }
 
     #project-profile-carousel .carousel-item.next {
-        left: 50%;
+        left: 45%;
 
     }
 }
