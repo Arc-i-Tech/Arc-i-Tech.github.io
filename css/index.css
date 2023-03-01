@@ -5,6 +5,10 @@
     padding: 3rem !important;
 }
 
+.project-card .project-icon {
+    width: 40px !important;
+    vertical-align: middle !important;
+}
 
 /* Small devices */
 @media (min-width: 576px) {}
