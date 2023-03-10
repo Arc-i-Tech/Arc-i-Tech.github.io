@@ -1,10 +1,18 @@
-includeHtmlFile = function (tagId, fileName) {
+includeHtmlFile = function (tagId, fileName, append, prepend) {
     const includeHtml = document.querySelector(tagId);
     const xhr = new XMLHttpRequest();
     xhr.open("GET", fileName, true);
     xhr.onreadystatechange = function () {
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            includeHtml.innerHTML = this.responseText;
+            if (append) {
+                includeHtml.innerHTML = includeHtml.innerHTML + this.responseText;
+            }
+            else if (prepend) {
+                includeHtml.innerHTML = this.responseText + includeHtml.innerHTML;
+            }
+            else {
+                includeHtml.innerHTML = this.responseText;
+            }
         }
     };
     xhr.send();
@@ -13,11 +21,14 @@ includeHtmlFile = function (tagId, fileName) {
 document.addEventListener("DOMContentLoaded", function () {
 
     // Include Navbar
-    var result = includeHtmlFile("#navbar", "./navbar.html");
+    var result = includeHtmlFile("#navbar", "./navbar.html", false, false);
 
     // Include Footer
-    result = includeHtmlFile("#footer", "./footer.html");
+    result = includeHtmlFile("#footer", "./footer.html", false, false);
 
     // Include status bar
-    result = includeHtmlFile("#statusbar", "./statusbar.html");
+    result = includeHtmlFile("#statusbar", "./statusbar.html", false, false);
+
+    // Head tag metadata
+    result = includeHtmlFile("#head", "./head.html", false, true);
 });
