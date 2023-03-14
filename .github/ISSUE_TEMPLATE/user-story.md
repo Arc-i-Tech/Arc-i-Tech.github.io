@@ -1,4 +1,3 @@
-
 ---
 name: 'User Story'
 about: 'Trouble in your way?'
