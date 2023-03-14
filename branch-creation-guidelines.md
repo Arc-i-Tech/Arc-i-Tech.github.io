@@ -31,8 +31,8 @@ Please, go through these steps before you start working on any issue.
      * **Short description**: max 2-3 word description based on your issue/ task.
 
 
-     > Example
-       - `25-fc-github-template`
+     > Example: Task -> _#25 - Github Templates for issue and pull request_
+       - **`25-fc-github-template`**
        - `25` represents -> #25
        - `fc` represents -> configuration feature
        - `github-templates` -> short descritpion of issue #25
@@ -42,7 +42,7 @@ Please, go through these steps before you start working on any issue.
      * Base branch can be your `epic` branch or `user-story` branch of your Issue/ Task.
      * If there is no `epic` or `user-story` for your Issue/ Task then use `main` branch as base branch.
 
-   - Commit all changes to your `branch` for which `issue/ task` it is created.
+   - Commit all changes to your `branch` for which it is created.
 
 
 **Note: Changes from any `branch` which doesn't follow the above naming convention are not accepted.**
