@@ -19,15 +19,16 @@ Please, go through these steps before you start working on any issue.
              
         | Sr. No. 	| Issue Type 	| Description                	| Issue type code 	|
         |---------	|------------	|----------------------------	|-----------------	|
-        | 1       	| Feature    	| Configuration feature      	| cf/ fc             |
+        | 1       	| Feature    	| Configuration feature      	| cf/ fc            |
         |         	|            	| Configuration              	| c               	|
         |         	|            	| normal/ new feature (code) 	| f               	|
+        |           |             | Feature enhancement         | fe                |
         | 2       	| Bug        	| Bug (code)                 	| b               	|
         |         	|            	| configuration bug          	| cb              	|
         | 3       	| Epic       	| Epic                       	| E               	|
         | 4       	| User Story 	| User Story                 	| us              	|
 
-     * **Short description**: max 2-3 word discription based on your issue/ task.
+     * **Short description**: max 2-3 word description based on your issue/ task.
 
 
      > Example
