@@ -1,13 +1,13 @@
 **IMPORTANT: Please do not create a Pull Request without creating an issue first.**
 - *Any change needs to be discussed before proceeding. Failure to do so may result in the rejection of the pull request.*
-- Go throw [Pull request guidelines](./pull-request-guidelines.md) if you are not aware of them.
+- Go throw [Pull request guidelines](../../pull-request-guidelines.md) if you are not aware of them.
 
 ## Please check if the PR fulfills these requirements
 - [ ] My code follows the code style of this project.
 - [ ] The commit message follows our guidelines.
-- [ ] Tests for the changes have been added (for bug fixes / features).
-- [ ] Have you successfully ran tests with your changes locally?
-- [ ] Docs have been added / updated (for bug fixes / features).
+- [ ] Tests for the changes have been added (for bug fixes/features).
+- [ ] Have you successfully run tests with your changes locally?
+- [ ] Docs have been added/updated (for bug fixes/features).
 
 
 ## What kind of change does this PR introduce? (Bug fix, feature, docs update, ...)
@@ -16,18 +16,18 @@
 
 
 ## What is the current behavior?** (You can also link to an open issue here)
-<!-- Detailed information on current behaviour -->
+<!-- Detailed information on current behavior -->
 <!-- You can skip this if you're fixing a typo or adding an app to the Showcase. -->
 
 
 ## What is the new behavior (if this is a feature change)?
-<!-- Detailed information on new behaviour -->
+<!-- Detailed information on new behavior -->
 <!-- You can skip this if you're fixing a typo or adding an app to the Showcase. -->
 
 
 
 ## Does this PR introduce a breaking change?** (What changes might users need to make in their application due to this PR?)
-<!-- What adaption need to be done by user if any? -->
+<!-- What adaption needs to be done by the user if any? -->
 <!-- You can skip this if you're fixing a typo or adding an app to the Showcase. -->
 
 
