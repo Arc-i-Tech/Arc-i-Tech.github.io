@@ -1,6 +1,6 @@
 **IMPORTANT: Please do not create a Pull Request without creating an issue first.**
 - *Any change needs to be discussed before proceeding. Failure to do so may result in the rejection of the pull request.*
-- Go throw [Pull request guidelines](../../pull-request-guidelines.md) if you are not aware of them.
+- Go throw [Pull request guidelines](./../pull-request-guidelines.md) if you are not aware of them.
 
 ## Please check if the PR fulfills these requirements
 - [ ] My code follows the code style of this project.
