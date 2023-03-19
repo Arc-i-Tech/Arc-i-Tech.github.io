@@ -2,6 +2,9 @@
 <html>
 
     <head id="head">
+
+        <!-- Page relevant CSS -->
+        <link rel="stylesheet" href="./css/contact.css">
     </head>
 
     <body>
@@ -9,31 +12,68 @@
         <div id="navbar" class="p-0 m-0 sticky-top"></div>
 
         <!--Contact Us-->
-        <div class="w-100 cover theme-bg-light-secondary text-dark">
-            <div class="container-fluid theme-bg-dark-secondary">
-                <div class="row">
-                    <div class="col-md-8 col-xl-6 text-center mx-auto">
-                        <h2 class="display-4 fw-bold mb-4 text-white">
-                            <u>Contact Us</u>
-                        </h2>
-                    </div>
+        <div class="container-fluid cover theme-bg-light-secondary text-dark p-5">
+            <div class="contact-box theme-bg-dark-secondary">
+                <div class="text-center mx-auto">
+                    <h2 class="fs-2 fw-bold mb-4 text-white">
+                        <u>Send a Message</u>
+                    </h2>
                 </div>
-                <form action="https://formsubmit.co/ajdeshmukh241@email.com" method="POST">
+                <form action="" method="POST" class="needs-validation" novalidate>
                     <div class="row justify-content-center d-flex">
-                        <div class="col-md-10 col-xl-6">
-                            <form class="p-xl-5" method="post">
-                                <div class="mb-3"><input class="shadow form-control" type="text" id="name" name="name"
-                                        placeholder="Name" required autocomplete="off"></div>
-                                <div class="mb-3"><input class="shadow form-control" type="email" id="email"
-                                        name="email" placeholder="Email" required autocomplete="off"></div>
-                                <div class="mb-3"><textarea class="shadow form-control" id="message" name="message"
-                                        rows="6" placeholder="Message" required autocomplete="off"></textarea></div>
-                                <div class="d-flex justify-content-center mb-3"><button
-                                        class="btn btn-success shadow d-block w-25" type="submit">Send
-                                    </button>
-                                </div>
-                            </form>
+                        <div class="mb-md-4 mb-2">
+                            <label for="name" class="form-label fs-5 fw-bolder theme-text-light-secondary">Your
+                                Name:</label>
+                            <input class="shadow form-control theme-text-dark-primary" type="text" id="name" name="name"
+                                placeholder="Name" required>
+                            <div class="invalid-feedback fs-5">
+                                Please enter your name!
+                            </div>
                         </div>
+                        <div class="mb-md-4 mb-2">
+                            <label for="email" class="form-label fs-5 fw-bolder theme-text-light-secondary">Your Email
+                                ID:</label>
+                            <input class="shadow form-control theme-text-dark-primary" type="email" id="email"
+                                name="email" placeholder="abc@mn.xyz" required>
+                            <div class="invalid-feedback fs-5">
+                                Please nter your valid email id!
+                            </div>
+                        </div>
+                        <div class="mb-md-4 mb-2">
+                            <label for="mono" class="form-label fs-5 fw-bolder theme-text-light-secondary">Your Mobile
+                                No:</label>
+                            <div class="input-group has-validation">
+                                <span class="input-group-text" id="inCountryCode">+91</span>
+                                <input class="shadow form-control theme-text-dark-primary" type="tel"
+                                    aria-describedby="inCountryCode" id="mono" name="mono" placeholder="9876543210"
+                                    pattern="[0-9]{10}">
+                                <div class="invalid-feedback fs-5">
+                                    Please enter your valid 10 digit mobile number!
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="mb-md-4 mb-2">
+                            <label for="title" class="form-label fs-5 fw-bolder theme-text-light-secondary">Message
+                                Title:</label>
+                            <input class="shadow form-control theme-text-dark-primary" type="text" id="title"
+                                name="title" placeholder="Message Title" required autocomplete="off">
+                            <div class="invalid-feedback fs-5">
+                                Please enter message title!
+                            </div>
+                        </div>
+                        <div class="mb-md-4 mb-2">
+                            <label for="message" class="form-label fs-5 fw-bolder theme-text-light-secondary">Your
+                                Message:</label>
+                            <textarea class="shadow form-control" id="message" name="message" rows="6"
+                                placeholder="Your message" required autocomplete="off"></textarea>
+                            <div class="invalid-feedback fs-5 text-bolder">
+                                Please write your message!
+                            </div>
+                        </div>
+                        <button class="mb-md-4 mb-2 btn btn-success shadow d-block w-fit-content" type="submit">Send
+                            Message
+                        </button>
                     </div>
                 </form>
             </div>
@@ -52,6 +92,8 @@
         <!-- Our -->
         <script type="text/javascript" src="./js/main.js"></script>
 
+        <!-- Page relevant JS -->
+        <script type="text/javascript" src="./js/validate-form.js"></script>
 
     </body>
 

@@ -1,0 +1,27 @@
+/* Extra small devices (phones, less than 768px) */
+/* No media query since this is the default in Bootstrap */
+
+.contact-box {
+  padding: 2rem;
+  border-radius: 1.5rem;
+  margin: auto;
+}
+
+/* Small devices */
+@media (min-width: 576px) {}
+
+/* Mediam devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  .contact-box {
+    padding: 5rem;
+    width: 700px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {}
+
+/* Extra Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {}
