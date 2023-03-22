@@ -1,41 +1,15 @@
 /* Extra small devices (phones, less than 768px) */
 /* No media query since this is the default in Bootstrap */
-/* .project-card {
-    height: fit-content !important;
-    padding: 3rem !important;
-}
 
-.project-card .project-icon {
-    width: 40px !important;
-    vertical-align: middle !important;
-} */
 
 /* Small devices */
-@media (min-width: 414px) {
-    .row {
-        display: grid;
-        text-align: center;
-    }
-
-}
+@media (min-width: 414px) {}
 
 /* Mediam devices (tablets, 768px and up) */
-@media (min-width: 768px) {
-    .row {
-        display: flex;
-    }
-}
+@media (min-width: 768px) {}
 
 /* Large devices (desktops, 992px and up) */
-@media (min-width: 992px) {
-    .row {
-        display: flex !important;
-    }
-}
+@media (min-width: 992px) {}
 
 /* Extra Large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) {
-    .row {
-        display: flex;
-    }
-}
+@media (min-width: 1200px) {}
