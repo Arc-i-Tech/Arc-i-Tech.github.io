@@ -1,6 +1,6 @@
 /* Extra small devices (phones, less than 768px) */
 /* No media query since this is the default in Bootstrap */
-.project-card {
+/* .project-card {
     height: fit-content !important;
     padding: 3rem !important;
 }
@@ -8,21 +8,34 @@
 .project-card .project-icon {
     width: 40px !important;
     vertical-align: middle !important;
-}
+} */
 
 /* Small devices */
-@media (min-width: 576px) {}
+@media (min-width: 414px) {
+    .row {
+        display: grid;
+        text-align: center;
+    }
+
+}
 
 /* Mediam devices (tablets, 768px and up) */
-@media (min-width: 768px) {}
+@media (min-width: 768px) {
+    .row {
+        display: flex;
+    }
+}
 
 /* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) {
-    .project-card {
-        height: 450px !important;
-        padding: 3rem !important;
+    .row {
+        display: flex !important;
     }
 }
 
 /* Extra Large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) {}
+@media (min-width: 1200px) {
+    .row {
+        display: flex;
+    }
+}
