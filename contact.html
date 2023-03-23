@@ -12,41 +12,40 @@
         <div id="navbar" class="p-0 m-0 sticky-top"></div>
 
         <!--Contact Us-->
-        <div class="container-fluid cover theme-bg-light-secondary text-dark p-5">
-            <div class="contact-box theme-bg-dark-secondary">
+        <div class="container-fluid cover theme-bg-light-secondary p-5">
+            <div class="contact-box theme-bg-light-primary theme-text-dark-primary">
                 <div class="text-center mx-auto">
-                    <h2 class="fs-2 fw-bold mb-4 text-white">
+                    <h2 class="fs-2 fw-bold mb-4">
                         <u>Send a Message</u>
                     </h2>
                 </div>
-                <form action="" method="POST" class="needs-validation" novalidate>
+                <form id="contact-us" action="./thank-you.html" method="POST" class="needs-validation" novalidate>
                     <div class="row justify-content-center d-flex">
                         <div class="mb-md-4 mb-2">
-                            <label for="name" class="form-label fs-5 fw-bolder theme-text-light-secondary">Your
+                            <label for="name" class="form-label fs-5 fw-bolder">Your
                                 Name:</label>
-                            <input class="shadow form-control theme-text-dark-primary" type="text" id="name" name="name"
-                                placeholder="Name" required>
+                            <input class="shadow form-control" type="text" id="name" name="name" placeholder="Name"
+                                required>
                             <div class="invalid-feedback fs-5">
                                 Please enter your name!
                             </div>
                         </div>
                         <div class="mb-md-4 mb-2">
-                            <label for="email" class="form-label fs-5 fw-bolder theme-text-light-secondary">Your Email
+                            <label for="email" class="form-label fs-5 fw-bolder">Your Email
                                 ID:</label>
-                            <input class="shadow form-control theme-text-dark-primary" type="email" id="email"
-                                name="email" placeholder="abc@mn.xyz" required>
+                            <input class="shadow form-control" type="email" id="email" name="email"
+                                placeholder="abc@mn.xyz" required>
                             <div class="invalid-feedback fs-5">
                                 Please nter your valid email id!
                             </div>
                         </div>
                         <div class="mb-md-4 mb-2">
-                            <label for="mono" class="form-label fs-5 fw-bolder theme-text-light-secondary">Your Mobile
+                            <label for="mono" class="form-label fs-5 fw-bolder">Your Mobile
                                 No:</label>
                             <div class="input-group has-validation">
                                 <span class="input-group-text" id="inCountryCode">+91</span>
-                                <input class="shadow form-control theme-text-dark-primary" type="tel"
-                                    aria-describedby="inCountryCode" id="mono" name="mono" placeholder="9876543210"
-                                    pattern="[0-9]{10}">
+                                <input class="shadow form-control" type="tel" aria-describedby="inCountryCode" id="mono"
+                                    name="mono" placeholder="9876543210" pattern="[0-9]{10}">
                                 <div class="invalid-feedback fs-5">
                                     Please enter your valid 10 digit mobile number!
                                 </div>
@@ -54,16 +53,16 @@
 
                         </div>
                         <div class="mb-md-4 mb-2">
-                            <label for="title" class="form-label fs-5 fw-bolder theme-text-light-secondary">Message
+                            <label for="title" class="form-label fs-5 fw-bolder">Message
                                 Title:</label>
-                            <input class="shadow form-control theme-text-dark-primary" type="text" id="title"
-                                name="title" placeholder="Message Title" required autocomplete="off">
+                            <input class="shadow form-control" type="text" id="title" name="title"
+                                placeholder="Message Title" required autocomplete="off">
                             <div class="invalid-feedback fs-5">
                                 Please enter message title!
                             </div>
                         </div>
                         <div class="mb-md-4 mb-2">
-                            <label for="message" class="form-label fs-5 fw-bolder theme-text-light-secondary">Your
+                            <label for="message" class="form-label fs-5 fw-bolder">Your
                                 Message:</label>
                             <textarea class="shadow form-control" id="message" name="message" rows="6"
                                 placeholder="Your message" required autocomplete="off"></textarea>
@@ -94,6 +93,7 @@
 
         <!-- Page relevant JS -->
         <script type="text/javascript" src="./js/validate-form.js"></script>
+        <script type="text/javascript" src="./js/contact.js"></script>
 
     </body>
 
