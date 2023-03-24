@@ -4,6 +4,7 @@ contactUsForm.addEventListener('submit', function (event) {
   if (!contactUsForm.checkValidity()) {
     return;
   }
+  return;
   var mobileNo = document.getElementById("mono").value;
   if (mobileNo) {
     mobileNo = "<tel:" + mobileNo + "|" + mobileNo + ">";
@@ -106,7 +107,7 @@ contactUsForm.addEventListener('submit', function (event) {
     ]
   };
 
-  result = postDataToWebHook("https://hooks.slack.com/services/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", payload);
+  result = postDataToWebHook("", payload);
   if (result) {
     contactUsForm.reset();
   }
