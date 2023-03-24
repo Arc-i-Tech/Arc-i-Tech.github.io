@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
     result = includeHtmlFile("#head", "./head.html", false, true);
 });
 
+
 // Post data to webhook url
 function postDataToWebHook(webHookUrl, payload) {
 
