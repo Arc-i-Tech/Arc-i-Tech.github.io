@@ -1,4 +1,4 @@
-console.log(window.innerWidth);
+
 window.addEventListener("scroll", function () {
     var header = document.querySelector("#menubar");
     header.classList.toggle("navbar-scroll", window.scrollY > header.offsetHeight * 0);
@@ -38,3 +38,18 @@ document.addEventListener("DOMContentLoaded", function () {
     // Head tag metadata
     result = includeHtmlFile("#head", "./head.html", false, true);
 });
+
+
+// Post data to webhook url
+function postDataToWebHook(webHookUrl, payload) {
+
+    var oReq = new XMLHttpRequest();
+
+    //register method called after data has been sent method is executed
+    // oReq.addEventListener("load", reqListener);
+    oReq.open("POST", webHookUrl, true);
+    oReq.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    oReq.send(JSON.stringify(payload));
+    console.log("done");
+    return true;
+}
