@@ -2,6 +2,9 @@
     width: fit-content !important;
 }
 
+.d-contents {
+    display: contents !important;
+
 .w-webkit-fill-available {
     width: -webkit-fill-available !important;
 }
