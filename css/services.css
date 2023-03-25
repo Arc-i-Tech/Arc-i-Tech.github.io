@@ -1,0 +1,100 @@
+/* Extra small devices (phones, less than 768px) */
+/* No media query since this is the default in Bootstrap */
+.service-card {
+  min-height: 40px !important;
+  text-align: center !important;
+}
+
+.service-card .service-img {}
+
+.progress-card {
+  height: 200px;
+  width: 200px;
+}
+
+.progress-card .progress-circle {
+  height: 150px;
+  width: 150px;
+}
+
+.progress-card .progress-circle svg {
+  transform: rotate(-90deg);
+}
+
+.progress-card .progress-circle svg circle {
+  fill: transparent;
+  stroke-width: 4;
+  stroke: #b1b1b1;
+}
+
+
+.progress-card .progress-circle svg .inner-circle {
+  stroke: #d6d5d5;
+  stroke-width: 2 !important;
+  box-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff;
+}
+
+.overall-progress {
+  /* .progress-card .progress-circle svg circle:nth-child(2) { */
+  stroke: var(--coulor) !important;
+  stroke-dasharray: 440;
+  stroke-dashoffset: calc(440 - (440 * var(--val))/100);
+  opacity: 0;
+  animation: progressFadeIn 1s linear forwards;
+  animation-delay: 2s;
+}
+
+@keyframes progressFadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.overall-progress-point {
+  /* .progress-card .progress-circle .point { */
+  /* background: red; */
+  inset: 0;
+  z-index: 10;
+  transform: rotate(calc(3.6deg * var(--val)));
+  animation: animatePoint 2s linear forwards;
+}
+
+@keyframes animatePoint {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(calc(3.6deg * var(--val)));
+  }
+}
+
+.progress-card .progress-circle .point::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  background-color: var(--coulor);
+  border-radius: 50%;
+  /* top: 0px; */
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 10px var(--coulor),
+    0 0 30px var(--coulor);
+}
+
+/* Small devices */
+@media (min-width: 576px) {}
+
+/* Mediam devices (tablets, 768px and up) */
+@media (min-width: 768px) {}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {}
+
+/* Extra Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {}

@@ -2,6 +2,10 @@
     width: fit-content !important;
 }
 
+.d-contents {
+    display: contents !important;
+}
+
 
 /* Navbar animation */
 .navbar-scroll {
