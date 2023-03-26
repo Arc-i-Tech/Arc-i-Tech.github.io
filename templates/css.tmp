@@ -1,8 +1,6 @@
 /* Extra small devices (phones, less than 768px) */
 /* No media query since this is the default in Bootstrap */
-h1 {
-  letter-spacing: 0.5rem;
-}
+
 
 /* Small devices */
 @media (min-width: 576px) {}

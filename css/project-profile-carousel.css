@@ -2,7 +2,7 @@
 /* No media query since this is the default in Bootstrap */
 
 #project-profile-carousel {
-    height: 400px;
+    height: fit-content;
     width: 100%;
 }
 
@@ -43,6 +43,10 @@
 
 /* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) {
+    #project-profile-carousel {
+        height: 500px;
+        width: 100%;
+    }
 
     #project-profile-carousel .carousel-item {
         height: 100%;
@@ -113,8 +117,8 @@
 
     #project-profile-carousel .carousel-item.next {
         left: 45%;
-    }
 
+    }
 }
 
 /* Extra Large devices (large desktops, 1200px and up) */
