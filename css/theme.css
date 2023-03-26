@@ -37,23 +37,23 @@
 }
 
 /* Text Color */
-.theme-primary {
+.theme-text-primary {
     color: #112d4e !important;
 }
 
-.theme-secondary {
+.theme-text-secondary {
     color: #3F72AF !important;
 }
 
-.theme-tertiary {
+.theme-text-tertiary {
     color: #DBE2EF !important;
 }
 
-.theme-quaternary {
+.theme-text-quaternary {
     color: #F9F7F7 !important;
 }
 
-.theme-quinary {
+.theme-text-quinary {
     color: transparent !important;
 }
 
@@ -93,6 +93,23 @@
 
 .theme-border-quinary {
     border-color: transparent !important;
+}
+
+/* Border Color (Light, Dark Mode) */
+.theme-border-dark-primary {
+    border-color: #112D4E !important;
+}
+
+.theme-border-dark-secondary {
+    border-color: #3F72AF !important;
+}
+
+.theme-border-light-primary {
+    border-color: #F9F7F7 !important;
+}
+
+.theme-border-light-secondary {
+    border-color: #DBE2EF !important;
 }
 
 /* Anchor or links */

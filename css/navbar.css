@@ -1,7 +1,15 @@
 /* Extra small devices (phones, less than 768px) */
 /* No media query since this is the default in Bootstrap */
-h1 {
-  letter-spacing: 0.5rem;
+/* Menu */
+
+.menu {
+  padding: 0;
+  margin: 0.25rem;
+  text-align: center !important;
+}
+
+.menu:hover {
+  opacity: 0.7;
 }
 
 /* Small devices */
@@ -11,7 +19,19 @@ h1 {
 @media (min-width: 768px) {}
 
 /* Large devices (desktops, 992px and up) */
-@media (min-width: 992px) {}
+@media (min-width: 992px) {
+  .menu {
+    border: 1px solid #112d4e;
+    padding: 0;
+    margin: 0.25rem;
+    border-radius: 0.5rem;
+  }
+
+  .menu:hover {
+    opacity: 0.7;
+    background-color: #112d4e;
+  }
+}
 
 /* Extra Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {}

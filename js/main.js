@@ -32,9 +32,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Include Footer
     result = includeHtmlFile("#footer", "./footer.html", false, false);
 
-    // Include status bar
-    result = includeHtmlFile("#statusbar", "./statusbar.html", false, false);
-
     // Head tag metadata
     result = includeHtmlFile("#head", "./head.html", false, true);
 });
