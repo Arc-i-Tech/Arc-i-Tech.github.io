@@ -5,3 +5,4 @@
 2. [Branch Creation Guidelines](./branch-creation-guidelines.md)
 3. [Commit Guidelines](./commit-guidelines.md)
 4. [Pull Request Guidelines](./commit-guidelines.md)
+5. [Eclipse Setup](./eclipse_setup.md)
