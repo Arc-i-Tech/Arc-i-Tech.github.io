@@ -4,7 +4,77 @@
 
 <web-app>
 	<display-name>Arc-i-Tech</display-name>
+	<servlet>
+		<servlet-name>Home</servlet-name>
+		<display-name>Home</display-name>
+		<description>Home Page</description>
+		<servlet-class>com.ait.servlets.HomeServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>About</servlet-name>
+		<display-name>About</display-name>
+		<description>About Page</description>
+		<servlet-class>com.ait.servlets.AboutServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>Services</servlet-name>
+		<display-name>Services</display-name>
+		<description>Services Page</description>
+		<servlet-class>com.ait.servlets.ServicesServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>Contact</servlet-name>
+		<display-name>Contact</display-name>
+		<description>Contact Page</description>
+		<servlet-class>com.ait.servlets.ContactServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>Projects</servlet-name>
+		<display-name>Projects</display-name>
+		<description>Projects Page</description>
+		<servlet-class>com.ait.servlets.ProjectsServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>ThankYou</servlet-name>
+		<display-name>ThankYou</display-name>
+		<description>ThankYou Page</description>
+		<servlet-class>com.ait.servlets.ThankYouServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>Timeline</servlet-name>
+		<display-name>Timeline</display-name>
+		<description>Timeline Page</description>
+		<servlet-class>com.ait.servlets.TimelineServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Home</servlet-name>
+		<url-pattern>/Home</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>About</servlet-name>
+		<url-pattern>/About</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Services</servlet-name>
+		<url-pattern>/Services</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Contact</servlet-name>
+		<url-pattern>/Contact</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Projects</servlet-name>
+		<url-pattern>/Projects</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ThankYou</servlet-name>
+		<url-pattern>/ThankYou</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Timeline</servlet-name>
+		<url-pattern>/Timeline</url-pattern>
+	</servlet-mapping>
 	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
+		<welcome-file>Home</welcome-file>
 	</welcome-file-list>
 </web-app>

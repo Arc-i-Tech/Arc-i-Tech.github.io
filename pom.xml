@@ -40,7 +40,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>Arc-i-Tech</finalName>
+		<finalName>Arc-i-Tech.github.io</finalName>
 		<pluginManagement><!-- lock down plugins versions to avoid using Maven 
 				defaults (may be moved to parent pom) -->
 			<plugins>
