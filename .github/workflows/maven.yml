@@ -1,0 +1,18 @@
+name: Maven build
+on:
+  push:
+    branches: 
+      - ecl-main
+jobs:
+  Build-binaries:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Java 
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 8.0.392+8
+      - name: Run maven
+        run: mvn package
