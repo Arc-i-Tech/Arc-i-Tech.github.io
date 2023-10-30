@@ -1,18 +1,31 @@
-name: Maven build
+run-name: Maven- product creation
 on:
   push:
     branches: 
-      - ecl-main
+      - 94-cf-maven-build-workflow
 jobs:
-  Build-binaries:
+  maven-build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - id: checkout-repo
+        name: Checkout repository
         uses: actions/checkout@v4
-      - name: Setup Java 
+
+      - id: setup-java
+        name: Setup Java 
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 8.0.392+8
-      - name: Run maven
+
+      - id: run-mvn-pkg
+        name: Run maven
         run: mvn package
+
+      - id: commit-binary-artifact
+        name: Commit binary artifact
+        uses: EndBug/add-and-commit@v9
+        with:
+          new_branch: mvn-package
+          default_author: github_actor
+          message: Mevan package from github action
