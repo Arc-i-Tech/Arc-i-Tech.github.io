@@ -26,6 +26,5 @@ jobs:
         name: Commit binary artifact
         uses: EndBug/add-and-commit@v9
         with:
-          new_branch: mvn-package
           default_author: github_actor
-          message: Mevan package from github action
+          message: Mevan package from github action triggred by: @${{ github.actor }}
