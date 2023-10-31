@@ -4,11 +4,6 @@ on:
     branches: 
     - 94-cf-maven-build-workflow
 
-  pull_request: 
-    branches: 
-    - main
-    - *main
-
 jobs:
   maven-build:
     runs-on: ubuntu-latest
