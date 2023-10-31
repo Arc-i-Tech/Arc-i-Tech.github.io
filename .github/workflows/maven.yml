@@ -7,6 +7,8 @@ jobs:
   maven-build:
     runs-on: ubuntu-latest
     steps:
+      - id: branch-name
+        run: echo ${{ github.ref }}
       - id: checkout-repo
         name: Checkout repository
         uses: actions/checkout@v4
