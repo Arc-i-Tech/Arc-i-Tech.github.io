@@ -8,8 +8,7 @@ on:
     branches: 
     - main
     - *main
-    - *-E-*
-
+    
 jobs:
   maven-build:
     runs-on: ubuntu-latest
