@@ -7,8 +7,6 @@ jobs:
   maven-build:
     runs-on: ubuntu-latest
     steps:
-      - id: branch-name
-        run: echo ${{ github.ref }}
       - id: checkout-repo
         name: Checkout repository
         uses: actions/checkout@v4
@@ -18,7 +16,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 8.0.392+8
+          java-version: 8.0.392
 
       - id: run-mvn-pkg
         name: Run maven
@@ -30,3 +28,9 @@ jobs:
         with:
           default_author: github_actor
           message: Mevan package from github action triggred by- @${{ github.actor }}
+
+      - id: handle-failure
+        name: The job has failed
+        if: ${{ failure() }}
+        run: echo Workflow failed
+
