@@ -44,6 +44,6 @@ jobs:
       - id: handle-failure
         name: The job has failed
         if: ${{ failure() }}
-        run: echo Workflow failed at step
+        run: echo Workflow failed at step - ${{ env.failedStep }}
 
 
