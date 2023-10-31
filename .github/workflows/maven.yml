@@ -2,10 +2,19 @@ run-name: Maven- product creation
 on:
   push:
     branches: 
-      - 94-cf-maven-build-workflow
+    - 94-cf-maven-build-workflow
+
+  pull_request: 
+    branches: 
+    - main
+    - *main
+    - *-E-*
+
 jobs:
   maven-build:
     runs-on: ubuntu-latest
+    env:
+      failedStep: NaN
     steps:
       - id: checkout-repo
         name: Checkout repository
@@ -16,8 +25,11 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 8.0.392
-
+          java-version: 1.8.0.392+8
+        continue-on-error: true
+        env:
+          failedStep: setup-java
+           
       - id: run-mvn-pkg
         name: Run maven
         run: mvn package
@@ -32,5 +44,6 @@ jobs:
       - id: handle-failure
         name: The job has failed
         if: ${{ failure() }}
-        run: echo Workflow failed
+        run: echo Workflow failed at step
+
 
