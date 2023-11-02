@@ -10,18 +10,12 @@ on:
 jobs:
   maven-build:
     runs-on: ubuntu-latest
-    env:
-      lastExecutedStep: nan
     steps:
       - id: checkout-repo
-        env:
-            lastExecutedStep: checkout-repo
         name: Checkout repository
         uses: actions/checkout@v4
         
       - id: setup-java
-        env:
-          lastExecutedStep: setup-java
         name: Setup Java 
         uses: actions/setup-java@v3
         with:
@@ -29,14 +23,10 @@ jobs:
           java-version: 1.8.0.392+8     
                 
       - id: run-mvn-pkg
-        env:
-          lastExecutedStep: run-mvn-pkg
         name: Run maven
         run: mvn package
 
       - id: commit-binary-artifact
-        env:
-          lastExecutedStep: commit-binary-artifact
         name: Commit binary artifact
         uses: EndBug/add-and-commit@v9
         with:
@@ -45,7 +35,16 @@ jobs:
 
       - id: handle-failure
         name: The job has failed
-        if: always()
-        run: echo Workflow failed at step - ${{ env.lastExecutedStep }}
+        if: always() && ${{ job.status }} != 'success'
+        uses: dkershner6/switch-case-action@v1
+        with:
+          default: "NaN"
+          conditionals-with-values: |
+            ${{ steps.checkout-repo.outcome != 'success' }} => checkout-repo
+            ${{ steps.checkout-repo.outcome != 'success' }} => setup-java
+            ${{ steps.checkout-repo.outcome != 'success' }} => run-mvn-pkg
+            ${{ steps.checkout-repo.outcome != 'success' }} => commit-binary-artifact
+            
+      - run: echo Workflow failed at step - ${{ steps.handle-failure.outputs.value }}
 
 
