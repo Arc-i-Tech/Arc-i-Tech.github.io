@@ -35,7 +35,7 @@ jobs:
 
       - id: handle-failure
         name: The job has failed
-        if: always() && ${{ job.status }} != 'success'
+        if: always() && !${{ success() }}
         uses: dkershner6/switch-case-action@v1
         with:
           default: "NaN"
