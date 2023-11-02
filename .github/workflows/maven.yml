@@ -2,7 +2,6 @@ run-name: Maven product creation
 on:
   repository_dispatch: # To support manual trigger.
   push:
-    branches: [main, /*main, /*-E-*]
   pull_request: 
     branches: [main, /*main, /*-E-*]
     types: [opened, synchronize]
