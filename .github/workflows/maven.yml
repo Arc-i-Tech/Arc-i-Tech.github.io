@@ -3,7 +3,7 @@ on:
   repository_dispatch: # To support manual trigger.
   push:
   pull_request: 
-    branches: [main, /*main, /*-E-*]
+    branches: [development, /*-E-*]
     types: [opened, synchronize]
 
 
@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 1.8.0.392+8     
+          java-version: 8.0.392+8     
                 
       - id: run-mvn-pkg
         name: Run maven
@@ -28,10 +28,18 @@ jobs:
 
       - id: commit-binary-artifact
         name: Commit binary artifact
+        if: ${{ github.event_name == 'push' }} && ${{ github.ref == 'development' }}
         uses: EndBug/add-and-commit@v9
         with:
           default_author: github_actor
           message: Mevan package from github action triggred by- @${{ github.actor }}
+
+      - if: ${{ github.event_name == 'push' }} && ${{ github.ref == 'development' }}
+        id: create-pr-to-test
+        name: Create pull request to **test** branch
+        run: gh pr create |
+          --base test --head development |
+          --fill --label test --project Arc-i-Tech-website
 
       - id: handle-failure-0
         name: The job has failed
@@ -49,6 +57,4 @@ jobs:
         if: always() && !${{ success() }}
         run: echo The job has failed at step - ${{ steps.handle-failure-0.outputs.value }}
 
-      - id: handle-success
-        name: 
 
