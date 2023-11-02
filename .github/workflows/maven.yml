@@ -2,7 +2,14 @@ run-name: Maven product creation
 on:
   push:
     branches: 
-    - 94-cf-maven-build-workflow
+    - main
+    - /*main
+    - /*-E-*
+  pull_request: 
+    branches: 
+    - main
+    - /*main
+    - /*-E-*
 
 jobs:
   maven-build:
