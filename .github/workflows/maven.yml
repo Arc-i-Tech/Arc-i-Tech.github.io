@@ -27,10 +27,15 @@ jobs:
 
       - id: print-reference
         name: Print reference
-        run: echo ${{ github.ref }}
+        run: echo ${{ github.ref_name }}
       
       - id: print-event-name
         name: Print event name
         run: echo ${{ github.event_name }}
+
+      - id: if-test
+        name: If test
+        if: ${{ github.ref_name }} == "production"
+        run: echo running on ${{ github.ref_name }} branch
 
 
