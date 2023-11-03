@@ -2,6 +2,7 @@ run-name: Maven product creation
 on:
   repository_dispatch: # To support manual trigger.
   push:
+    branches: [development, /*-E-*]
   pull_request: 
     branches: [development, /*-E-*]
     types: [opened, synchronize]
@@ -13,28 +14,75 @@ jobs:
       - id: checkout-repo
         name: Checkout repository
         uses: actions/checkout@v4
-        
+
       - id: setup-java
         name: Setup Java 
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 8.0.392+8     
-                
+        
       - id: run-mvn-pkg
         name: Run maven
         run: mvn package
+        
+      - id: commit-binary-artifact
+        name: Commit binary artifact
+        if: github.event_name == 'push' && github.ref_name == 'development'
+        uses: EndBug/add-and-commit@v9
+        with:
+          default_author: github_actor
+          message: Mevan package from github action triggred by- @${{ github.actor }}
+        
+      - id: create-pr-to-test
+        name: Create pull request to test branch
+        if: github.event_name == 'push' && github.ref_name == 'development'
+        env: 
+          GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        run: gh pr create |
+          --base test --head development |
+          --fill --label test --project Arc-i-Tech-website
+ 
+      - id: add-comment-to-pr
+        name: Add Comment to pull request
+        if: github.event_name == 'pull-request' && contains(github.ref_name, '-E-')
+        run: echo ${{ github.event.id }}
 
-      - id: print-reference
-        name: Print reference
-        run: echo ${{ github.ref_name }}
+      - id: handle-failure-0
+        name: Find failed step
+        if: failure()
+        uses: dkershner6/switch-case-action@v1
+        with:
+          default: "NaN"
+          conditionals-with-values: |
+            ${{ steps.checkout-repo.outcome != 'success' }} => checkout-repo
+            ${{ steps.setup-java.outcome != 'success' }} => setup-java
+            ${{ steps.run-mvn-pkg.outcome != 'success' }} => run-mvn-pkg
+            ${{ steps.commit-binary-artifact.outcome != 'success' }} => commit-binary-artifact
+            ${{ steps.create-pr-to-test.outcome != 'success' }} => create-pr-to-test
+            ${{ steps.add-comment-to-pr.outcome != 'success' }} => add-comment-to-pr
+        
+      - id: handle-failure-1
+        name: Failed step info
+        if: failure()
+        run: echo The job has failed at step - ${{ steps.handle-failure-0.outputs.value }}
+        
+      - id: handle-failure-pr-0
+        name: Pull request event failed - ${{ github.event.id }}
+        if: failure() && github.event_name == 'pull-request' && github.ref_name == 'development'
+        run: echo Add comment to pull request
+
+      - id: handle-failure-push-0
+        name: Push event failed on branch ${{ github.ref_name }}
+        if: failure() && github.event_name == 'push' && github.ref_name == 'development'
+        run: echo create issue
       
-      - id: print-event-name
-        name: Print event name
-        run: echo ${{ github.event_name }}
+      - id: handle-failure-pr-1
+        name: Pull request event failed - ${{ github.event.id }}
+        if: failure() && github.event_name == 'pull-request' && contains(github.ref_name, '-E-')
+        run: echo Add comment to pull request
 
-      - id: if-test
-        name: If test
-        run: echo ${{ github.ref_name }} == 'production'
-
-
+      - id: handle-failure-push-2
+        name: Push event failed on branch ${{ github.ref_name }}
+        if: failure() && github.event_name == 'push' && contains(github.ref_name, '-E-')
+        run: echo create issue
