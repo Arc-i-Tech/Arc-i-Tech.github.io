@@ -3,7 +3,8 @@ on:
   repository_dispatch: # To support manual trigger.
   push:
     branches: [development, refs/heads/*-E-*]
-  pull_request: 
+  pull_request:
+    branches: [development, refs/heads/*-E-*, ref/heads/94-*] 
     types: [opened, synchronize]
 
 jobs:
@@ -89,4 +90,5 @@ jobs:
 
       - id: print-messages
         name: Print messages
-        run: echo Ref- ${{ github.ref }} and Ref Name - ${{ github.ref_name }}
+        run: echo Ref- ${{ github.ref }} and Ref Name - ${{ github.ref_name }}; | 
+             echo base branch - ${{ github.base }} and target branch - ${{ github.target }}
