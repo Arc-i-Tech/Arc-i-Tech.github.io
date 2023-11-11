@@ -4,7 +4,6 @@ on:
   push:
     branches: [development, refs/heads/*-E-*]
   pull_request: 
-    branches: [development, refs/heads/*-E-*]
     types: [opened, synchronize]
 
 jobs:
@@ -37,16 +36,17 @@ jobs:
       - id: create-pr-to-test
         name: Create pull request to test branch
         if: github.event_name == 'push' && github.ref_name == 'development'
-        env: 
-          GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        run: gh pr create |
-          --base test --head development |
-          --fill --label test --project Arc-i-Tech-website
+        run: echo TO-DO :Create pull request to test branch
+        # env: 
+          # GH_TOKEN: {{ secrets.ACCESS_TOKEN }}
+        # run: gh pr create |
+          # --base test --head development |
+          # --fill --label test --project Arc-i-Tech-website
  
       - id: add-comment-to-pr
         name: Add Comment to pull request
-        if: github.event_name == 'pull-request' && contains(github.ref_name, '-E-')
-        run: echo ${{ github.event.id }}
+        if: github.event_name == 'pull-request'
+        run: echo TO-DO :Add comment to pull request - ${{ github.event.id }}
 
       - id: handle-failure-0
         name: Find failed step
@@ -64,7 +64,7 @@ jobs:
         
       - id: handle-failure-1
         name: Failed step info
-        if: failure()
+        if: failure() 
         run: echo The job has failed at step - ${{ steps.handle-failure-0.outputs.value }}
         
       - id: handle-failure-pr-0
@@ -86,3 +86,7 @@ jobs:
         name: Push event failed on branch ${{ github.ref_name }}
         if: failure() && github.event_name == 'push' && contains(github.ref_name, '-E-')
         run: echo create issue
+
+      - id: print-messages
+        name: Print messages
+        run: echo Ref- ${{ github.ref }}; Ref Name - ${{ github.ref_name }}
