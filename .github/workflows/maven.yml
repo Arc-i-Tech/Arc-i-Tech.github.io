@@ -90,5 +90,4 @@ jobs:
 
       - id: print-messages
         name: Print messages
-        run: echo Ref- ${{ github.ref }} and Ref Name - ${{ github.ref_name }}; | 
-             echo base branch - ${{ github.base }} and target branch - ${{ github.target }}
+        run: echo Ref- ${{ github.ref }} and Ref Name - ${{ github.ref_name }}; echo base branch - ${{ github.base }} and target branch - ${{ github.target }}
