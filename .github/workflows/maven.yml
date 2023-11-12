@@ -80,12 +80,12 @@ jobs:
         with:
           default: "NaN"
           conditionals-with-values: |
-            ${{ steps.checkout-repo.outcome != 'success' }} => checkout-repo
-            ${{ steps.setup-java.outcome != 'success' }} => setup-java
-            ${{ steps.run-mvn-pkg.outcome != 'success' }} => run-mvn-pkg
-            ${{ steps.commit-binary-artifact.outcome != 'success' }} => commit-binary-artifact
-            ${{ steps.create-pr-to-test.outcome != 'success' }} => create-pr-to-test
-            ${{ steps.add-comment-to-pr.outcome != 'success' }} => add-comment-to-pr
+            ${{ steps.checkout-repo.outcome != 'success' && steps.checkout-repo.outcome != 'skipped' }} => checkout-repo
+            ${{ steps.setup-java.outcome != 'success'  && steps.setup-java.outcome != 'skipped' }} => setup-java
+            ${{ steps.run-mvn-pkg.outcome != 'success' && steps.run-mvn-pkg.outcome != 'skipped' }} => run-mvn-pkg
+            ${{ steps.commit-binary-artifact.outcome != 'success' && steps.commit-binary-artifact.outcome != 'skipped' }} => commit-binary-artifact
+            ${{ steps.create-pr-to-test.outcome != 'success' && steps.create-pr-to-test.outcome != 'skipped' }} => create-pr-to-test
+            ${{ steps.add-comment-to-pr.outcome != 'success' && steps.add-comment-to-pr.outcome != 'skipped' }} => add-comment-to-pr
         
       - id: handle-failure-1
         name: Failed step info
