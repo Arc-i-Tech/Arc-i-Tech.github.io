@@ -32,7 +32,7 @@ jobs:
         uses: EndBug/add-and-commit@v9
         with:
           default_author: github_actor
-          message: Mevan package from github action triggred by- @${{ github.actor }}
+          message: Mevan package from github action- ${{ github.run_number }} triggred by- @${{ github.actor }}
         
       - id: create-pr-to-test
         name: Create pull request to test branch
@@ -49,25 +49,6 @@ jobs:
         if: github.event_name == 'pull_request'
         run: echo TO-DO :Add comment to pull request - ${{ github.event.number }}
 
-      - id: handle-failure-0
-        name: Find failed step
-        if: failure()
-        uses: dkershner6/switch-case-action@v1
-        with:
-          default: "NaN"
-          conditionals-with-values: |
-            ${{ steps.checkout-repo.outcome != 'success' }} => checkout-repo
-            ${{ steps.setup-java.outcome != 'success' }} => setup-java
-            ${{ steps.run-mvn-pkg.outcome != 'success' }} => run-mvn-pkg
-            ${{ steps.commit-binary-artifact.outcome != 'success' }} => commit-binary-artifact
-            ${{ steps.create-pr-to-test.outcome != 'success' }} => create-pr-to-test
-            ${{ steps.add-comment-to-pr.outcome != 'success' }} => add-comment-to-pr
-        
-      - id: handle-failure-1
-        name: Failed step info
-        if: failure() 
-        run: echo The job has failed at step - ${{ steps.handle-failure-0.outputs.value }}
-        
       - id: handle-failure-pr-0
         name: Pull request event failed - ${{ github.event.number }}
         if: failure() && github.event_name == 'pull_request' && github.ref_name == 'development'
@@ -91,3 +72,24 @@ jobs:
       - id: print-messages
         name: Print messages
         run: echo ${{ toJson(steps.*.outcome) }}
+
+        
+      - id: handle-failure-0
+        name: Find failed step
+        if: failure()
+        uses: dkershner6/switch-case-action@v1
+        with:
+          default: "NaN"
+          conditionals-with-values: |
+            ${{ steps.checkout-repo.outcome != 'success' }} => checkout-repo
+            ${{ steps.setup-java.outcome != 'success' }} => setup-java
+            ${{ steps.run-mvn-pkg.outcome != 'success' }} => run-mvn-pkg
+            ${{ steps.commit-binary-artifact.outcome != 'success' }} => commit-binary-artifact
+            ${{ steps.create-pr-to-test.outcome != 'success' }} => create-pr-to-test
+            ${{ steps.add-comment-to-pr.outcome != 'success' }} => add-comment-to-pr
+        
+      - id: handle-failure-1
+        name: Failed step info
+        if: failure() 
+        run: echo The job has failed at step - ${{ steps.handle-failure-0.outputs.value }}
+      
