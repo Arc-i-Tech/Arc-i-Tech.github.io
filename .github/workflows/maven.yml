@@ -3,7 +3,7 @@ on:
   repository_dispatch: # To support manual trigger.
   push:
     branches: [development, refs/heads/*-E-*]
-  pull_request_target:
+  pull_request:
     # branches: [development, refs/heads/*-E-*] 
     types: [opened, synchronize]
 
