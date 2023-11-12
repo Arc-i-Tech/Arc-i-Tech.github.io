@@ -4,7 +4,7 @@ on:
   push:
     branches: [development, refs/heads/*-E-*]
   pull_request_target:
-    branches: [development, refs/heads/*-E-*] 
+    # branches: [development, refs/heads/*-E-*] 
     types: [opened, synchronize]
 
 jobs:
