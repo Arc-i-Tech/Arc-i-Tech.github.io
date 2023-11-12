@@ -3,8 +3,8 @@ on:
   repository_dispatch: # To support manual trigger.
   push:
     branches: [development, refs/heads/*-E-*]
-  pull_request:
-    # branches: [development, refs/heads/*-E-*] 
+  pull_request_target: 
+    branches: [development, refs/heads/*-E-*] 
     types: [opened, synchronize]
 
 jobs:
@@ -50,7 +50,7 @@ jobs:
         run: echo TO-DO :Add comment to pull request - ${{ github.event.number }}
 
       - id: handle-failure-pr-0
-        name: Pull request event failed - ${{ github.event.number }}
+        name: Pull request<${{ github.event.number }}> event failed on branch ${{ github.ref_name }}
         if: failure() && github.event_name == 'pull_request' && github.ref_name == 'development'
         run: echo Add comment to pull request
 
@@ -60,19 +60,15 @@ jobs:
         run: echo create issue
       
       - id: handle-failure-pr-1
-        name: Pull request event failed - ${{ github.event.number }}
+        name: Pull request<${{ github.event.number }}> event failed on branch ${{ github.ref_name }}
         if: failure() && github.event_name == 'pull_request' && contains(github.ref_name, '-E-')
         run: echo Add comment to pull request
 
-      - id: handle-failure-push-2
+      - id: handle-failure-push-1
         name: Push event failed on branch ${{ github.ref_name }}
         if: failure() && github.event_name == 'push' && contains(github.ref_name, '-E-')
         run: echo create issue
 
-      - id: print-messages
-        name: Print messages
-        run: echo ${{ toJson(steps.*.outcome) }}
-        
       - id: handle-failure-0
         name: Find failed step
         if: failure()
@@ -86,7 +82,11 @@ jobs:
             ${{ steps.commit-binary-artifact.outcome != 'success' && steps.commit-binary-artifact.outcome != 'skipped' }} => commit-binary-artifact
             ${{ steps.create-pr-to-test.outcome != 'success' && steps.create-pr-to-test.outcome != 'skipped' }} => create-pr-to-test
             ${{ steps.add-comment-to-pr.outcome != 'success' && steps.add-comment-to-pr.outcome != 'skipped' }} => add-comment-to-pr
-        
+            ${{ steps.handle-failure-pr-0.outcome != 'success' && steps.handle-failure-pr-0.outcome != 'skipped' }} => handle-failure-pr-0
+            ${{ steps.handle-failure-push-0.outcome != 'success' && steps.handle-failure-push-0.outcome != 'skipped' }} => handle-failure-push-0
+            ${{ steps.handle-failure-pr-1.outcome != 'success' && steps.handle-failure-pr-0.outcome != 'skipped' }} => handle-failure-pr-1
+            ${{ steps.handle-failure-push-1.outcome != 'success' && steps.handle-failure-push-1.outcome != 'skipped' }} => handle-failure-pr-1
+
       - id: handle-failure-1
         name: Failed step info
         if: failure() 
