@@ -68,11 +68,6 @@ jobs:
         name: Push event failed on branch ${{ github.ref_name }}
         if: failure() && github.event_name == 'push' && contains(github.ref_name, '-E-')
         run: echo create issue
-
-      - id: print-messages
-        name: Print messages
-        run: echo ${{ toJson(steps.*.outcome) }}
-
         
       - id: handle-failure-0
         name: Find failed step
@@ -93,3 +88,6 @@ jobs:
         if: failure() 
         run: echo The job has failed at step - ${{ steps.handle-failure-0.outputs.value }}
       
+      - id: success-message
+        name: Success message
+        run: echo Action completed successfully.
