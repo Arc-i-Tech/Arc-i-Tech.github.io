@@ -47,7 +47,7 @@ jobs:
       - id: add-comment-to-pr
         name: Add Comment to pull request
         if: github.event_name == 'pull_request'
-        run: echo TO-DO :Add comment to pull request - ${{ github.event.id }}
+        run: echo TO-DO :Add comment to pull request - ${{ github.event }}
 
       - id: handle-failure-0
         name: Find failed step
