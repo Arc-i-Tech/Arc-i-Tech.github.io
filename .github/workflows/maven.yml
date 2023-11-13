@@ -8,8 +8,8 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  maven-build-test-deploy:
-    name: maven build from event ${{ github.event_name }} by user ${{ github.actor }}
+  maven-build-pkg-creation:
+    name: maven build by user - ${{ github.actor }} and event - ${{ github.event_name }} 
     runs-on: ubuntu-latest
     steps:
       - id: checkout-repo
@@ -44,29 +44,29 @@ jobs:
         # run: gh pr create |
           # --base test --head development |
           # --fill --label test --project Arc-i-Tech-website
- 
+
       - id: add-comment-to-pr
         name: Add Comment to pull request - ${{ github.event.number }}
         if: github.event_name == 'pull_request'
         run: echo TO-DO :Add comment to pull request - ${{ github.event.number }}
 
       - id: handle-failure-pr-0
-        name: Pull request <${{ github.event.number }}> event failed on base branch ${{ github.base_ref }}
+        name: Pull request - '#${{ github.event.number }} failed on base branch ${{ github.base_ref }}'
         if: failure() && github.event_name == 'pull_request' && github.base_ref == 'development'
         run: echo Add comment to pull request
 
       - id: handle-failure-push-0
-        name: Push event failed on branch ${{ github.ref_name }}
+        name: Push - failed on branch ${{ github.ref_name }}
         if: failure() && github.event_name == 'push' && github.ref_name == 'development'
         run: echo create issue
-      
+
       - id: handle-failure-pr-1
-        name: Pull request <${{ github.event.number }}> event failed on base branch ${{ github.base_ref }}
+        name: Pull request - '#${{ github.event.number }} failed on base branch ${{ github.base_ref }}'
         if: failure() && github.event_name == 'pull_request' && contains(github.base_ref, '-E-')
         run: echo Add comment to pull request
 
       - id: handle-failure-push-1
-        name: Push event failed on branch ${{ github.ref_name }}
+        name: Push - failed on branch ${{ github.ref_name }}
         if: failure() && github.event_name == 'push' && contains(github.ref_name, '-E-')
         run: echo create issue
 
@@ -92,7 +92,7 @@ jobs:
         name: Failed step info
         if: failure() 
         run: echo The job has failed at step - ${{ steps.handle-failure-0.outputs.value }}
-          
+
       - id: success-message
         name: Success message
         if: success()
