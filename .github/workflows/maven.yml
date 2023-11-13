@@ -51,22 +51,22 @@ jobs:
         run: echo TO-DO :Add comment to pull request - ${{ github.event.number }}
 
       - id: handle-failure-pr-0
-        name: Pull request - PR:${{ github.event.number }} failed on base branch ${{ github.base_ref }}
+        name: Pull request - PR:${{ github.event.number }}, base branch:'development'
         if: failure() && github.event_name == 'pull_request' && github.base_ref == 'development'
         run: echo Add comment to pull request
 
       - id: handle-failure-push-0
-        name: Push - failed on branch ${{ github.ref_name }}
+        name: Push - base branch:'development'
         if: failure() && github.event_name == 'push' && github.ref_name == 'development'
         run: echo create issue
 
       - id: handle-failure-pr-1
-        name: Pull request - PR:${{ github.event.number }} failed on base branch ${{ github.base_ref }}
+        name: Pull request - PR:${{ github.event.number }}, base branch:'*-E-*' (EPIC)
         if: failure() && github.event_name == 'pull_request' && contains(github.base_ref, '-E-')
         run: echo Add comment to pull request
 
       - id: handle-failure-push-1
-        name: Push - failed on branch ${{ github.ref_name }}
+        name: Push - base branch:'*-E-*' (EPIC)
         if: failure() && github.event_name == 'push' && contains(github.ref_name, '-E-')
         run: echo create issue
 
