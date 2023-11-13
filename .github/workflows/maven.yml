@@ -8,7 +8,8 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  maven-build:
+  maven-build-test-deploy:
+    name: maven build from event ${{ github.event_name }} by user ${{ github.actor }}
     runs-on: ubuntu-latest
     steps:
       - id: checkout-repo
