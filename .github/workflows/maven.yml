@@ -50,8 +50,8 @@ jobs:
         run: echo TO-DO :Add comment to pull request - ${{ github.event.number }}
 
       - id: handle-failure-pr-0
-        name: Pull request<${{ github.event.number }}> event failed on branch ${{ github.ref_name }}
-        if: failure() && github.event_name == 'pull_request' && github.ref_name == 'development'
+        name: Pull request <${{ github.event.number }}> event failed on base branch ${{ github.base_ref }}
+        if: failure() && github.event_name == 'pull_request' && github.base_ref == 'development'
         run: echo Add comment to pull request
 
       - id: handle-failure-push-0
@@ -60,8 +60,8 @@ jobs:
         run: echo create issue
       
       - id: handle-failure-pr-1
-        name: Pull request<${{ github.event.number }}> event failed on branch ${{ github.ref_name }}
-        if: failure() && github.event_name == 'pull_request' && contains(github.ref_name, '-E-')
+        name: Pull request <${{ github.event.number }}> event failed on base branch ${{ github.base_ref }}
+        if: failure() && github.event_name == 'pull_request' && contains(github.base_ref, '-E-')
         run: echo Add comment to pull request
 
       - id: handle-failure-push-1
