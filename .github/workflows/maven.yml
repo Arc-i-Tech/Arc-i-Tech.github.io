@@ -112,5 +112,6 @@ jobs:
         if: always()
         env:
           GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        run: gh run view --log-failed --job maven-build
+        run: echo ${{ toJson(job) }} 
+        # gh run view --log-failed --job maven-build
         shell: bash
