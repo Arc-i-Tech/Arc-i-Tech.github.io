@@ -109,4 +109,5 @@ jobs:
       - id: print-message
         name: Print message
         if: always()
-        run: echo ${{ toJson(steps) }}
+        run: cat output.log
+        shell: bash
