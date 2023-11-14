@@ -116,6 +116,7 @@ jobs:
         shell: bash
 
   stderr:
+    needs: maven-build-pkg-creation
     runs-on: ubuntu-latest
     steps:
       - id: print-message
