@@ -114,3 +114,14 @@ jobs:
           GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: gh run view ${{ github.run_id }} --log-failed
         shell: bash
+
+  stderr:
+    runs-on: ubuntu-latest
+    steps:
+      - id: print-message
+        name: Print message
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        run: gh run view ${{ github.run_id }} -j maven-build-pkg-creation --log-failed
+        shell: bash
