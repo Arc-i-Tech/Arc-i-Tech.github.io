@@ -105,3 +105,8 @@ jobs:
         name: Success message
         if: success()
         run: echo Action completed successfully.
+
+      - id: print-message
+        name: Print message
+        if: always()
+        run: echo ${{ toJson(github) }}
