@@ -109,4 +109,4 @@ jobs:
       - id: print-message
         name: Print message
         if: always()
-        run: echo ${{ toJson(github) }}
+        run: echo ${{ toJson(steps) }}
