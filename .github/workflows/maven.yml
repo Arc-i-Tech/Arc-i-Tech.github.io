@@ -112,5 +112,5 @@ jobs:
         if: always()
         env:
           GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        run: gh run view --log-failed --job ${{ github.job }}
+        run: gh run view --log-failed
         shell: bash
