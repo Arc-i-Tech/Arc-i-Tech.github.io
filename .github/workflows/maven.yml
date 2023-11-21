@@ -90,17 +90,22 @@ jobs:
 
       - id: handle-failure-1
         name: Failed step info
-        run: echo smaple
-        # if: failure() 
-        # uses: actions/github-script@v7
-        # with:
-        #   script: |
-        #     github.rest.issues.createComment({
-        #       issue_number: context.issue.number,
-        #       owner: context.repo.owner,
-        #       repo: context.repo.repo,
-        #       body: 'Test comment for failure!\nThe job has failed at step - ${{ steps.handle-failure-0.outputs.value }}'
-        #     })
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: The job- **${{ github.job }}** has failed at step- **${{ steps.handle-failure-0.outputs.value }}**
+            }) |
+            github.rest.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['failed']
+            })
 
       - id: success-message
         name: Success message
