@@ -98,7 +98,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: The job- **${{ github.job }}** has failed at step- **${{ steps.handle-failure-0.outputs.value }}**
+              body: "The job- **${{ github.job }}** has failed at step- **${{ steps.handle-failure-0.outputs.value }}**"
             }) 
             github.rest.issues.addLabels({
               issue_number: context.issue.number,
