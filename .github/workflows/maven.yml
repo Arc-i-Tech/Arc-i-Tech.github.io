@@ -1,4 +1,4 @@
-run-name: Maven product creation
+run-name: Maven build by by user - ${{ github.actor }} and event - ${{ github.event_name }} 
 on:
   repository_dispatch: # To support manual trigger.
   push:
@@ -9,7 +9,6 @@ on:
 
 jobs:
   maven-build-pkg-creation:
-    name: maven build by user - ${{ github.actor }} and event - ${{ github.event_name }} 
     runs-on: ubuntu-latest
     steps:
       - id: checkout-repo
@@ -38,17 +37,34 @@ jobs:
       - id: create-pr-to-test
         name: Create pull request to test branch
         if: github.event_name == 'push' && github.ref_name == 'development'
-        run: echo TO-DO :Create pull request to test branch
-        # env: 
-          # GH_TOKEN: {{ secrets.ACCESS_TOKEN }}
-        # run: gh pr create |
-          # --base test --head development |
-          # --fill --label test --project Arc-i-Tech-website
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: github.ref_name,
+              base: 'test'
+            })
 
       - id: add-comment-to-pr
         name: Add Comment to pull request - ${{ github.event.number }}
         if: github.event_name == 'pull_request'
-        run: echo TO-DO :Add comment to pull request - ${{ github.event.number }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "The job- **${{ github.job }}** has "
+            }) |
+            github.rest.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['success']
+            })
 
       - id: handle-failure-pr-0
         name: Pull request - PR:${{ github.event.number }}, base branch:'development'
