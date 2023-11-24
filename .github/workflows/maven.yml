@@ -94,7 +94,8 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.issue.number,
               body: "The job- **${{ github.job }}** has failed at step- **${{ steps.handle-failure.outputs.value }}**"
-              event: 'COMMIT'
+              comments[].path: '',
+              comments[].body: ''
             }) |
             github.rest.issues.addLabels({
               issue_number: context.issue.number,
@@ -128,7 +129,8 @@ jobs:
         if: always()
         env:
           GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        run: gh run view ${{ github.run_id }}
+        run: gh run view ${{ github.run_id }} |
+          echo "${{ toJSON(github) }}"
         shell: bash
 
   # Epic failure comment
