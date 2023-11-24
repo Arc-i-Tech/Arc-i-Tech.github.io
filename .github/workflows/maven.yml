@@ -94,12 +94,7 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.issue.number,
               body: "The job- **${{ github.job }}** has failed at step- **${{ steps.handle-failure.outputs.value }}**"
-              comments: [
-                {
-                  path: '',
-                  body: '',
-                }
-              ],
+              event: 'COMMIT'
             }) |
             github.rest.issues.addLabels({
               issue_number: context.issue.number,
