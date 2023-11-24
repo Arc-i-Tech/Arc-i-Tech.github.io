@@ -1,4 +1,4 @@
-run-name: Maven build by by user - ${{ github.actor }} and event - ${{ github.event_name }} 
+run-name: Maven build by event- '${{ github.event_name }}-${{ github.event.number }}-${{ github.event.type }} on branch- '${{ github.ref_name }}' by user- @${{ github.actor }}
 on:
   repository_dispatch: # To support manual trigger.
   push:
@@ -8,6 +8,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
+  # Add project, Asign reviewer
   maven-build-pkg-creation:
     runs-on: ubuntu-latest
     steps:
@@ -20,7 +21,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 8.0.392+8     
+          java-version: 1.8.0.392+8     
         
       - id: run-mvn-pkg
         name: Run maven
@@ -44,7 +45,9 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               head: github.ref_name,
-              base: 'test'
+              base: 'test',
+              title: "Push Test",
+              body: "PR created from push to **development**"
             })
 
       - id: add-comment-to-pr
@@ -57,7 +60,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "The job- **${{ github.job }}** has "
+              body: "The job- **${{ github.job }}** is executed successfully!"
             }) |
             github.rest.issues.addLabels({
               issue_number: context.issue.number,
@@ -66,27 +69,7 @@ jobs:
               labels: ['success']
             })
 
-      - id: handle-failure-pr-0
-        name: Pull request - PR:${{ github.event.number }}, base branch:'development'
-        if: failure() && github.event_name == 'pull_request' && github.base_ref == 'development'
-        run: echo Add comment to pull request
-
-      - id: handle-failure-push-0
-        name: Push - base branch:'development'
-        if: failure() && github.event_name == 'push' && github.ref_name == 'development'
-        run: echo create issue
-
-      - id: handle-failure-pr-1
-        name: Pull request - PR:${{ github.event.number }}, base branch:'*-E-*' (EPIC)
-        if: failure() && github.event_name == 'pull_request' && contains(github.base_ref, '-E-')
-        run: echo Add comment to pull request
-
-      - id: handle-failure-push-1
-        name: Push - base branch:'*-E-*' (EPIC)
-        if: failure() && github.event_name == 'push' && contains(github.ref_name, '-E-')
-        run: echo create issue
-
-      - id: handle-failure-0
+      - id: handle-failure
         name: Find failed step
         if: failure()
         uses: dkershner6/switch-case-action@v1
@@ -99,28 +82,45 @@ jobs:
             ${{ steps.commit-binary-artifact.outcome != 'success' && steps.commit-binary-artifact.outcome != 'skipped' }} => commit-binary-artifact
             ${{ steps.create-pr-to-test.outcome != 'success' && steps.create-pr-to-test.outcome != 'skipped' }} => create-pr-to-test
             ${{ steps.add-comment-to-pr.outcome != 'success' && steps.add-comment-to-pr.outcome != 'skipped' }} => add-comment-to-pr
-            ${{ steps.handle-failure-pr-0.outcome != 'success' && steps.handle-failure-pr-0.outcome != 'skipped' }} => handle-failure-pr-0
-            ${{ steps.handle-failure-push-0.outcome != 'success' && steps.handle-failure-push-0.outcome != 'skipped' }} => handle-failure-push-0
-            ${{ steps.handle-failure-pr-1.outcome != 'success' && steps.handle-failure-pr-0.outcome != 'skipped' }} => handle-failure-pr-1
-            ${{ steps.handle-failure-push-1.outcome != 'success' && steps.handle-failure-push-1.outcome != 'skipped' }} => handle-failure-pr-1
 
-      - id: handle-failure-1
+      - id: handle-failure-pr
         name: Failed step info
-        if: failure()
+        if: failure() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
+            github.rest.pulls.createReview({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "The job- **${{ github.job }}** has failed at step- **${{ steps.handle-failure-0.outputs.value }}**"
+              pull_number: context.issue.number,
+              body: "The job- **${{ github.job }}** has failed at step- **${{ steps.handle-failure.outputs.value }}**"
+              comments: [
+                {
+                  path: '',
+                  body: '',
+                }
+              ],
             }) |
             github.rest.issues.addLabels({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               labels: ['failed']
+            })  
+      
+      - id: handle-failure-push
+        name: Push - base branch:github.ref_name
+        if: failure() && github.event_name == 'push' && github.ref_name == 'development'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "The job- **${{ github.job }}** is **failed** on push to branch- **${{ github.ref_name }}**",
+              body: "",
+              assignee: "",
+              labels: ["failed", "urgent"]
             })
 
       - id: success-message
@@ -135,3 +135,5 @@ jobs:
           GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: gh run view ${{ github.run_id }}
         shell: bash
+
+  # Epic failure comment
