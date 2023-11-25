@@ -84,7 +84,7 @@ jobs:
             ${{ steps.add-comment-to-pr.outcome != 'success' && steps.add-comment-to-pr.outcome != 'skipped' }} => add-comment-to-pr
 
       - id: handle-failure-pr
-        name: Failed step info
+        name: Pull request failed on branch - ${{ github.base_ref }}
         if: failure() && github.event_name == 'pull_request'
         env:
           GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
