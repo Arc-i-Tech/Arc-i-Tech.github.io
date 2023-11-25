@@ -95,7 +95,8 @@ jobs:
               pull_number: context.issue.number,
               body: "The job- **${{ github.job }}** has failed at step- **${{ steps.handle-failure.outputs.value }}**",
               commit_id: '*',
-              path: '*'
+              path: '*',
+              subject_type: "file"
             }) |
             github.rest.issues.addLabels({
               issue_number: context.issue.number,
