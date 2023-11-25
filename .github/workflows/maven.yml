@@ -130,8 +130,7 @@ jobs:
         if: always()
         env:
           GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        run: gh run view ${{ github.run_id }} 
-         # echo "{{ toJSON(github) }}"
+        run: echo "{{ toJSON(github) }}"
         shell: bash
 
   # Epic failure comment
