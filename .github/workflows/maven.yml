@@ -88,7 +88,7 @@ jobs:
         if: failure() && github.event_name == 'pull_request'
         env:
           GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        run: gh pr review ${{ github.event.number }} -r -b "The job- **${{ github.job }}** has failed at step- **${{ steps.handle-failure.outputs.value }}**" |
+        run: gh pr review ${{ github.event.number }} -c -b "The job- **${{ github.job }}** has failed at step- **${{ steps.handle-failure.outputs.value }}**" |
           gh pr edit ${{ github.event.number }} --add-label "failed" --remove-label "success"
         shell: bash
       
