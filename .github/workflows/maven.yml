@@ -94,7 +94,7 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.issue.number,
               body: "The job- **${{ github.job }}** has failed at step- **${{ steps.handle-failure.outputs.value }}**",
-              commit_id: '*',
+              commit_id: ${{ github.event.after }},
               path: '*',
               subject_type: "file"
             }) |
