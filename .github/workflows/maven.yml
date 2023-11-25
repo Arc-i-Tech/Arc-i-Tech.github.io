@@ -86,24 +86,11 @@ jobs:
       - id: handle-failure-pr
         name: Failed step info
         if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.pulls.createReviewComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number,
-              body: "The job- **${{ github.job }}** has failed at step- **${{ steps.handle-failure.outputs.value }}**",
-              commit_id: ${{ github.event.pull_request.base.sha }},
-              path: '*',
-              subject_type: "file"
-            }) |
-            github.rest.issues.addLabels({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              labels: ['failed']
-            })  
+        env:
+          GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        run: gh pr review ${{ github.event.number }} -r -b "The job- **${{ github.job }}** has failed at step- **${{ steps.handle-failure.outputs.value }}**" |
+          gh pr edit ${{ github.event.number }} --add-label "failed" --remove-label "success"
+        shell: bash
       
       - id: handle-failure-push
         name: Push - base branch:github.ref_name
