@@ -57,16 +57,22 @@ jobs:
         with:
           script: |
             github.rest.issues.createComment({
-              issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
+              issue_number: context.issue.number,
               body: "The job: **${{ github.job }}** is executed successfully!"
             }) |
             github.rest.issues.addLabels({
-              issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
+              issue_number: context.issue.number,
               labels: ['success']
+            }) |
+            github.rest.issues.removeLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              name: 'failed'
             })
 
       - name: Find failed step
@@ -100,7 +106,13 @@ jobs:
               repo: context.repo.repo,
               issue_number: context.issue.number,
               labels: ['failed']
-            })  
+            }) |
+            github.rest.issues.removeLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              name: 'success'
+            })
       
       - name: Push - failed on branch :${{ github.ref_name }}
         id: handle-failure-push
