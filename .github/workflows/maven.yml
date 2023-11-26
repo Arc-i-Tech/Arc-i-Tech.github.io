@@ -88,17 +88,17 @@ jobs:
               issue_number: context.issue.number,
               body: "The job: **${{ github.job }}** is executed successfully!"
             }) |
-            github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: ['success']
-            }) |
             github.rest.issues.removeLabel({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
               name: 'failed'
+            }) |
+            github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['success']
             })
 
       - name: Find failed step
@@ -127,17 +127,17 @@ jobs:
               issue_number: context.issue.number,
               body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** [Action url](https://github.com/Arc-i-Tech/Arc-i-Tech.github.io/actions/runs/${{ github.run_id }})"
             }) |
-            github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: ['failed']
-            }) |
             github.rest.issues.removeLabel({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
               name: 'success'
+            }) |
+            github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['failed']
             })
       
       - name: Push - failed on branch :${{ github.ref_name }}
