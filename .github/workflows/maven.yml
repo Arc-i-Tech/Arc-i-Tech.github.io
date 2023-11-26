@@ -8,7 +8,33 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  # Add project, Asign reviewer
+  assign-reviewer-add-project:
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        id: checkout-repo
+        uses: actions/checkout@v4
+
+      - name: Add team reviewer
+        id: add-reviewer-team
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.pulls.requestReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ github.event.number }},
+              team_reviewers: ["reviewers"]
+            })
+
+      - name: Add pull request to project
+        id: add-pr-to-project
+        uses: actions/add-to-project@v0.5.0
+        with:
+          project-url: https://github.com/orgs/${{ github.repository_owner }}/projects/2
+          github-token: ${{ secrets.ACCESS_TOKEN }}
+
   maven-build-pkg-creation:
     runs-on: ubuntu-latest
     steps: 
@@ -47,7 +73,7 @@ jobs:
               head: github.ref_name,
               base: 'test',
               title: "Push Test",
-              body: "PR created from push to **development**"
+              body: "PR created as there is push on branch :**development**"
             })
 
       - name: Add Comment to pull request :${{ github.event.number }}
