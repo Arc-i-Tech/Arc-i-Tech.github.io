@@ -122,4 +122,7 @@ jobs:
         if: success()
         run: echo ${{ github.job }} completed successfully.
 
+      - id: print-message
+        name: Print message
+        run: echo ${{ toJson(job) }}
   # Epic failure comment
