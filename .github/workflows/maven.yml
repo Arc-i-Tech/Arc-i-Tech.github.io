@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 1.8.0.392+8     
+          java-version: 8.0.392+8     
         
       - name: Run maven
         id: run-mvn-pkg
@@ -122,8 +122,8 @@ jobs:
         if: success()
         run: echo ${{ github.job }} completed successfully.
 
-      - name: Print message
-        id: print-message
-        if: always()
-        run: echo ${{ toJson(job) }}
+      #- name: Print message
+      #  id: print-message
+      #  if: always()
+      #  run: echo ${{ toJson(job) }}
   # Epic failure comment
