@@ -11,7 +11,7 @@ jobs:
   # Add project, Asign reviewer
   maven-build-pkg-creation:
     runs-on: ubuntu-latest
-    steps:
+    steps: 
       - id: checkout-repo
         name: Checkout repository
         uses: actions/checkout@v4
@@ -60,7 +60,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "The job- **${{ github.job }}** is executed successfully!"
+              body: "The job: **${{ github.job }}** is executed successfully!"
             }) |
             github.rest.issues.addLabels({
               issue_number: context.issue.number,
@@ -93,7 +93,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: "The job- **${{ github.job }}** has failed at step- **${{ steps.handle-failure.outputs.value }}**"
+              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}**"
             }) |
             github.rest.issues.addLabels({
               owner: context.repo.owner,
@@ -111,7 +111,7 @@ jobs:
             github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: "The job- **${{ github.job }}** is **failed** on push to branch- **${{ github.ref_name }}**",
+              title: "The job: **${{ github.job }}** is **failed** on push to branch: **${{ github.ref_name }}**",
               body: "",
               assignee: "",
               labels: ["failed", "urgent"]
@@ -120,14 +120,6 @@ jobs:
       - id: success-message
         name: Success message
         if: success()
-        run: echo Action completed successfully.
-
-      - id: print-message
-        name: Print message
-        if: always()
-        env:
-          GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        run: echo "${{ toJSON(github) }}"
-        shell: bash
+        run: echo ${{ github.job }} completed successfully.
 
   # Epic failure comment
