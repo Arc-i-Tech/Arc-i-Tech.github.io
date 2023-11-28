@@ -120,5 +120,3 @@ jobs:
         id: success-message
         if: success()
         run: echo ${{ github.job }} completed successfully.
-
-  # Epic failure comment
