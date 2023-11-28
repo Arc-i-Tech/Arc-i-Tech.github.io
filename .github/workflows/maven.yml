@@ -14,6 +14,8 @@ jobs:
       - name: Checkout repository
         id: checkout-repo
         uses: actions/checkout@v4
+        env:
+          github_token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Setup Java 
         id: setup-java
