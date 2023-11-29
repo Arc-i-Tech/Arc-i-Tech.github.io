@@ -135,7 +135,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ steps.find-epic-issue-number.outputs.EPIC_NUMBER }},
-              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** triggered by **push** made by @{{ github.triggering_actor}}\nAction URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}.\nCommit URL: https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** triggered by **push** made by @${{ github.triggering_actor }}\nAction URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}.\nCommit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
             });
 
       - name: Success message
