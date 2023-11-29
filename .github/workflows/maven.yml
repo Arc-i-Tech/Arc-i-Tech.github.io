@@ -1,4 +1,4 @@
-run-name: Maven build by event :'${{ github.event_name }}/${{ github.event.number }}/${{ github.event.action }}'' on branch :'${{ github.base_ref }}' by user :'${{ github.actor }}'
+run-name: Maven build by event :'${{ github.event_name }}' on branch :'${{ github.ref_name }}' by user :'${{ github.actor }}'
 on:
   repository_dispatch: # To support manual trigger.
   push:
