@@ -31,10 +31,9 @@ jobs:
       - name: Commit binary artifact
         id: commit-binary-artifact
         if: github.event_name == 'push'
-        uses: EndBug/add-and-commit@v9
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          default_author: github_actor
-          message: Mevan package from github [action:${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) triggred by @${{ github.actor }}
+          commit_message: Mevan package from github [action:${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) triggred by @${{ github.actor }}
         
       - name: Create pull request to test branch
         id: create-pr-to-test
