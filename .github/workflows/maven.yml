@@ -39,6 +39,7 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           branch: ${{ github.ref_name }}
+          branch: ${{ github.ref_name }}
 
       - name: Create pull request to test branch
         id: create-pr-to-test
