@@ -121,8 +121,14 @@ jobs:
       - name: Push - failed on branch :${{ github.ref_name }}
         id: find-epic-issue-number
         if: failure() && github.event_name == 'push' && contains(github.ref_name, '-E-')
-        run: NUMBER=(echo "${{ github.ref_name }}" | tr -dc '0-9');
-          echo $NUMBER
+        run: NUMBER=$(echo "93-E-github-action-workflows" | tr -dc '0-9'); 
+          echo "EPIC_NUMBER=$NUMBER" >> $GITHUB_OUTPUT
+        shell: shell
+
+      - name: Push - failed on branch :${{ github.ref_name }}
+        id: print-issue-number
+        if: failure() && github.event_name == 'push' && contains(github.ref_name, '-E-')
+        run: echo "Output [${{steps.find-epic-issue-number.outputs.EPIC_NUMBER}}]"
         shell: shell
 
       - name: Success message
