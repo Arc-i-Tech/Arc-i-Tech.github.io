@@ -1,4 +1,4 @@
-run-name: Maven build by event :'${{ github.event_name }}' on branch :'${{ github.ref_name }}' by user :'${{ github.actor }}'
+run-name: Maven build by event :'${{ github.event_name }}' by user :'${{ github.actor }}' on branch :'${{ github.ref_name }}'
 on:
   repository_dispatch: # To support manual trigger.
   push:
@@ -123,13 +123,13 @@ jobs:
         if: failure() && github.event_name == 'push' && contains(github.ref_name, '-E-')
         run: NUMBER=$(echo "93-E-github-action-workflows" | tr -dc '0-9'); 
           echo "EPIC_NUMBER=$NUMBER" >> $GITHUB_OUTPUT
-        shell: shell
+        shell: bash
 
       - name: Push - failed on branch :${{ github.ref_name }}
         id: print-issue-number
         if: failure() && github.event_name == 'push' && contains(github.ref_name, '-E-')
         run: echo "Output [${{steps.find-epic-issue-number.outputs.EPIC_NUMBER}}]"
-        shell: shell
+        shell: bash
 
       - name: Success message
         id: success-message
