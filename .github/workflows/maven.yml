@@ -29,10 +29,9 @@ jobs:
       - name: Commit binary artifact
         id: commit-binary-artifact
         if: github.event_name == 'push'
-        run: |
-          git add --all |
-          git commit -m "Mevan package from github [action:${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) triggred by @${{ github.actor }}"
-          git push -u origin HEAD
+        uses: CasperWA/push-protected@v2
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Create pull request to test branch
         id: create-pr-to-test
