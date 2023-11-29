@@ -1,4 +1,4 @@
-run-name: Maven build by event :'${{ github.event_name }}' by user :'${{ github.actor }}' on branch :'${{ github.ref_name }}'
+run-name: Maven build by 'event :${{ github.event_name }}' by 'user :${{ github.actor }}' on 'branch :${{ github.ref_name }}'
 on:
   repository_dispatch: # To support manual trigger.
   push:
@@ -141,4 +141,9 @@ jobs:
       - name: Success message
         id: success-message
         if: success()
-        run: echo ${{ toJson(github) }} completed successfully.
+        run: echo ${{ github.job }} completed successfully.
+
+      - name: Print message
+        id: print-message
+        if: always()
+        run: echo ${{ toJson(github) }}
