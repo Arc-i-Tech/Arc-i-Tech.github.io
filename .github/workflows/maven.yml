@@ -34,7 +34,7 @@ jobs:
         uses: EndBug/add-and-commit@v9
         with:
           default_author: github_actor
-          message: Mevan package from github [action:${{ github.run_number }}](https://github.com/Arc-i-Tech/Arc-i-Tech.github.io/actions/runs/${{ github.run_id }}) triggred by @${{ github.actor }}
+          message: Mevan package from github [action:${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) triggred by @${{ github.actor }}
         
       - name: Create pull request to test branch
         id: create-pr-to-test
@@ -94,7 +94,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** [Action url](https://github.com/Arc-i-Tech/Arc-i-Tech.github.io/actions/runs/${{ github.run_id }})"
+              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** [Action url](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
             }) |
             github.rest.issues.addLabels({
               owner: context.repo.owner,
@@ -135,7 +135,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ steps.find-epic-issue-number.outputs.EPIC_NUMBER }},
-              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** \n [Action url](https://github.com/Arc-i-Tech/Arc-i-Tech.github.io/actions/runs/${{ github.run_id }})"
+              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** triggered by **push** made by @{{ github.triggering_actor}}\nAction URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}.\nCommit URL: https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
             });
 
       - name: Success message
