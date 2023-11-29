@@ -135,7 +135,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ steps.find-epic-issue-number.outputs.EPIC_NUMBER }},
-              body: The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** \n [Action url](https://github.com/Arc-i-Tech/Arc-i-Tech.github.io/actions/runs/${{ github.run_id }})"
+              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** \n [Action url](https://github.com/Arc-i-Tech/Arc-i-Tech.github.io/actions/runs/${{ github.run_id }})"
             });
 
       - name: Success message
