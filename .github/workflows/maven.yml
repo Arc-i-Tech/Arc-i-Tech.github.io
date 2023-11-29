@@ -30,10 +30,10 @@ jobs:
         id: commit-binary-artifact
         if: github.event_name == 'push'
         run: |
-          git add -a |
+          git add --all |
           git commit -m "Mevan package from github [action:${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) triggred by @${{ github.actor }}"
           git push -u origin HEAD
-          
+
       - name: Create pull request to test branch
         id: create-pr-to-test
         if: github.event_name == 'push' && github.ref_name == 'development'
