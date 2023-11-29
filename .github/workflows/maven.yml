@@ -25,7 +25,13 @@ jobs:
       - name: Run maven
         id: run-mvn-pkg
         run: mvn package
-        
+      
+      - name: Git commands
+        id: git-commands-test
+        if: github.event_name == 'push'
+        run: |
+          git status
+
       - name: Commit binary artifact
         id: commit-binary-artifact
         if: github.event_name == 'push'
