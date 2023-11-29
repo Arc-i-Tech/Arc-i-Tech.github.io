@@ -1,4 +1,4 @@
-run-name: Maven build by 'event :${{ github.event_name }}' by 'user :${{ github.actor }}' on 'branch :${{ github.ref_name }}'
+run-name: Maven build by 'event:${{ github.event_name }}' by 'user:${{ github.actor }}' on 'branch ${{ github.ref_name }}'
 on:
   repository_dispatch: # To support manual trigger.
   push:
@@ -135,7 +135,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ steps.find-epic-issue-number.outputs.EPIC_NUMBER }},
-              body: "Maven build failed"
+              body: The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** \n [Action url](https://github.com/Arc-i-Tech/Arc-i-Tech.github.io/actions/runs/${{ github.run_id }})"
             });
 
       - name: Success message
