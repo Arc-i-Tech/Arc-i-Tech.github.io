@@ -30,7 +30,9 @@ jobs:
         id: git-commands-test
         if: github.event_name == 'push'
         run: |
-          git status |
+          git status
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git commit -a -m "Mevan package from github [action:${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) triggred by @${{ github.actor }}"
 
       - name: Commit binary artifact
@@ -99,7 +101,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** [Action url](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}**.\n[action:${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
             }) |
             github.rest.issues.addLabels({
               owner: context.repo.owner,
@@ -140,7 +142,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ steps.find-epic-issue-number.outputs.EPIC_NUMBER }},
-              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** triggered by **push** made by @${{ github.triggering_actor }}\nAction URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}.\nCommit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** triggered by **push** made by @${{ github.triggering_actor }}\n[action:${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\nCommit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
             });
 
       - name: Success message
