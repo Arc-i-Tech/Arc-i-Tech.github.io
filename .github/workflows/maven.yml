@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo ${{ github.event.commits.author.email }}
+      - name: print context
+        run: echo ${{ toJson(github) }}
 
   maven-build-pkg-creation:
     if: github.event_name == 'pull_request'
