@@ -11,7 +11,7 @@ jobs:
   conditional-test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{github.event.commits.author.email}}
+      - run: echo ${{ github.event.commits.author.email }}
 
   maven-build-pkg-creation:
     if: github.event_name == 'pull_request'
