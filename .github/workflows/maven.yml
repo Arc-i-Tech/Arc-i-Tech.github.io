@@ -13,7 +13,7 @@ jobs:
     steps:
       - run: echo ${{ github.event.commits.author.email }}
       - name: print context
-        run: echo ${{ toJson(github.event.commits) }}
+        run: echo ${{ toJson(github.event.commits[0]) }}
 
   maven-build-pkg-creation:
     if: github.event_name == 'pull_request'
