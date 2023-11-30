@@ -8,8 +8,13 @@ on:
     types: [opened, synchronize]
 
 jobs:
+  conditional-test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{github.event.commits.author.email}}
+
   maven-build-pkg-creation:
-    if: github.event_name == 'pull_request' || github.event.commits.author.email != '${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com' 
+    if: github.event_name == 'pull_request'
     
     permissions: 
       contents: write
