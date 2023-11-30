@@ -9,7 +9,7 @@ on:
 
 jobs:
   maven-build-pkg-creation:
-    if: github.event_name != 'push' || !contains(github.event.commits.author.email, '@users.noreply.github.com') 
+    if: github.event_name == 'pull_request' || github.event.commits.author.email != '${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com' 
     permissions: 
       contents: write
       issues: write
