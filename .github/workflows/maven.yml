@@ -28,22 +28,24 @@ jobs:
         id: run-mvn-pkg
         run: mvn package
       
-      - name: Git commands
-        id: git-commands-test
-        if: github.event_name == 'push'
-        run: |
-          git status
-          git config --local user.email ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
-          git config --local user.name ${{ github.triggering_actor }}
-          git commit -a -m "Mevan package from github [action:${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) triggred by @${{ github.actor }}"
+      # - name: Git commands
+      #   id: git-commands-test
+      #   if: github.event_name == 'push'
+      #   run: |
+      #     git status
+      #     git config --local user.email ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
+      #     git config --local user.name ${{ github.triggering_actor }}
+      #     git commit -a -m "Mevan package from github [action:${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) triggred by @${{ github.actor }}"
 
       - name: Commit binary artifact
         id: commit-binary-artifact
         if: github.event_name == 'push'
-        uses: ad-m/github-push-action@master
+        uses: EndBug/add-and-commit@v9
         with:
           github_token: ${{ secrets.ACCESS_TOKEN }}
-          branch: ${{ github.ref_name }}
+          committer_name: ${{ github.triggering_actor }}
+          committer_email: ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
+          message: "Mevan package from github [action:${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) triggred by @${{ github.actor }}"
 
       - name: Create pull request to test branch
         id: create-pr-to-test
