@@ -9,7 +9,7 @@ on:
 
 jobs:
   maven-build-pkg-creation:
-    if: github.event_name == 'pull_request' || github.event.commits[0].author.email != '${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com' 
+    if: github.event_name == 'pull_request' || !startsWith(github.event.commits[0].author.email, github.actor_id) 
     
     runs-on: ubuntu-latest
     
