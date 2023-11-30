@@ -10,10 +10,13 @@ on:
 jobs:
   maven-build-pkg-creation:
     if: github.event_name == 'pull_request' || github.event.commits.author.email != '${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com' 
+    
     permissions: 
       contents: write
       issues: write
+    
     runs-on: ubuntu-latest
+    
     steps: 
       - name: Checkout repository
         id: checkout-repo
@@ -31,15 +34,6 @@ jobs:
       - name: Run maven
         id: run-mvn-pkg
         run: mvn package
-      
-      # - name: Git commands
-      #   id: git-commands-test
-      #   if: github.event_name == 'push'
-      #   run: |
-      #     git status
-      #     git config --local user.email ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
-      #     git config --local user.name ${{ github.triggering_actor }}
-      #     git commit -a -m "Mevan package from github [action:${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) triggred by @${{ github.actor }}"
 
       - name: Commit binary artifact
         id: commit-binary-artifact
