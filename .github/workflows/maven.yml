@@ -18,6 +18,8 @@ jobs:
       - name: Checkout repository
         id: checkout-repo
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Setup Java 
         id: setup-java
@@ -43,8 +45,6 @@ jobs:
         id: commit-binary-artifact
         if: github.event_name == 'push'
         uses: EndBug/add-and-commit@v9
-        env: 
-          token: ${{ secrets.ACCESS_TOKEN }}
         with:
           author_name: ${{ github.triggering_actor }}
           author_email: ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
