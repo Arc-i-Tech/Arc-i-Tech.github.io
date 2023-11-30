@@ -9,6 +9,7 @@ on:
 
 jobs:
   maven-build-pkg-creation:
+    if: github.event_name != 'push' || !contains(github.event.commits.author.email, '@users.noreply.github.com') 
     permissions: 
       contents: write
       issues: write
@@ -42,6 +43,8 @@ jobs:
         id: commit-binary-artifact
         if: github.event_name == 'push'
         uses: EndBug/add-and-commit@v9
+        env: 
+          token: ${{ secrets.ACCESS_TOKEN }}
         with:
           author_name: ${{ github.triggering_actor }}
           author_email: ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
