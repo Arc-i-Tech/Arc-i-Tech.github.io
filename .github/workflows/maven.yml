@@ -30,15 +30,15 @@ jobs:
         id: git-commands-test
         if: github.event_name == 'push'
         run: |
-          git status
+          git status |
+          git commit -a -m "Mevan package from github [action:${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) triggred by @${{ github.actor }}"
 
       - name: Commit binary artifact
         id: commit-binary-artifact
         if: github.event_name == 'push'
-        uses: CasperWA/push-protected@v2
+        uses: ad-m/github-push-action@master
         with:
-          token: ${{ secrets.ACCESS_TOKEN }}
-          branch: ${{ github.ref_name }}
+          github_token: ${{ secrets.ACCESS_TOKEN }}
           branch: ${{ github.ref_name }}
 
       - name: Create pull request to test branch
