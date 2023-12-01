@@ -27,7 +27,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 1.8.0.392+8     
+          java-version: 8.0.392+8     
         
       - name: Run maven
         id: run-mvn-pkg
@@ -69,13 +69,21 @@ jobs:
               repo: context.repo.repo,
               issue_number: context.issue.number,
               body: "The job: **${{ github.job }}** is executed successfully!\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
-            }) |
+            }) 
             github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
               labels: ['success']
             })
+            if(contains(github.event.pull_request.labels.*.name, 'failed')) {
+              github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                name: 'failed'
+              })
+            }
 
       - name: Find failed step
         id: handle-failure
