@@ -9,7 +9,7 @@ on:
 
 jobs:
   maven-build-pkg-creation:
-    if: github.event_name == 'pull_request' || !startsWith(github.event.commits[0]. message, 'Binary artifact from maven build github action') 
+    if: github.event_name == 'pull_request' || !startsWith(github.event.commits[0]. message, 'Binary artifact from maven build github action.') 
     
     runs-on: ubuntu-latest
     
@@ -25,7 +25,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 1.8.0.392+8     
+          java-version: 8.0.392+8     
         
       - name: Run maven
         id: run-mvn-pkg
@@ -39,7 +39,7 @@ jobs:
           author_name: ${{ github.triggering_actor }}
           author_email: ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
           tag_push: '--force'
-          message: "Binary artifact from maven build github action.\n\nMevan package from github action\n - action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) \n - Triggred by @${{ github.actor }}"
+          message: "Binary artifact from maven build github action.\n\nMevan package from github action\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) \n - Triggred by @${{ github.actor }}"
 
       - name: Create pull request to test branch
         id: create-pr-to-test
@@ -99,7 +99,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}**.\n - action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}**.\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
             }) |
             github.rest.issues.addLabels({
               owner: context.repo.owner,
@@ -140,7 +140,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ steps.find-epic-issue-number.outputs.EPIC_NUMBER }},
-              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** triggered by **push** made by @${{ github.triggering_actor }}.\n - action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n - Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** triggered by **push** made by @${{ github.triggering_actor }}.\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n - Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
             });
 
       - name: Success message
@@ -148,7 +148,3 @@ jobs:
         if: success()
         run: echo ${{ github.job }} completed successfully.
 
-      - name: Print message
-        id: print-message
-        if: always()
-        run: echo ${{ toJson(github) }}
