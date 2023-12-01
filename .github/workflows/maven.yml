@@ -85,7 +85,15 @@ jobs:
             console.log(data) 
             console.log(typeof data) 
             for( const label of data) {
-              console.log(label)
+              if(label.name == 'failed') {
+                github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                name: label.name
+              })
+              break
+              }
             }
 
       - name: Find failed step
