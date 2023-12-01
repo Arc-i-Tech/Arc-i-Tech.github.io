@@ -76,7 +76,7 @@ jobs:
               issue_number: context.issue.number,
               labels: ['success']
             })
-            const labels = github.rest.issues.listLabelsOnIssue({
+            const labels = awaits github.rest.issues.listLabelsOnIssue({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number
