@@ -19,14 +19,12 @@ jobs:
         id: checkout-repo
         if: github.event_name == 'push'
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Check if branch in PR
         id: check-branch
         if: github.event_name == 'push'
         env:
-          GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: gh pr list -H ${{ github.ref_name }} --state 'open';
           COUNT=$(gh pr list -H ${{ github.ref_name }} --state 'open' --json number,title,headRefName --jq "[.[]]|length");
           echo "result=$COUNT" >> $GITHUB_OUTPUT;
