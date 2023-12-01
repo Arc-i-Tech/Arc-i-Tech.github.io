@@ -223,6 +223,8 @@ jobs:
         run: echo ${{ tojson(github) }}
 
   view-jobs-context:
+    if: always()
+    needs: check-duplicate-run
     runs-on: ubuntu-latest
     steps:
       - name: View job context
@@ -232,4 +234,4 @@ jobs:
         run: echo ${{ toJSON(github) }}
       - name: View check-duplicate-run context
         if: always()
-        run: echo ${{ toJSON(check-duplicate-run) }}
+        run: echo ${{ toJson(needs.check-duplicate-run) }}
