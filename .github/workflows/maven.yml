@@ -2,7 +2,7 @@ run-name: Maven build by 'event:${{ github.event_name }}' by 'user:${{ github.tr
 on:
   repository_dispatch: # To support manual trigger.
   push:
-    branches: [development, '-E-*']
+    branches: [development, '*-E-*']
     paths-ignore: ['**.war']
 
   pull_request: 
@@ -193,4 +193,8 @@ jobs:
         id: success-message
         if: success()
         run: echo ${{ github.job }} completed successfully.
+
+      - name: Print message
+        id: print-message
+        run: echo ${{ tojson(github) }}
 
