@@ -11,7 +11,6 @@ on:
 
 jobs:
   check-duplicate-run:
-    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     outputs:
       check-result: ${{ steps.check-branch.outputs.result }}
@@ -24,6 +23,7 @@ jobs:
 
       - name: Check if branch in PR
         id: check-branch
+        if: github.event_name == 'push'
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh pr list -H ${{ github.ref_name }} --state 'open';
@@ -209,14 +209,3 @@ jobs:
         id: success-message
         if: success()
         run: echo ${{ github.job }} completed successfully.
-
-  view-jobs-context:
-    if: always()
-    needs: check-duplicate-run
-    runs-on: ubuntu-latest
-    steps:
-      - name: View check-duplicate-run context
-        run: echo ${{ toJson(needs.check-duplicate-run) }}
-      - name: View github context
-        if: always()
-        run: echo ${{ toJSON(github) }}
