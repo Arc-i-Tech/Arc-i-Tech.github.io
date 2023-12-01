@@ -82,8 +82,11 @@ jobs:
               issue_number: context.issue.number
             });
             const data = await github.paginate(labels)
+            console.log(data) 
+            console.log(typeof data) 
+            const data = await github.paginate(labels)
             for( const label in data) {
-              console.log(label.name)
+              console.log(label)
             }
 
       - name: Find failed step
