@@ -27,14 +27,14 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const pullsResp = await github.rest.pulls.list.endpoint.merge({
+            const resp = await github.rest.pulls.list.endpoint.merge({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
             })
-            const pulls = github.paginate(pullsResp)
-            console.log(typeof pullsResp)
-            console.log(pullsResp)
+            const pulls = github.paginate(resp)
+            console.log(typeof resp)
+            console.log(resp)
             console.log(typeof pulls)
             console.log(pulls)
             for(const pull of pulls) {
