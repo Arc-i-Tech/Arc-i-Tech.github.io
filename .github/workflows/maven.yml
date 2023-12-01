@@ -24,6 +24,8 @@ jobs:
 
       - name: Check if branch in PR
         id: check-branch
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: COUNT=$(gh pr list -H ${{ github.ref_name }} --state 'open' --json number,title,branch --jq "[.[]]|length");
           echo "result=$COUNT" >> $GITHUB_OUTPUT
         shell: bash
