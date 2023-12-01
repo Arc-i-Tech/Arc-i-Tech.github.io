@@ -1,4 +1,4 @@
-run-name: Maven build by 'event:${{ github.event_name }}' by 'user:${{ github.triggering_actor }}' on 'branch ${{ github.ref_name }}'
+run-name: Maven build by 'event:${{ github.event_name }}' by 'user:${{ github.triggering_actor }}' on 'branch:${{ github.ref_name }}'
 on:
   repository_dispatch: # To support manual trigger.
   push:
@@ -15,17 +15,11 @@ jobs:
     outputs:
       check-result: ${{ steps.check-branch.outputs.result }}
     steps: 
-      - name: Checkout repository
-        id: checkout-repo
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.ACCESS_TOKEN }}
-
       - name: Check if branch in PR
         id: check-branch
         if: github.event_name == 'push'
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: gh pr list -H ${{ github.ref_name }} --state 'open';
           COUNT=$(gh pr list -H ${{ github.ref_name }} --state 'open' --json number,title,headRefName --jq "[.[]]|length");
           echo "result=$COUNT" >> $GITHUB_OUTPUT;
