@@ -1,4 +1,4 @@
-run-name: Maven build by 'event:${{ github.event_name }}' by 'user:${{ github.actor }}' on 'branch ${{ github.ref_name }}'
+run-name: Maven build by 'event:${{ github.event_name }}' by 'user:${{ github.triggering_actor }}' on 'branch ${{ github.ref_name }}'
 on:
   repository_dispatch: # To support manual trigger.
   push:
@@ -7,7 +7,7 @@ on:
 
   pull_request: 
     branches: [development, '*-E-*'] 
-    types: [opened, synchronize]
+    types: [opened, synchronize, closed]
 
 jobs:
   maven-build-pkg-creation:
@@ -35,17 +35,17 @@ jobs:
 
       - name: Commit binary artifact
         id: commit-binary-artifact
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || ( github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged )
         uses: EndBug/add-and-commit@v9
         with:
           author_name: ${{ github.triggering_actor }}
           author_email: ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
           tag_push: '--force'
-          message: "Binary artifact from maven build github action.\n\nMevan package from github action\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) \n - Triggred by @${{ github.actor }}"
+          message: "Binary artifact from maven build github action.\n\nMevan package from github action\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n - Triggred by @${{ github.triggering_actor }}"
 
       - name: Create pull request to test branch
         id: create-pr-to-test
-        if: github.event_name == 'push' && github.ref_name == 'development'
+        if: ( github.event_name == 'push' && github.ref_name == 'development' ) || ( github.event_name == 'pull_request' && github.base_ref == 'development' && github.event.action == 'closed' && github.event.pull_request.merged )
         uses: actions/github-script@v7
         with:
           script: |
@@ -54,8 +54,8 @@ jobs:
               repo: context.repo.repo,
               head: github.ref_name,
               base: 'test',
-              title: "Push Test",
-              body: "PR created as there is push on branch :**development**"
+              title: "PR from github action job: ${{ github.job }}",
+              body: "Latest changes from event **${{ github.event_name }}** to branch: ${{ github.ref_name }}\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n - Triggred by @${{ github.triggering_actor }}"
             })
 
       - name: Add Comment to pull request :${{ github.event.number }}
