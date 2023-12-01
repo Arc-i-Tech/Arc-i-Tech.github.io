@@ -84,7 +84,6 @@ jobs:
             const data = await github.paginate(labels)
             console.log(data) 
             console.log(typeof data) 
-            const data = await github.paginate(labels)
             for( const label in data) {
               console.log(label)
             }
