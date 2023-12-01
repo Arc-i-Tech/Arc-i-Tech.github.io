@@ -10,8 +10,35 @@ on:
     types: [opened, synchronize, closed]
 
 jobs:
-  maven-build-pkg-creation:
+  check-duplicate-run:
+    if: github.event_name == 'push'
     
+    runs-on: ubuntu-latest
+
+    steps: 
+      - name: Checkout repository
+        id: checkout-repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+
+      - name: Check if branch in PR
+        id: check-branch
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pullsResp = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            const pulls = github.paginate(pullsResp)
+            for(const pull of pulls) {
+              console.log(pull)
+            }
+            return 1
+
+  maven-build-pkg-creation:
+    needs: check-duplicate-run
     runs-on: ubuntu-latest
     
     steps: 
@@ -158,7 +185,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: "The job: **${{ github.job }}** is **failed** on push to branch: **${{ github.ref_name }}**",
-              body: "The job: **${{ github.job }}** is **failed**.\n - Commit by: @${{ github.triggering_actor }}\n - Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})",
+              body: "The job: **${{ github.job }}** is **failed**.\n - Commit by: @${{ github.triggering_actor }}\n - Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}\n - Compare: ${{ github.event.compare }}\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})",
               assignee: "${{ github.triggering_actor }}",
               labels: ["failed", "urgent"]
             })
@@ -180,7 +207,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ steps.find-epic-issue-number.outputs.EPIC_NUMBER }},
-              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** triggered by **push** made by @${{ github.triggering_actor }}.\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n - Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** triggered by **push** made by @${{ github.triggering_actor }}.\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n - Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}\n - Compare: ${{ github.event.compare }}"
             });
 
       - name: Success message
