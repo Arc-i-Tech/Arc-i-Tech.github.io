@@ -12,9 +12,7 @@ on:
 jobs:
   check-duplicate-run:
     if: github.event_name == 'push'
-    
     runs-on: ubuntu-latest
-
     outputs:
       check-result: ${{ steps.check-branch.outputs.result }}
     steps: 
@@ -32,6 +30,7 @@ jobs:
             const pullsResp = await github.rest.pulls.list.endpoint.merge({
               owner: context.repo.owner,
               repo: context.repo.repo,
+              state: 'open',
             })
             const pulls = github.paginate(pullsResp)
             console.log(typeof pullsResp)
@@ -47,7 +46,6 @@ jobs:
   maven-build-pkg-creation:
     needs: check-duplicate-run
     runs-on: ubuntu-latest
-    
     steps: 
       - name: Checkout repository
         id: checkout-repo
@@ -129,6 +127,7 @@ jobs:
               issue_number: context.issue.number,
               labels: ['success']
             })
+
       - name: Find failed step
         id: handle-failure
         if: failure()
@@ -222,10 +221,6 @@ jobs:
         if: success()
         run: echo ${{ github.job }} completed successfully.
 
-      - name: Print message
-        id: print-message
-        run: echo ${{ tojson(github) }}
-
   view-jobs-context:
     if: always()
     needs: check-duplicate-run
@@ -233,3 +228,6 @@ jobs:
     steps:
       - name: View check-duplicate-run context
         run: echo ${{ toJson(needs.check-duplicate-run) }}
+      - name: View github context
+        if: always()
+        run: echo ${{ toJSON(github) }}
