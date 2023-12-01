@@ -39,7 +39,7 @@ jobs:
           author_name: ${{ github.triggering_actor }}
           author_email: ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
           tag_push: '--force'
-          message: "Binary artifact from maven build github action.\n\nMevan package from github action\n - [action:${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\ntriggred by @${{ github.actor }}"
+          message: "Binary artifact from maven build github action.\n\nMevan package from github action\n - action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\ntriggred by @${{ github.actor }}"
 
       - name: Create pull request to test branch
         id: create-pr-to-test
@@ -99,7 +99,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}**.\n - [action:${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}**.\n - action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
             }) |
             github.rest.issues.addLabels({
               owner: context.repo.owner,
@@ -118,8 +118,8 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: "The job: **${{ github.job }}** is **failed** on push to branch: **${{ github.ref_name }}**",
-              body: "",
-              assignee: "",
+              body: "The job: **${{ github.job }}** is **failed**.\n - Commit by: @${{ github.triggering_actor }}\n - Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})",
+              assignee: "${{ github.triggering_actor }}",
               labels: ["failed", "urgent"]
             })
 
@@ -140,7 +140,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ steps.find-epic-issue-number.outputs.EPIC_NUMBER }},
-              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** triggered by **push** made by @${{ github.triggering_actor }}.\n - [action:${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n - Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** triggered by **push** made by @${{ github.triggering_actor }}.\n - action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n - Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
             });
 
       - name: Success message
