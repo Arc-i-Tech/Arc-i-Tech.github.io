@@ -27,7 +27,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 8.0.392+8     
+          java-version: 1.8.0.392+8     
         
       - name: Run maven
         id: run-mvn-pkg
@@ -64,26 +64,13 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: "The job: **${{ github.job }}** is executed successfully!\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
-            }) 
-            github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: ['success']
-            })
+            // Remove 'failed' lable if present
             const labels = await github.rest.issues.listLabelsOnIssue.endpoint.merge({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number
             });
             const data = await github.paginate(labels)
-            console.log(data) 
-            console.log(typeof data) 
             for( const label of data) {
               if(label.name == 'failed') {
                 github.rest.issues.removeLabel({
@@ -95,6 +82,22 @@ jobs:
               break
               }
             }
+
+            // Add PR comment
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: "The job: **${{ github.job }}** is executed successfully!\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+            }) 
+
+            // Add 'success' label to PR
+            github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['success']
+            })
 
       - name: Find failed step
         id: handle-failure
@@ -116,12 +119,34 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            // Remove 'success' lable if present
+            const labels = await github.rest.issues.listLabelsOnIssue.endpoint.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+            const data = await github.paginate(labels)
+            for( const label of data) {
+              if(label.name == 'success') {
+                github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                name: label.name
+              })
+              break
+              }
+            }
+
+            // Add PR comment
             github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
               body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}**.\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
-            }) |
+            }) 
+
+            // Add 'failed' label to PR
             github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
