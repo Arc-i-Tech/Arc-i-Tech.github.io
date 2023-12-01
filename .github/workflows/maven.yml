@@ -32,8 +32,12 @@ jobs:
             const pullsResp = await github.rest.pulls.list.endpoint.merge({
               owner: context.repo.owner,
               repo: context.repo.repo,
-            });
+            })
             const pulls = github.paginate(pullsResp)
+            console.log(typeof pullsResp)
+            console.log(pullsResp)
+            console.log(typeof pulls)
+            console.log(pulls)
             for(const pull of pulls) {
               console.log(pull)
             }
@@ -100,8 +104,8 @@ jobs:
               issue_number: context.issue.number
             });
             const data = await github.paginate(labels)
-            for( const label of data) {
-              if(label.name == 'failed') {
+            for( const label of data ) {
+              if( label.name == 'failed' ) {
                 github.rest.issues.removeLabel({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -152,8 +156,8 @@ jobs:
               issue_number: context.issue.number
             });
             const data = await github.paginate(labels)
-            for( const label of data) {
-              if(label.name == 'success') {
+            for( const label of data ) {
+              if( label.name == 'success' ) {
                 github.rest.issues.removeLabel({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -227,11 +231,5 @@ jobs:
     needs: check-duplicate-run
     runs-on: ubuntu-latest
     steps:
-      - name: View job context
-        run: echo ${{ toJSON(job) }}
-      - name: View github context
-        if: always()
-        run: echo ${{ toJSON(github) }}
       - name: View check-duplicate-run context
-        if: always()
         run: echo ${{ toJson(needs.check-duplicate-run) }}
