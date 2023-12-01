@@ -83,7 +83,7 @@ jobs:
             });
             console.log(${{ github.event.pull_request.labels }}) 
             console.log(typeof ${{ github.event.pull_request.labels }}) 
-            console.log(labels.data) 
+            console.log(labels.data.*.name) 
             console.log(typeof labels.data) 
 
       - name: Find failed step
