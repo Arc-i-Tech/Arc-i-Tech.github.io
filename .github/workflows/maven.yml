@@ -27,7 +27,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const pullsResp = await github.rest.pulls.list({
+            const pullsResp = await github.rest.pulls.list.endpoint.merge({
               owner: context.repo.owner,
               repo: context.repo.repo,
             });
@@ -35,7 +35,6 @@ jobs:
             for(const pull of pulls) {
               console.log(pull)
             }
-            return 1
 
   maven-build-pkg-creation:
     needs: check-duplicate-run
@@ -219,3 +218,8 @@ jobs:
         id: print-message
         run: echo ${{ tojson(github) }}
 
+  view-jobs-context:
+    runs-on: ubuntu-latest
+    steps:
+      - name: View jobs context
+        run: echo ${{ toJSON(jobs) }}
