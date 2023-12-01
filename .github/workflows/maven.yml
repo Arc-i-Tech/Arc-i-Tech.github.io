@@ -15,6 +15,8 @@ jobs:
     
     runs-on: ubuntu-latest
 
+    outputs:
+      check-result: ${{ steps.check-branch.outputs.result }}
     steps: 
       - name: Checkout repository
         id: checkout-repo
@@ -35,6 +37,8 @@ jobs:
             for(const pull of pulls) {
               console.log(pull)
             }
+
+            await exec('echo', ['"result=true" >> "$GITHUB_OUTPUT"'])
 
   maven-build-pkg-creation:
     needs: check-duplicate-run
@@ -221,5 +225,11 @@ jobs:
   view-jobs-context:
     runs-on: ubuntu-latest
     steps:
-      - name: View jobs context
-        run: echo ${{ toJSON(jobs) }}
+      - name: View job context
+        run: echo ${{ toJSON(job) }}
+      - name: View github context
+        if: always()
+        run: echo ${{ toJSON(github) }}
+      - name: View check-duplicate-run context
+        if: always()
+        run: echo ${{ toJSON(check-duplicate-run) }}
