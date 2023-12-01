@@ -81,7 +81,6 @@ jobs:
               break
               }
             }
-
             // Add PR comment
             github.rest.issues.createComment({
               owner: context.repo.owner,
@@ -89,7 +88,6 @@ jobs:
               issue_number: context.issue.number,
               body: "The job: **${{ github.job }}** is executed successfully!\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
             }) 
-
             // Add 'success' label to PR
             github.rest.issues.addLabels({
               owner: context.repo.owner,
@@ -97,7 +95,6 @@ jobs:
               issue_number: context.issue.number,
               labels: ['success']
             })
-
       - name: Find failed step
         id: handle-failure
         if: failure()
@@ -136,7 +133,6 @@ jobs:
               break
               }
             }
-
             // Add PR comment
             github.rest.issues.createComment({
               owner: context.repo.owner,
@@ -144,7 +140,6 @@ jobs:
               issue_number: context.issue.number,
               body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}**.\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
             }) 
-
             // Add 'failed' label to PR
             github.rest.issues.addLabels({
               owner: context.repo.owner,
