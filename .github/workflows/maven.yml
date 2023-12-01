@@ -24,24 +24,9 @@ jobs:
 
       - name: Check if branch in PR
         id: check-branch
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const resp = await github.rest.pulls.list.endpoint.merge({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-            })
-            const pulls = github.paginate(resp)
-            console.log(typeof resp)
-            console.log(resp)
-            console.log(typeof pulls)
-            console.log(pulls)
-            for(const pull of pulls) {
-              console.log(pull)
-            }
-
-            await exec('echo', ['"result=true" >> "$GITHUB_OUTPUT"'])
+        run: COUNT=$(echo gh pr list -H ${{ github.ref_name }} --state 'open' --json number,title,branch --jq "[.[]]|length");
+          echo "result=$COUNT" >> $GITHUB_OUTPUT
+        shell: bash
 
   maven-build-pkg-creation:
     needs: check-duplicate-run
