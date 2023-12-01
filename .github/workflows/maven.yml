@@ -3,7 +3,7 @@ on:
   repository_dispatch: # To support manual trigger.
   push:
     branches: [development, '*-E-*']
-    paths: ['src/**', '.classpath', 'pom.xml']
+    paths-ignore: ['**.war']
 
   pull_request: 
     branches: [development, '*-E-*'] 
