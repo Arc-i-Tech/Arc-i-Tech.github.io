@@ -1,18 +1,210 @@
-name: Maven build
+run-name: Maven build by 'event:${{ github.event_name }}' by 'user:${{ github.triggering_actor }}' on 'branch:${{ github.ref_name }}'
 on:
+  repository_dispatch: # To support manual trigger.
   push:
-    branches: 
-      - ecl-main
+    branches: [development, '*-E-*']
+    paths-ignore: ['**.war']
+
+  pull_request: 
+    branches: [development, '*-E-*'] 
+    types: [opened, synchronize, closed]
+
 jobs:
-  Build-binaries:
+  check-duplicate-run:
     runs-on: ubuntu-latest
-    steps:
+    outputs:
+      check-result: ${{ steps.check-branch.outputs.result }}
+    steps: 
       - name: Checkout repository
+        id: checkout-repo
+        if: github.event_name == 'push'
         uses: actions/checkout@v4
+
+      - name: Check if branch in PR
+        id: check-branch
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr list -H ${{ github.ref_name }} --state 'open';
+          COUNT=$(gh pr list -H ${{ github.ref_name }} --state 'open' --json number,title,headRefName --jq "[.[]]|length");
+          echo "result=$COUNT" >> $GITHUB_OUTPUT;
+          exit $COUNT;
+        shell: bash
+
+  maven-build-pkg-creation:
+    needs: check-duplicate-run
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout repository
+        id: checkout-repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+
       - name: Setup Java 
+        id: setup-java
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 8.0.392+8
+          java-version: 8.0.392+8     
+        
       - name: Run maven
+        id: run-mvn-pkg
         run: mvn package
+
+      - name: Commit binary artifact
+        id: commit-binary-artifact
+        if: github.event_name == 'push' || ( github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged )
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: ${{ github.triggering_actor }}
+          author_email: ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
+          tag_push: '--force'
+          message: "Binary artifact from maven build github action.\n\nMevan package from github action\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n - Triggred by @${{ github.triggering_actor }}"
+
+      - name: Create pull request to test branch
+        id: create-pr-to-test
+        if: ( github.event_name == 'push' && github.ref_name == 'development' ) || ( github.event_name == 'pull_request' && github.base_ref == 'development' && github.event.action == 'closed' && github.event.pull_request.merged )
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: github.ref_name,
+              base: 'test',
+              title: "PR from github action job: ${{ github.job }}",
+              body: "Latest changes from event **${{ github.event_name }}** to branch: ${{ github.ref_name }}\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n - Triggred by @${{ github.triggering_actor }}"
+            })
+
+      - name: Add Comment to pull request :${{ github.event.number }}
+        id: add-comment-to-pr
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Remove 'failed' lable if present
+            const labels = await github.rest.issues.listLabelsOnIssue.endpoint.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+            const data = await github.paginate(labels)
+            for( const label of data ) {
+              if( label.name == 'failed' ) {
+                github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                name: label.name
+              })
+              break
+              }
+            }
+            // Add PR comment
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: "The job: **${{ github.job }}** is executed successfully!\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+            }) 
+            // Add 'success' label to PR
+            github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['success']
+            })
+
+      - name: Find failed step
+        id: handle-failure
+        if: failure()
+        uses: dkershner6/switch-case-action@v1
+        with:
+          default: "NaN"
+          conditionals-with-values: |
+            ${{ steps.checkout-repo.outcome != 'success' && steps.checkout-repo.outcome != 'skipped' }} => checkout-repo
+            ${{ steps.setup-java.outcome != 'success'  && steps.setup-java.outcome != 'skipped' }} => setup-java
+            ${{ steps.run-mvn-pkg.outcome != 'success' && steps.run-mvn-pkg.outcome != 'skipped' }} => run-mvn-pkg
+            ${{ steps.commit-binary-artifact.outcome != 'success' && steps.commit-binary-artifact.outcome != 'skipped' }} => commit-binary-artifact
+            ${{ steps.create-pr-to-test.outcome != 'success' && steps.create-pr-to-test.outcome != 'skipped' }} => create-pr-to-test
+            ${{ steps.add-comment-to-pr.outcome != 'success' && steps.add-comment-to-pr.outcome != 'skipped' }} => add-comment-to-pr
+
+      - name: Pull request - failed on base branch :${{ github.base_ref }}
+        id: handle-failure-pr
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Remove 'success' lable if present
+            const labels = await github.rest.issues.listLabelsOnIssue.endpoint.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+            const data = await github.paginate(labels)
+            for( const label of data ) {
+              if( label.name == 'success' ) {
+                github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                name: label.name
+              })
+              break
+              }
+            }
+            // Add PR comment
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}**.\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+            }) 
+            // Add 'failed' label to PR
+            github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['failed']
+            })
+      
+      - name: Push - failed on branch :${{ github.ref_name }}
+        id: handle-failure-push
+        if: failure() && github.event_name == 'push' && github.ref_name == 'development'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "The job: **${{ github.job }}** is **failed** on push to branch: **${{ github.ref_name }}**",
+              body: "The job: **${{ github.job }}** is **failed**.\n - Commit by: @${{ github.triggering_actor }}\n - Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}\n - Compare: ${{ github.event.compare }}\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})",
+              assignee: "${{ github.triggering_actor }}",
+              labels: ["failed", "urgent"]
+            })
+
+      - name: Push - failed on branch :${{ github.ref_name }}
+        id: find-epic-issue-number
+        if: failure() && github.event_name == 'push' && contains(github.ref_name, '-E-')
+        run: NUMBER=$(echo "93-E-github-action-workflows" | tr -dc '0-9'); 
+          echo "EPIC_NUMBER=$NUMBER" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Push - failed on branch :${{ github.ref_name }}
+        id: print-issue-number
+        if: failure() && github.event_name == 'push' && contains(github.ref_name, '-E-')
+        uses: actions/github-script@v7
+        with: 
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ steps.find-epic-issue-number.outputs.EPIC_NUMBER }},
+              body: "The job: **${{ github.job }}** has failed at step: **${{ steps.handle-failure.outputs.value }}** triggered by **push** made by @${{ github.triggering_actor }}.\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n - Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}\n - Compare: ${{ github.event.compare }}"
+            });
+
+      - name: Success message
+        id: success-message
+        if: success()
+        run: echo ${{ github.job }} completed successfully.
