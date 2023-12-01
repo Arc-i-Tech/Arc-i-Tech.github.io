@@ -83,8 +83,8 @@ jobs:
             });
             console.log(${{ github.event.pull_request.labels }}) 
             console.log(typeof ${{ github.event.pull_request.labels }}) 
-            console.log(labels) 
-            console.log(typeof labels) 
+            console.log(labels.data) 
+            console.log(typeof labels.data) 
 
       - name: Find failed step
         id: handle-failure
