@@ -2,7 +2,7 @@ run-name: Maven build by 'event:${{ github.event_name }}' by 'user:${{ github.tr
 on:
   repository_dispatch: # To support manual trigger.
   push:
-    branches: [development, '*-E-*']
+    branches: [development, '-E-*']
     paths-ignore: ['**.war']
 
   pull_request: 
@@ -81,10 +81,11 @@ jobs:
               repo: context.repo.repo,
               issue_number: context.issue.number
             });
+            const data = await github.paginate(labels.data)
             console.log(${{ github.event.pull_request.labels }}) 
             console.log(typeof ${{ github.event.pull_request.labels }}) 
-            console.log(labels.data.*.name) 
-            console.log(typeof labels.data) 
+            console.log(data) 
+            console.log(typeof data) 
 
       - name: Find failed step
         id: handle-failure
