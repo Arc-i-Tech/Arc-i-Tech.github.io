@@ -70,7 +70,7 @@ jobs:
             github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              head: ${{ github.ref_name }},
+              head: '${{ github.ref_name }}',
               base: 'test',
               title: "PR from github action job: ${{ github.job }}",
               body: "Latest changes from event **${{ github.event_name }}** to branch: ${{ github.ref_name }}\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n - Triggred by @${{ github.triggering_actor }}"
