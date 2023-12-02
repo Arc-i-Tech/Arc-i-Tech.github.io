@@ -9,4 +9,5 @@
 
 
 ### Maven build
-![Maven build](https://github.com/Arc-i-Tech/Arc-i-Tech.github.io/actions/workflows/maven.yml/badge.svg)
+[![Maven build](https://github.com/Arc-i-Tech/Arc-i-Tech.github.io/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/Arc-i-Tech/Arc-i-Tech.github.io/actions/workflows/maven.yml)
+
