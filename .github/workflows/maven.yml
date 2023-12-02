@@ -1,4 +1,4 @@
-run-name: Maven build by 'event:${{ github.event_name }}' by 'user:${{ github.triggering_actor }}' on 'branch:${{ github.ref_name }}'
+run-name: Maven build by 'event:${{ github.event_name }}-${{ github.event.action }}' by 'user:${{ github.triggering_actor }}' on 'branch:${{ github.ref_name }}'
 on:
   repository_dispatch: # To support manual trigger.
   push:
@@ -178,7 +178,7 @@ jobs:
             github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: "The job: **${{ github.job }}** is **failed** on push to branch: **${{ github.ref_name }}**",
+              title: "The job: ${{ github.job }} is failed on push to branch: ${{ github.ref_name }}",
               body: "The job: **${{ github.job }}** is **failed**.\n - Commit by: @${{ github.triggering_actor }}\n - Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}\n - Compare: ${{ github.event.compare }}\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})",
               assignee: "${{ github.triggering_actor }}",
               labels: ["failed", "urgent"]
