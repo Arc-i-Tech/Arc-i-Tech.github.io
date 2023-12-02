@@ -25,8 +25,9 @@ jobs:
             const resp = await github.rest.projects.listForRepo.endpoint.merge({
               owner: context.repo.owner,
               repo: context.repo.repo,
-            });
+            })
             const projects = await github.paginate(resp)
+            console.log("Projects")
             console.log(projects)
 
       - name: Print context
