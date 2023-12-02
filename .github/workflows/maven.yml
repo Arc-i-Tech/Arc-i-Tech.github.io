@@ -50,7 +50,7 @@ jobs:
         
       - name: Run maven
         id: run-mvn-pkg
-        run: mvn package
+        run: mvn clean package
 
       - name: Commit binary artifact
         id: commit-binary-artifact
