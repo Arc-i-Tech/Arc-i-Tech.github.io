@@ -208,3 +208,9 @@ jobs:
         id: success-message
         if: success()
         run: echo ${{ github.job }} completed successfully.
+
+  print-context:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print github context
+        run: echo ${{ toJSON(github) }}
