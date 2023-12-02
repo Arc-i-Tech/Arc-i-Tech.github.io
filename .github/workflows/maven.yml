@@ -2,11 +2,11 @@ run-name: Maven build by 'event:${{ github.event_name }}-${{ github.event.action
 on:
   repository_dispatch: # To support manual trigger.
   push:
-    branches: [development, '*-E-*']
-    paths-ignore: ['**.war']
+    branches: [main, '*-E-*']
+    paths: ['src/**', 'pom.xml']
 
   pull_request: 
-    branches: [development, '*-E-*'] 
+    branches: [main, '*-E-*'] 
     types: [opened, synchronize]
 
 jobs:
@@ -63,7 +63,7 @@ jobs:
 
       - name: Create pull request to test branch
         id: create-pr-to-test
-        if: github.event_name == 'push' && github.ref_name == 'development' 
+        if: github.event_name == 'push' && github.ref_name == 'main' 
         uses: actions/github-script@v7
         with:
           script: |
@@ -170,7 +170,7 @@ jobs:
       
       - name: Push - failed on branch :${{ github.ref_name }}
         id: handle-failure-push
-        if: failure() && github.event_name == 'push' && github.ref_name == 'development'
+        if: failure() && github.event_name == 'push' && github.ref_name == 'main'
         uses: actions/github-script@v7
         with:
           script: |
