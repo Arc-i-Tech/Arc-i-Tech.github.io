@@ -59,7 +59,6 @@ jobs:
         with:
           author_name: ${{ github.triggering_actor }}
           author_email: ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
-          tag_push: '--force'
           message: "Binary artifact from maven build github action.\n\nMevan package from github action\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n - Triggred by @${{ github.triggering_actor }}"
 
       - name: Create pull request to test branch
@@ -71,7 +70,7 @@ jobs:
             github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              head: github.ref_name,
+              head: ${{ github.ref_name }},
               base: 'test',
               title: "PR from github action job: ${{ github.job }}",
               body: "Latest changes from event **${{ github.event_name }}** to branch: ${{ github.ref_name }}\n - Action: [${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n - Triggred by @${{ github.triggering_actor }}"
