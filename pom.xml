@@ -12,7 +12,7 @@
 
 	<name>Arc-i-Tech</name>
 	<!-- FIXME change it to the project's website -->
-	<url>https://arc-i-tech.github.io</url>
+	<url>https://arc-i-tech.com</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -40,7 +40,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>Arc-i-Tech.github.io</finalName>
+		<finalName>Arc-i-Tech</finalName>
 		<pluginManagement><!-- lock down plugins versions to avoid using Maven 
 				defaults (may be moved to parent pom) -->
 			<plugins>
