@@ -1,0 +1,34 @@
+run-name: Project automate
+
+on:
+  issues: 
+    types: ['opened', 'reopened']
+  
+  pull_request: 
+    types: ['opened', 'reopened']
+
+jobs:
+  add-to-project:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        id: checkout-repo
+        if: github.event_name == 'push'
+        uses: actions/checkout@v4
+
+      - name: Add issue to project
+        id: add-issue-to-project
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const resp = github.rest.projects.listForRepo.endpoint.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            const projects = github.paginate(resp)
+            console.log(projects)
+
+      - name: Print context
+        if: always()
+        run: echo ${{ toJSON(github) }}
