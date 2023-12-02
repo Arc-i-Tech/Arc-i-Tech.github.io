@@ -22,11 +22,11 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const resp = github.rest.projects.listForRepo.endpoint.merge({
+            const resp = await github.rest.projects.listForRepo.endpoint.merge({
               owner: context.repo.owner,
               repo: context.repo.repo,
             });
-            const projects = github.paginate(resp)
+            const projects = await github.paginate(resp)
             console.log(projects)
 
       - name: Print context
