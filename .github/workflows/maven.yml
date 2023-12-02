@@ -7,7 +7,7 @@ on:
 
   pull_request: 
     branches: [development, '*-E-*'] 
-    types: [opened, synchronize, closed]
+    types: [opened, synchronize]
 
 jobs:
   check-duplicate-run:
@@ -54,7 +54,7 @@ jobs:
 
       - name: Commit binary artifact
         id: commit-binary-artifact
-        if: github.event_name == 'push' || ( github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged )
+        if: github.event_name == 'push'
         uses: EndBug/add-and-commit@v9
         with:
           author_name: ${{ github.triggering_actor }}
@@ -64,7 +64,7 @@ jobs:
 
       - name: Create pull request to test branch
         id: create-pr-to-test
-        if: ( github.event_name == 'push' && github.ref_name == 'development' ) || ( github.event_name == 'pull_request' && github.base_ref == 'development' && github.event.action == 'closed' && github.event.pull_request.merged )
+        if: github.event_name == 'push' && github.ref_name == 'development' 
         uses: actions/github-script@v7
         with:
           script: |
