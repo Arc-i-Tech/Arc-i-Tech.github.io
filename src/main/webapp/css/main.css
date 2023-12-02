@@ -1,0 +1,22 @@
+.w-fit-content {
+    width: fit-content !important;
+}
+
+.d-contents {
+    display: contents !important;
+}
+
+.w-webkit-fill-available {
+    width: -webkit-fill-available !important;
+}
+
+.was-validated .form-control:invalid,
+.form-control.is-invalid {
+    box-shadow: 0.1rem 0.1rem 1rem #dc3545 !important;
+}
+
+
+/* Navbar animation */
+.navbar-scroll {
+    box-shadow: 1px 0px 10px 0px #3f72af;
+}
