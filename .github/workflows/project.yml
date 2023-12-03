@@ -32,7 +32,7 @@ jobs:
                 }
               }
             }`
-            variables: {
+            const variables = {
               owner: context.repo.owner,
               name: context.repo.name,
               number: context.issue.number
