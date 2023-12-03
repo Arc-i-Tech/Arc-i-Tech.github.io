@@ -1,0 +1,7 @@
+on: 
+  push:
+    branches: ['*-E-*']
+
+jobs:
+  call-automate-project:
+    uses: ./.github/workflows/project.yml
