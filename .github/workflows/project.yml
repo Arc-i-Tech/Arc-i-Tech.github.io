@@ -1,6 +1,8 @@
 run-name: Project automate
 
 on:
+  workflow_call:
+    
   issues: 
     types: ['opened', 'reopened']
   
