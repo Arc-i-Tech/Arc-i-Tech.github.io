@@ -1,0 +1,10 @@
+run-name: Project workflow test
+
+on:
+  push: 
+    branches: ['*-E-*'] 
+    
+
+jobs:
+  add-to-project:
+    uses: Arc-i-Tech/Arc-i-Tech.github.io/.github/workflows/project.yml
