@@ -22,8 +22,8 @@ jobs:
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
-            const query = `query($owner:String!, $name:String!) {
-              repository(owner:$owner, name:$name) {
+            const query = `query {
+              repository(owner:${{ github.repository_owner }}, name:${{ github.event.repository.name }}) {
                 projectsV2(first: 5) {
                   nodes {
                     number
@@ -32,12 +32,7 @@ jobs:
                 }
               }
             }`
-            const variables = {
-              owner: context.repo.owner,
-              name: context.repo.repo,
-              number: context.issue.number
-            }
-            const projects = await github.graphql(query, variables)
+            const projects = await github.graphql(query)
             console.log("Projects")
             console.log(projects)
 
