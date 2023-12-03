@@ -7,4 +7,4 @@ on:
 
 jobs:
   add-to-project:
-    uses: Arc-i-Tech/Arc-i-Tech.github.io/.github/workflows/project.yml@110-E-project-automation
+    uses: ./.github/workflows/project.yml
