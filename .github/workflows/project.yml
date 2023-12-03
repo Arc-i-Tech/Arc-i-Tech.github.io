@@ -34,7 +34,7 @@ jobs:
             }`
             const projects = await github.graphql(query)
             console.log("Projects")
-            console.log(projects)
+            console.log(JSON.stringify(projects))
 
       - name: Print context
         if: always()
