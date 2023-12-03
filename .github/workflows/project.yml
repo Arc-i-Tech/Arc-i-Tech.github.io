@@ -22,11 +22,22 @@ jobs:
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
-            const resp = await github.rest.projects.listForRepo.endpoint.merge({
+            const query = `query($owner:String!, $name:String!) {
+              repository(owner:$owner, name:$name) {
+                projectsV2(first: 5) {
+                  nodes {
+                    number
+                    title
+                  }
+                }
+              }
+            }`
+            variables: {
               owner: context.repo.owner,
-              repo: context.repo.repo,
-            })
-            const projects = await github.paginate(resp)
+              name: context.repo.name,
+              number: context.issue.number
+            }
+            const projects = await github.graphql(query, variables)
             console.log("Projects")
             console.log(projects)
 
