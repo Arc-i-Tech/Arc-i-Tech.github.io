@@ -23,7 +23,7 @@ jobs:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
             const query = `query {
-              repository(owner:${{ github.repository_owner }}, name:${{ github.event.repository.name }}) {
+              repository(owner:"${{ github.repository_owner }}", name:"${{ github.event.repository.name }}") {
                 projectsV2(first: 5) {
                   nodes {
                     number
