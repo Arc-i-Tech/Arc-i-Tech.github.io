@@ -1,6 +1,6 @@
 run-name: Project automate
 
-on:    
+on:
   issues: 
     types: ['opened', 'reopened']
   
@@ -12,11 +12,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        id: checkout-repo
+        uses: actions/checkout@v4
+
       - name: Add issue to project
         id: add-issue-to-project
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
             const resp = await github.rest.projects.listForRepo.endpoint.merge({
               owner: context.repo.owner,
