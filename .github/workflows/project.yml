@@ -24,17 +24,16 @@ jobs:
           script: |
             const query = `query {
               repository(owner:"${{ github.repository_owner }}", name:"${{ github.event.repository.name }}") {
-                projectsV2(first: 5) {
-                  nodes {
-                    number
-                    title
+                issue(number: "${{ github.event.issue.number }}") {
+                  projectItems(first: 100) {
+                    totalCount
                   }
                 }
               }
             }`
-            const projects = await github.graphql(query)
-            console.log("Projects")
-            console.log(JSON.stringify(projects))
+            const resp = await github.graphql(query)
+            const totalCount = resp.repository.issue.projectItems.totalCount
+            console.log("Total count: " + totalCount)
 
       - name: Print context
         if: always()
