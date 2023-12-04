@@ -24,7 +24,7 @@ jobs:
           script: |
             const query = `query {
               repository(owner:"${{ github.repository_owner }}", name:"${{ github.event.repository.name }}") {
-                issue(number: "${{ github.event.issue.number }}") {
+                issue(number: ${{ github.event.issue.number }}) {
                   projectItems(first: 100) {
                     totalCount
                   }
