@@ -22,7 +22,7 @@ jobs:
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
-            const query = `query {
+            const resp = await github.graphql(`{
               repository(owner:"${{ github.repository_owner }}", name:"${{ github.event.repository.name }}") {
                 issue(number: ${{ github.event.issue.number }}) {
                   projectItems(first: 100) {
@@ -30,10 +30,22 @@ jobs:
                   }
                 }
               }
-            }`
-            const resp = await github.graphql(query)
+            }`)
+            const projects_resp = await github.graphql(`{
+              organization(login:"${{ github.repository_owner }}") {
+                projectsV2(first: 50) {
+                  nodes {
+                    number,
+                    title
+                  }
+                }
+              }
+            }`)
+            console.log(JSON.stringify(projects_resp))
             const totalCount = resp.repository.issue.projectItems.totalCount
-            console.log("Total count: " + totalCount)
+            if( totalCount === 0 ) {
+              console.log("Adding issue to project");
+            }
 
       - name: Print context
         if: always()
