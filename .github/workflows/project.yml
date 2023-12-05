@@ -50,12 +50,15 @@ jobs:
 
             // Issue is not added to any of the github projects and hence continues
 
-            // Find project number from project name
-            const prj = resp.organization.projectsV2.nodes.filter((node) => node.title === ${{ vars.MAIN_PRJ }})
+            // Find project number and url from project name
+            const prj = resp.organization.projectsV2.nodes.filter((node) => node.title === "${{ vars.MAIN_PRJ }}")
+            if( prj.length === 0 ) {
+              console.log("No projects found with name: ${{ vars.MAIN_PRJ }}")
+              return
+            }
             console.log(prj)
             await exec.exec("echo", [ "PRJ_NUMBER=" + prj.number, "PRJ_URL=" + prj.url, ">> $GITHUB_OUTPUT"]);
             console.log("Step output updated successfully")
-
 
       - name: Add issue to "🆕 New"
         id: add-issue-to-new
