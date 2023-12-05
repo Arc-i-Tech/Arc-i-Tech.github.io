@@ -16,8 +16,8 @@ jobs:
         id: checkout-repo
         uses: actions/checkout@v4
 
-      - name: Add issue to project
-        id: add-issue-to-project
+      - name: Get project information
+        id: get-project-info
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
@@ -46,7 +46,9 @@ jobs:
                 projectsV2(first: 10) {
                   nodes {
                     number,
-                    title
+                    title,
+                    id,
+                    url
                   }
                 }
               },
@@ -59,12 +61,20 @@ jobs:
               }
             }`)
             const prj = organization.projectsV2.nodes.filter((node) => node.title === ${{ vars.MAIN_PRJ }})
-            
-            
+            console.log(prj)
+            await exec.exec("echo" [ "PRJ_NUMBER=" + prj.number, "PRJ_URL=" + prj.url ">> $GITHUB_OUTPUT"]);
+            console.log("Step output updated successfully")
 
-            
-            console.log(JSON.stringify(projects_resp))
+
+      - name: Add issue to "🆕 New"
+        id: add-issue-to-new
+        if: ${{ github.event_name }} == 'issues' && ${{ github.event.action }} != ''
+        uses: konradpabjan/actions-add-new-issue-to-column@v1.1
+        with:
+          action-token: ${{ secrets.ACCESS_TOKEN }}
+          project-url: ${{ steps.get-project-info.outputs.PRJ_URL }}
+          column-name: "🆕 New"
 
       - name: Print context
         if: always()
-        run: echo ${{ toJSON(github) }}
+        run: echo ${{ toJSON(steps) }}
