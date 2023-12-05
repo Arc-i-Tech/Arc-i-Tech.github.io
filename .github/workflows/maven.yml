@@ -94,11 +94,11 @@ jobs:
             for( const label of data ) {
               if( label.name == 'failed' ) {
                 github.rest.issues.removeLabel({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                name: label.name
-              })
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  name: label.name
+                })
               break
               }
             }
@@ -147,11 +147,11 @@ jobs:
             for( const label of data ) {
               if( label.name == 'success' ) {
                 github.rest.issues.removeLabel({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                name: label.name
-              })
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  name: label.name
+                })
               break
               }
             }
