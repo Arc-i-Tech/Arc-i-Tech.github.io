@@ -61,14 +61,14 @@ jobs:
             core.setOutput('PRJ_URL', prj[0].url)
             console.log("Step output updated successfully")
 
-      - name: Add issue to "New"
+      - name: Add issue to "🆕 New"
         id: add-issue-to-new
         if: ${{ github.event_name }} == 'issues' && ${{ github.event.action }} != ''
-        uses: alex-page/github-project-automation-plus@7ffb872c64bd809d23563a130a0a97d01dfa8f43
+        uses: konradpabjan/actions-add-new-issue-to-column@v1.1
         with:
-          repo-token: ${{ secrets.ACCESS_TOKEN }}
-          project: ${{ vars.MAIN_PRJ }}
-          column: "New"
+          action-token: ${{ secrets.ACCESS_TOKEN }}
+          project-url: ${{ steps.get-project-info.outputs.PRJ_URL }}
+          column-name: "New"
 
       - name: Print context
         if: always()
