@@ -64,11 +64,11 @@ jobs:
       - name: Add issue to "🆕 New"
         id: add-issue-to-new
         if: ${{ github.event_name }} == 'issues' && ${{ github.event.action }} != ''
-        uses: konradpabjan/actions-add-new-issue-to-column@v1.1
+        uses: alex-page/github-project-automation-plus@7ffb872c64bd809d23563a130a0a97d01dfa8f43
         with:
-          action-token: ${{ secrets.ACCESS_TOKEN }}
-          project-url: ${{ steps.get-project-info.outputs.PRJ_URL }}
-          column-name: ":new: New"
+          repo-token: ${{ secrets.ACCESS_TOKEN }}
+          project: ${{ vars.MAIN_PRJ }}
+          column: ":new: New"
 
       - name: Print context
         if: always()
