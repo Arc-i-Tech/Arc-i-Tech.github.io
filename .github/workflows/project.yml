@@ -57,8 +57,8 @@ jobs:
               return
             }
             console.log(prj)
-            await exec.exec("echo \"PRJ_NUMBER=" + prj[0].number + "\" >> $GITHUB_OUTPUT");
-            await exec.exec("echo \"PRJ_URL=" + prj[0].url + "\" >> $GITHUB_OUTPUT");
+            core.setOutput('PRJ_NUMBER', prj[0].number)
+            core.setOutput('PRJ_URL', prj[0].url)
             console.log("Step output updated successfully")
 
       - name: Add issue to "🆕 New"
