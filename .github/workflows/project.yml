@@ -68,7 +68,7 @@ jobs:
         with:
           action-token: ${{ secrets.ACCESS_TOKEN }}
           project-url: ${{ steps.get-project-info.outputs.PRJ_URL }}
-          column-name: "🆕 New"
+          column-name: ":new: New"
 
       - name: Print context
         if: always()
