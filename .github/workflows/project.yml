@@ -22,12 +22,22 @@ jobs:
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
-            // Check if issue is alredy added to any of the github project
+            // Fetch data for github project
             const resp = await github.graphql(`{
               repository(owner:"${{ github.repository_owner }}", name:"${{ github.event.repository.name }}") {
                 issue(number: ${{ github.event.issue.number }}) {
-                  projectItems(first: 100) {
+                  projectItems(first: 10) {
                     totalCount
+                  }
+                }
+              },
+              organization(login:"${{ github.repository_owner }}") {
+                projectsV2(first: 10) {
+                  nodes {
+                    number,
+                    title,
+                    id,
+                    url
                   }
                 }
               }
@@ -41,28 +51,9 @@ jobs:
             // Issue is not added to any of the github projects and hence continues
 
             // Find project number from project name
-            const projects_resp = await github.graphql(`{
-              organization(login:"${{ github.repository_owner }}") {
-                projectsV2(first: 10) {
-                  nodes {
-                    number,
-                    title,
-                    id,
-                    url
-                  }
-                }
-              },
-              repository(owner:"${{ github.repository_owner }}", name:"${{ github.event.repository.name }}") {
-                issue(number: ${{ github.event.issue.number }}) {
-                  projectItems(first: 10) {
-                    totalCount
-                  }
-                }
-              }
-            }`)
-            const prj = organization.projectsV2.nodes.filter((node) => node.title === ${{ vars.MAIN_PRJ }})
+            const prj = resp.organization.projectsV2.nodes.filter((node) => node.title === ${{ vars.MAIN_PRJ }})
             console.log(prj)
-            await exec.exec("echo" [ "PRJ_NUMBER=" + prj.number, "PRJ_URL=" + prj.url, ">> $GITHUB_OUTPUT"]);
+            await exec.exec("echo", [ "PRJ_NUMBER=" + prj.number, "PRJ_URL=" + prj.url, ">> $GITHUB_OUTPUT"]);
             console.log("Step output updated successfully")
 
 
