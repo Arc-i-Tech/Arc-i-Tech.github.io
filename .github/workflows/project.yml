@@ -48,7 +48,7 @@ jobs:
               return
             }
             // Get project node to filter project number
-            const prj_node = resp.organization.projectsV2.nodes.filter((node) => node.title === ${{ vars.MAIN_PRJ }})
+            const prj_node = resp.organization.projectsV2.nodes.filter((node) => node.title === "${{ vars.MAIN_PRJ }}")
             if( prj_node.length === 0 ) {
               console.log("Project with name: ${{ vars.MAIN_PRJ }} not found.");
               return
