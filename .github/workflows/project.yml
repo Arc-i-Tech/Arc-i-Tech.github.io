@@ -62,7 +62,7 @@ jobs:
             }`)
             const prj = organization.projectsV2.nodes.filter((node) => node.title === ${{ vars.MAIN_PRJ }})
             console.log(prj)
-            await exec.exec("echo" [ "PRJ_NUMBER=" + prj.number, "PRJ_URL=" + prj.url ">> $GITHUB_OUTPUT"]);
+            await exec.exec("echo" [ "PRJ_NUMBER=" + prj.number, "PRJ_URL=" + prj.url, ">> $GITHUB_OUTPUT"]);
             console.log("Step output updated successfully")
 
 
