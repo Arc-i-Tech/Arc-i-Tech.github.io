@@ -22,30 +22,39 @@ jobs:
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
+            // Query project number and find issue project count
             const resp = await github.graphql(`{
-              repository(owner:"${{ github.repository_owner }}", name:"${{ github.event.repository.name }}") {
-                issue(number: ${{ github.event.issue.number }}) {
-                  projectItems(first: 100) {
-                    totalCount
-                  }
-                }
-              }
-            }`)
-            const projects_resp = await github.graphql(`{
               organization(login:"${{ github.repository_owner }}") {
-                projectsV2(first: 50) {
+                projectsV2(first: 10) {
                   nodes {
                     number,
                     title
                   }
                 }
+              },
+              repository(owner:"${{ github.repository_owner }}", name:"${{ github.event.repository.name }}") {
+                issue(number: ${{ github.event.issue.number }}) {
+                  projectItems(first: 10) {
+                    totalCount
+                  }
+                }
               }
             }`)
-            console.log(JSON.stringify(projects_resp))
+            
+            // Total project count this issue is added to
             const totalCount = resp.repository.issue.projectItems.totalCount
-            if( totalCount === 0 ) {
-              console.log("Adding issue to project");
+            if( totalCount > 0 ) {
+              console.log("Issue is alredy added into project");
+              return
             }
+            // Get project node to filter project number
+            const prj_node = resp.organization.projectsV2.filter((node) => node.title === ${{ vars.MAIN_PRJ }})
+            if( prj_node.length === 0 ) {
+              console.log("Project with name: ${{ vars.MAIN_PRJ }} not found.");
+              return
+            }
+            const prj_number = prj_node[0].number
+            console.log("project number: ", prj_number)
 
       - name: Print context
         if: always()
