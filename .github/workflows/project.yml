@@ -23,7 +23,7 @@ jobs:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
             // Fetch data for github project
-            const resp = await github.graphql(`{
+            const resp = await github.graphql(`query getOrgIssueProjId{
               repository(owner:"${{ github.repository_owner }}", name:"${{ github.event.repository.name }}") {
                 issue(number: ${{ github.event.issue.number }}) {
                   id
@@ -33,6 +33,7 @@ jobs:
                 }
               },
               organization(login:"${{ github.repository_owner }}") {
+                id
                 projectsV2(first: 10) {
                   nodes {
                     number,
@@ -56,6 +57,28 @@ jobs:
             if( prj.length === 0 ) {
               console.log("No projects found with name: ${{ vars.MAIN_PRJ }}")
               return
+            }
+
+            //Add issue to project
+            const res = await github.graphql(`mutation AddIssueToProject {
+              addProjectV2ItemById( input: {
+                clientMutationId:resp.organization.id
+                contentId:resp.repository.issue.id
+                projectId:prj.id
+                }) {
+                clientMutationId
+                item {
+                    id
+                }
+              }
+            }`)
+            if( res.addProjectV2ItemById.clientMutationId === resp.organization.id) {
+              console.log("Issue added to project successfully.")
+            }
+            else {
+              console.log("Failed to add issue to project ${{ vars.MAIN_PRJ }}")
+              console.log(JSON.stringify(res))
+              return false
             }
             console.log(prj)
             core.setOutput('PRJ_NUMBER', prj[0].number)
