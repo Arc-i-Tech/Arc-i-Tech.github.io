@@ -63,7 +63,7 @@ jobs:
             const variables = {
               orgId: resp.organization.id,
               issueId: resp.repository.issue.id,
-              prjId: prj.id
+              prjId: prj[0].id
             }
             const res = await github.graphql(`mutation AddIssueToProject($orgId: String!, $issueId: String!, $prjId: String!) {
               addProjectV2ItemById( input: {
