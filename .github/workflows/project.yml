@@ -60,6 +60,11 @@ jobs:
             }
 
             //Add issue to project
+            const variables = {
+              orgId: resp.organization.id,
+              issueId: resp.repository.issue.id,
+              prjId: prj.id
+            }
             const res = await github.graphql(`mutation AddIssueToProject($orgId: String!, $issueId: String!, $prjId: String!) {
               addProjectV2ItemById( input: {
                 clientMutationId:$orgId
@@ -71,12 +76,7 @@ jobs:
                     id
                 }
               }
-            }`,
-            `{
-              orgId: resp.organization.id,
-              issueId: resp.repository.issue.id,
-              prjId: prj.id
-            }`)
+            }`, variables)
             if( res.addProjectV2ItemById.clientMutationId === resp.organization.id) {
               console.log("Issue added to project successfully.")
             }
