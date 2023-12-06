@@ -65,7 +65,7 @@ jobs:
               "issueId": resp.repository.issue.id,
               "prjId": prj[0].id
             }
-            const res = await github.graphql(`mutation AddIssueToProject($orgId: String!, $issueId: String!, $prjId: String!) {
+            const res = await github.graphql(`mutation AddIssueToProject($orgId: String!, $issueId: ID!, $prjId: ID!) {
               addProjectV2ItemById( input: {
                 clientMutationId:$orgId
                 contentId:$issueId
