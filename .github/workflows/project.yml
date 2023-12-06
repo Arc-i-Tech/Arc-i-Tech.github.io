@@ -26,6 +26,7 @@ jobs:
             const resp = await github.graphql(`{
               repository(owner:"${{ github.repository_owner }}", name:"${{ github.event.repository.name }}") {
                 issue(number: ${{ github.event.issue.number }}) {
+                  id
                   projectItems(first: 10) {
                     totalCount
                   }
@@ -72,4 +73,4 @@ jobs:
 
       - name: Print context
         if: always()
-        run: echo ${{ toJSON(steps) }}
+        run: echo ${{ job.status }}
