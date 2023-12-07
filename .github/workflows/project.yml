@@ -2,7 +2,7 @@ run-name: Project automate
 
 on:
   issues: 
-    types: ['opened', 'reopened', 'labeled', 'unlabeled']
+    types: ['opened', 'reopened', 'labeled', 'unlabeled', 'assigned', 'unassigned']
   
   pull_request: 
     types: ['opened', 'reopened', 'labeled', 'unlabeled']
@@ -48,6 +48,7 @@ jobs:
 
             core.setOutput('REPO_ID', resp.repository.id)
             core.setOutput('PRJ_ID', prj[0].id)
+            core.setOutput('PRJ_NUM', prj[0].number)
             core.setOutput('ORG_ID', resp.organization.id)
 
       - name: Handle Issue - ${{ github.event.issue.number }}
@@ -97,34 +98,37 @@ jobs:
                 console.log("Issue got added to project: ${{ vars.MAIN_PRJ }}")
                 return true
               }
+              else {
+                console.log("Error while adding Issue: ${{ github.event.issue.number }} to project: ${{ vars.MAIN_PRJ }}")
+                return false
+              }
             }
 
-            // Issue is not added to any of the github projects and hence continues
-
-            // Find project number and url from project name
-            const prj = resp.organization.projectsV2.nodes.filter((node) => node.title === "${{ vars.MAIN_PRJ }}")
-            if( prj.length === 0 ) {
-              console.log("No projects found with name: ${{ vars.MAIN_PRJ }}")
-              return
+            // Check assigned event
+            if( ( ${{ github.action.action }} === 'assigned' || ${{ github.action.action }} === 'unassigned' ) && totalCount > 0 ) {
+              console.log("Issue is not added to any github projects.");
+              //Add issue to project
+              const MoveIssueToInProgressResp = await github.graphql(`mutation MoveIssueToInProgress($orgId: String!, $issueId: ID!, $prjId: ID!) {
+                addProjectV2ItemById( input: {
+                  clientMutationId:$orgId
+                  contentId:$issueId
+                  projectId:$prjId
+                  }) {
+                  clientMutationId
+                  item {
+                      id
+                  }
+                }
+              }`, variables)
+              if( AddIssueToProjectResp.clientMutationId === variables.orgId && AddIssueToProjectResp.item.id === variables.issueid ) {
+                console.log("Issue got added to project: ${{ vars.MAIN_PRJ }}")
+                return true
+              }
+              else {
+                console.log("Error while adding Issue: ${{ github.event.issue.number }} to project: ${{ vars.MAIN_PRJ }}")
+                return false
+              }
             }
-
-            
-            
-            if( res.addProjectV2ItemById.clientMutationId === resp.organization.id) {
-              console.log("Issue added to project successfully.")
-            }
-            else {
-              console.log("Failed to add issue to project ${{ vars.MAIN_PRJ }}")
-              console.log(JSON.stringify(res))
-              return false
-            }
-            console.log(prj)
-            core.setOutput('REPO_ID', resp.repository.id)
-            core.setOutput('PRJ_ID', prj[0].id)
-            core.setOutput('ORG_ID', resp.organization.id)
-            core.setOutput('ISSUE_ID', issueId)
-            console.log("Step output updated successfully")
-
 
       - name: Print context
         if: always()
