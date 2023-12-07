@@ -69,9 +69,34 @@ jobs:
                 }
               }`)
             const totalCount = resp.node.issue.projectItems.totalCount
-            if( totalCount > 0 ) {
-              console.log("Issue is alredy added to one of the github projects.");
-              return
+
+            // Variables
+            const variables = {
+              "orgId": ${{ steps.get-required-ids.outputs.ORG_ID }},
+              "issueId": resp.node.issue.id,
+              "prjId": ${{ steps.get-required-ids.outputs.PRJ_ID }}
+            }
+
+
+            if( ( ${{ github.action.action }} === 'opned' || ${{ github.action.action }} === 'reopned' ) && totalCount === 0 ) {
+              console.log("Issue is not added to any github projects.");
+              //Add issue to project
+              const AddIssueToProjectResp = await github.graphql(`mutation AddIssueToProject($orgId: String!, $issueId: ID!, $prjId: ID!) {
+                addProjectV2ItemById( input: {
+                  clientMutationId:$orgId
+                  contentId:$issueId
+                  projectId:$prjId
+                  }) {
+                  clientMutationId
+                  item {
+                      id
+                  }
+                }
+              }`, variables)
+              if( AddIssueToProjectResp.clientMutationId === variables.orgId && AddIssueToProjectResp.item.id === variables.issueid ) {
+                console.log("Issue got added to project: ${{ vars.MAIN_PRJ }}")
+                return true
+              }
             }
 
             // Issue is not added to any of the github projects and hence continues
@@ -83,24 +108,8 @@ jobs:
               return
             }
 
-            //Add issue to project
-            const variables = {
-              "orgId": resp.organization.id,
-              "issueId": resp.repository.issue.id,
-              "prjId": prj[0].id
-            }
-            const res = await github.graphql(`mutation AddIssueToProject($orgId: String!, $issueId: ID!, $prjId: ID!) {
-              addProjectV2ItemById( input: {
-                clientMutationId:$orgId
-                contentId:$issueId
-                projectId:$prjId
-                }) {
-                clientMutationId
-                item {
-                    id
-                }
-              }
-            }`, variables)
+            
+            
             if( res.addProjectV2ItemById.clientMutationId === resp.organization.id) {
               console.log("Issue added to project successfully.")
             }
