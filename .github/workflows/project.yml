@@ -78,7 +78,6 @@ jobs:
               "prjId": ${{ steps.get-required-ids.outputs.PRJ_ID }}
             }
 
-
             if( ( ${{ github.action.action }} === 'opned' || ${{ github.action.action }} === 'reopned' ) && totalCount === 0 ) {
               console.log("Issue is not added to any github projects.");
               //Add issue to project
@@ -90,11 +89,12 @@ jobs:
                   }) {
                   clientMutationId
                   item {
-                      id
+                    id
                   }
                 }
               }`, variables)
-              if( AddIssueToProjectResp.clientMutationId === variables.orgId && AddIssueToProjectResp.item.id === variables.issueid ) {
+
+              if( AddIssueToProjectResp.clientMutationId === variables.orgId ) {
                 console.log("Issue got added to project: ${{ vars.MAIN_PRJ }}")
                 return true
               }
@@ -105,29 +105,83 @@ jobs:
             }
 
             // Check assigned event
-            if( ( ${{ github.action.action }} === 'assigned' || ${{ github.action.action }} === 'unassigned' ) && totalCount > 0 ) {
-              console.log("Issue is not added to any github projects.");
-              //Add issue to project
-              const MoveIssueToInProgressResp = await github.graphql(`mutation MoveIssueToInProgress($orgId: String!, $issueId: ID!, $prjId: ID!) {
-                addProjectV2ItemById( input: {
-                  clientMutationId:$orgId
-                  contentId:$issueId
-                  projectId:$prjId
-                  }) {
-                  clientMutationId
-                  item {
-                      id
-                  }
-                }
-              }`, variables)
-              if( AddIssueToProjectResp.clientMutationId === variables.orgId && AddIssueToProjectResp.item.id === variables.issueid ) {
-                console.log("Issue got added to project: ${{ vars.MAIN_PRJ }}")
-                return true
-              }
-              else {
-                console.log("Error while adding Issue: ${{ github.event.issue.number }} to project: ${{ vars.MAIN_PRJ }}")
+            if( ${{ github.action.action }} === 'assigned' || ${{ github.action.action }} === 'unassigned' ) {
+              if( totalCount === 0 ) {
+                console.log("Issue is not added to any github projects.");
+                console.log("Unable to move issue to 'In progress' column");
                 return false
               }
+
+              const isFound = false
+              const isOver = false
+              variables.cusrsor = ""
+              const issue = null
+
+              while(!isFound || !isOver) {
+                const getItemIdResp = await github.graphql(`query getItemID($prjId: ID!, $cursor: String!) {
+                  node(id:$prjId) {
+                    ... on ProjectV2 {
+                      id
+                      fields(first:20) {
+                        nodes {
+                        __typename
+                        ... on ProjectV2SingleSelectField {
+                          id
+                          name
+                          options {
+                            id
+                            name
+                          }
+                        }
+                      }
+                      items(first: 10, after:$cursor) {
+                        nodes {
+                          id
+                          content {
+                            ... on Issue {
+                              number
+                              title
+                          }
+                        }
+                      }
+                      pageInfo {
+                        endCursor
+                        hasNextPage
+                      }
+                    }
+                  }
+                }`, variables)
+
+                issue = getItemIdResp.node.items.nodes.filter((node) => node.content.__typename === 'Issue' && node.content.number === ${{ github.event.issue.number }})
+                if( issue.length > 0 ) {
+                  isFound = true
+                  const updateIssueStatusResp = await github.graphql(`mutation UpdateIssueStatus($orgId: String!, $itemId: ID!, $prjId: ID!, $fieldId: String!, ) {
+                    updateProjectV2ItemFieldValue( input: {
+                      clientMutationId: $orgId
+                        projectId: $prjId
+                        itemId:$itemId
+                        fieldId:"PVTSSF_lADOBDuDa84AHalLzgERFX0"
+                        value: {
+                            singleSelectOptionId: "f9c7693d"
+                        }
+                      }) {
+                      clientMutationId
+                      projectV2Item {
+                        id
+                      }
+                    }
+                  }`)
+                  break;
+                }
+                if( getItemIdResp.node.items.pageInfo.hasNextPage ) {
+                  variables.cursor = getItemIdResp.node.items.pageInfo.endCursor
+                }
+                else {
+                  isOver = true
+                  break;
+                }
+              }
+
             }
 
       - name: Print context
