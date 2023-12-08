@@ -79,7 +79,12 @@ jobs:
             core.setOutput('PRJ_NUM', prj[0].number)
             core.setOutput('ORG_ID', resp.organization.id)
             core.setOutput('PRJ', JSON.stringify(getPrjFields.node.ProjectV2))
-
+          
+      - name: Print context 1
+        if: always()
+        run: |
+          echo ${{ toJson(steps) }}
+          
   issue-automation:
     needs: fetch-details
 
