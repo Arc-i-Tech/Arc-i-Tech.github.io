@@ -9,17 +9,12 @@ on:
     types: ["opened", "reopened", "labeled", "unlabeled"]
 
 jobs:
-  issue-automation:
-    if: ${{ github.event_name }} == 'issues'
+  fetch-details:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        id: checkout-repo
-        uses: actions/checkout@v4
-
-      - name: Get reuired ids
-        id: get-required-ids
+      - name: Get reuired details
+        id: get-required-details
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
@@ -85,14 +80,21 @@ jobs:
             core.setOutput('ORG_ID', resp.organization.id)
             core.setOutput('PRJ', JSON.stringify(getPrjFields.node.ProjectV2))
 
-      - name: Get Issue and Project details
-        id: issue-prj-details
+  issue-automation:
+    needs: fetch-details
+
+    if: ${{ github.event_name }} == 'issues'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get Issue details
+        id: issue-details
         uses: actions/github-script@v7
         with: 
           script: |
             // Fetch data for github project
             const resp = await github.graphql(`query getIssueId {
-              node(id:"${{ steps.get-required-ids.outputs.REPO_ID }}") {
+              node(id:"${{ needs.fetch-details.steps.get-required-details.outputs.REPO_ID }}") {
                 ... on Repository {
                   id
                   issue(number: ${{ github.event.issue.number }}) {
@@ -115,16 +117,16 @@ jobs:
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
-            const totalCount = ${{ steps.issue-prj-details.outputs.PRJ_CNT }}
+            const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
 
             if( totalCount === 0 ) {
               console.log("Issue is not added to any github projects.");
               //Add issue to project
               const AddIssueToProjectResp = await github.graphql(`mutation AddIssueToProject {
                 addProjectV2ItemById( input: {
-                  clientMutationId:${{ steps.get-required-ids.outputs.ORG_ID }}
-                  contentId:${{ steps.issue-prj-details.outputs.ISSUE_ID }}
-                  projectId:${{ steps.get-required-ids.outputs.PRJ_ID }}
+                  clientMutationId:${{ needs.fetch-details.steps.get-required-details.outputs.ORG_ID }}
+                  contentId:${{ steps.issue-details.outputs.ISSUE_ID }}
+                  projectId:${{ needs.fetch-details.steps.get-required-details.outputs.PRJ_ID }}
                   }) {
                   clientMutationId
                   item {
@@ -133,7 +135,7 @@ jobs:
                 }
               }`)
 
-              if( AddIssueToProjectResp.clientMutationId === ${{ steps.get-required-ids.outputs.ORG_ID }} ) {
+              if( AddIssueToProjectResp.clientMutationId === ${{ needs.fetch-details.steps.get-required-details.outputs.ORG_ID }} ) {
                 console.log("Issue got added to project: ${{ vars.MAIN_PRJ }}")
                 return true
               }
@@ -166,7 +168,7 @@ jobs:
         with:
           script: |
             // Check assigned event
-            if( ${{ steps.issue-prj-details.outputs.PRJ_CNT }} === 0 ) {
+            if( ${{ steps.issue-details.outputs.PRJ_CNT }} === 0 ) {
               console.log("Issue is not added to any github projects.");
               console.log("Unable to move issue to 'In progress' column");
               return false
@@ -254,9 +256,14 @@ jobs:
         with: 
           script: |
 
-      - name: Print context
+      - name: Print context 1
         if: always()
-        run: echo ${{ toJson(steps) }}
+        run: |
+          echo ${{ toJson(steps) }}
+
+      - name: Print context 2
+        if: always()
+        run: echo ${{ toJson(needs) }}
 #  pr-automation:
 #    runs-on: ubuntu-latest
 #
