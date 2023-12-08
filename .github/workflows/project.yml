@@ -10,6 +10,7 @@ on:
 
 jobs:
   issue-automation:
+    if: ${{ github.event_name }} == 'issues'
     runs-on: ubuntu-latest
 
     steps:
@@ -39,28 +40,56 @@ jobs:
                 }
               }
             }`)
-
+            
+            const getPrjFields = await github.graphql(`query getPrjFields($prjId: String!) {
+              node(id:$prjId) {
+                ... on ProjectV2 {
+                  id
+                  fields(first: 20) {
+                    totalCount
+                    nodes {
+                      ... on ProjectV2Field {
+                        id
+                        name
+                      }
+                      ... on ProjectV2SingleSelectField {
+                        id
+                        name
+                        options {
+                          id
+                          name
+                        }
+                      }
+                      ... on ProjectV2IterationField {
+                        id
+                        name
+                      }
+                    }
+                  }
+                }
+              }
+            }`, {"prjId": prj[0].id})
             // Find project number and id from project name
             const prj = resp.organization.projectsV2.nodes.filter((node) => node.title === "${{ vars.MAIN_PRJ }}")
             if( prj.length === 0 ) {
               console.log("No projects found with name: ${{ vars.MAIN_PRJ }}")
               return false
             } 
-
+            console.log("Resp: " + resp)
+            console.log("Prj: " + getPrjFields)
             core.setOutput('REPO_ID', resp.repository.id)
             core.setOutput('PRJ_ID', prj[0].id)
             core.setOutput('PRJ_NUM', prj[0].number)
             core.setOutput('ORG_ID', resp.organization.id)
+            core.setOutput('PRJ', getPrjFields.node.ProjectV2)
 
-      - name: Handle new Issue - ${{ github.event.issue.number }}
-        id: handle-new-issue
-        if: ${{ github.event_name }} == 'issues'
+      - name: Get Issue and Project details
+        id: issue-prj-details
         uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.ACCESS_TOKEN }}
+        with: 
           script: |
             // Fetch data for github project
-            const resp = await github.graphql(`query getIssueId{
+            const resp = await github.graphql(`query getIssueId {
               node(id:"${{ steps.get-required-ids.outputs.REPO_ID }}") {
                 id
                 issue(number: ${{ github.event.issue.number }}) {
@@ -69,33 +98,38 @@ jobs:
                     totalCount
                   }
                 }
-              }`)
-            const totalCount = resp.node.issue.projectItems.totalCount
+              }
+            }`)
+            
+            core.setOutput('ISSUE_ID', resp.node.issue.id)
+            core.setOutput('PRJ_CNT', resp.node.issue.projectItems.totalCount)
+            
+      - name: Opened/ Reopned
+        id: opened-reopned
+        if: ${{ github.action.action }} === 'opned' || ${{ github.action.action }} === 'reopned'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.ACCESS_TOKEN }}
+          script: |
+            const totalCount = ${{ steps.issue-prj-details.outputs.PRJ_CNT }}
 
-            // Variables
-            const variables = {
-              "orgId": ${{ steps.get-required-ids.outputs.ORG_ID }},
-              "issueId": resp.node.issue.id,
-              "prjId": ${{ steps.get-required-ids.outputs.PRJ_ID }}
-            }
-
-            if( ( ${{ github.action.action }} === 'opned' || ${{ github.action.action }} === 'reopned' ) && totalCount === 0 ) {
+            if( totalCount === 0 ) {
               console.log("Issue is not added to any github projects.");
               //Add issue to project
-              const AddIssueToProjectResp = await github.graphql(`mutation AddIssueToProject($orgId: String!, $issueId: ID!, $prjId: ID!) {
+              const AddIssueToProjectResp = await github.graphql(`mutation AddIssueToProject {
                 addProjectV2ItemById( input: {
-                  clientMutationId:$orgId
-                  contentId:$issueId
-                  projectId:$prjId
+                  clientMutationId:${{ steps.get-required-ids.outputs.ORG_ID }}
+                  contentId:${{ steps.issue-prj-details.outputs.ISSUE_ID }}
+                  projectId:${{ steps.get-required-ids.outputs.PRJ_ID }}
                   }) {
                   clientMutationId
                   item {
                     id
                   }
                 }
-              }`, variables)
+              }`)
 
-              if( AddIssueToProjectResp.clientMutationId === variables.orgId ) {
+              if( AddIssueToProjectResp.clientMutationId === ${{ steps.get-required-ids.outputs.ORG_ID }} ) {
                 console.log("Issue got added to project: ${{ vars.MAIN_PRJ }}")
                 return true
               }
@@ -104,94 +138,121 @@ jobs:
                 return false
               }
             }
+            console.log("Issue already has associate github projects with it.");
+            return false
 
+      - name: Labeled
+        id: labeled
+        if: ${{ github.action.action }} === 'labeled'
+        uses: actions/github-script@v7
+        with: 
+          script: |
+
+      - name: Unlabeled
+        id: unlabeled
+        if: ${{ github.action.action }} === 'unlableled'
+        uses: actions/github-script@v7
+        with: 
+          script: |
+
+      - name: Assigned
+        id: assigned
+        if: ${{ github.action.action }} === 'assigned'
+        uses: actions/github-script@v7
+        with:
+          script: |
             // Check assigned event
-            if( ${{ github.action.action }} === 'assigned' || ${{ github.action.action }} === 'unassigned' ) {
-              if( totalCount === 0 ) {
-                console.log("Issue is not added to any github projects.");
-                console.log("Unable to move issue to 'In progress' column");
-                return false
-              }
-
-              const isFound = false
-              const isOver = false
-              variables.cusrsor = ""
-              const issue = null
-
-              while(!isFound || !isOver) {
-                const getItemIdResp = await github.graphql(`query getItemID($prjId: ID!, $cursor: String!) {
-                  node(id:$prjId) {
-                    ... on ProjectV2 {
-                      id
-                      fields(first:20) {
-                        nodes {
-                        __typename
-                        ... on ProjectV2SingleSelectField {
-                          id
-                          name
-                          options {
-                            id
-                            name
-                          }
-                        }
-                      }
-                      items(first: 10, after:$cursor) {
-                        nodes {
-                          id
-                          content {
-                            ... on Issue {
-                              number
-                              title
-                          }
-                        }
-                      }
-                      pageInfo {
-                        endCursor
-                        hasNextPage
-                      }
-                    }
-                  }
-                }`, variables)
-
-                issue = getItemIdResp.node.items.nodes.filter((node) => node.content.__typename === 'Issue' && node.content.number === ${{ github.event.issue.number }})
-                if( issue.length > 0 ) {
-                  isFound = true
-                  const updateIssueStatusResp = await github.graphql(`mutation UpdateIssueStatus($orgId: String!, $itemId: ID!, $prjId: ID!, $fieldId: String!, ) {
-                    updateProjectV2ItemFieldValue( input: {
-                      clientMutationId: $orgId
-                        projectId: $prjId
-                        itemId:$itemId
-                        fieldId:"PVTSSF_lADOBDuDa84AHalLzgERFX0"
-                        value: {
-                            singleSelectOptionId: "f9c7693d"
-                        }
-                      }) {
-                      clientMutationId
-                      projectV2Item {
-                        id
-                      }
-                    }
-                  }`)
-                  break;
-                }
-                if( getItemIdResp.node.items.pageInfo.hasNextPage ) {
-                  variables.cursor = getItemIdResp.node.items.pageInfo.endCursor
-                }
-                else {
-                  isOver = true
-                  break;
-                }
-              }
-
+            if( ${{ steps.issue-prj-details.outputs.PRJ_CNT }} === 0 ) {
+              console.log("Issue is not added to any github projects.");
+              console.log("Unable to move issue to 'In progress' column");
+              return false
             }
 
-      - name: Labeled Issue - ${{ github.event.issue.numer }}
-      - name: Unlabeled Issue - ${{ github.event.issue.numer }}
-      - name: Assigned Issue - ${{ github.event.issue.number }}
-      - name: Unassigned Issue - ${{ github.event.issue.number }}
+            // Variables
+            const variables = {
+              "cursor": ""
+            }
+            const isFound = false
+            const isOver = false
+            variables.cusrsor = ""
+            const issue = null
+
+            while(!isFound || !isOver) {
+              const getItemIdResp = await github.graphql(`query getItemID($cursor: String!) {
+                node(id:${{ steps.get-required-ids.outputs.PRJ_ID }}) {
+                  ... on ProjectV2 {
+                    id
+                    fields(first:20) {
+                      nodes {
+                      __typename
+                      ... on ProjectV2SingleSelectField {
+                        id
+                        name
+                        options {
+                          id
+                          name
+                        }
+                      }
+                    }
+                    items(first: 10, after:$cursor) {
+                      nodes {
+                        id
+                        content {
+                          ... on Issue {
+                            number
+                            title
+                        }
+                      }
+                    }
+                    pageInfo {
+                      endCursor
+                      hasNextPage
+                    }
+                  }
+                }
+              }`, variables)
+
+              issue = getItemIdResp.node.items.nodes.filter((node) => node.content.__typename === 'Issue' && node.content.number === ${{ github.event.issue.number }})
+              if( issue.length > 0 ) {
+                isFound = true
+                const updateIssueStatusResp = await github.graphql(`mutation UpdateIssueStatus($orgId: String!, $itemId: ID!, $prjId: ID!, $fieldId: String!, ) {
+                  updateProjectV2ItemFieldValue( input: {
+                    clientMutationId: $orgId
+                    projectId: $prjId
+                    itemId:$itemId
+                    fieldId:"PVTSSF_lADOBDuDa84AHalLzgERFX0"
+                      value: {
+                        singleSelectOptionId: "f9c7693d"
+                      }
+                  }) {
+                    clientMutationId
+                    projectV2Item {
+                      id
+                    }
+                  }
+                }`)
+                if( updateIssueStatusResp.clientMutationId ===  )
+                break;
+              }
+              if( getItemIdResp.node.items.pageInfo.hasNextPage ) {
+                variables.cursor = getItemIdResp.node.items.pageInfo.endCursor
+              }
+              else {
+                isOver = true
+                break;
+              }
+            }
+
+      - name: Unassigned
+        id: unassigned
+        if: ${{ github.action.action }} === 'unassigned'
+        uses: actions/github-script@v7
+        with: 
+          script: |
+
       - name: Print context
         if: always()
-        run: echo ${{ job.status }}
+        run: echo ${{ toJson(steps) }}
 #  pr-automation:
 #    runs-on: ubuntu-latest
 #
