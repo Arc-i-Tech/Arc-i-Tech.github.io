@@ -73,12 +73,12 @@ jobs:
             }`, {"prjId": prj[0].id})
 
             console.log("Resp: " + JSON.stringify(resp))
-            console.log("Prj: " + JSON.stringify(getPrjFields))
+            console.log("Prj: " + JSON.stringify(getPrjFields.ProjectV2))
             core.setOutput('REPO_ID', resp.repository.id)
             core.setOutput('PRJ_ID', prj[0].id)
             core.setOutput('PRJ_NUM', prj[0].number)
             core.setOutput('ORG_ID', resp.organization.id)
-            core.setOutput('PRJ', JSON.stringify(getPrjFields.node.ProjectV2))
+            core.setOutput('PRJ', `JSON.stringify(getPrjFields.ProjectV2)`)
           
       - name: Print context 1
         if: always()
@@ -112,8 +112,8 @@ jobs:
               }
             }`)
             
-            core.setOutput('ISSUE_ID', resp.node.Repository.issue.id)
-            core.setOutput('PRJ_CNT', resp.node.issue.Repository.projectItems.totalCount)
+            core.setOutput('ISSUE_ID', resp.node.issue.id)
+            core.setOutput('PRJ_CNT', resp.node.issue.projectItems.totalCount)
             
       - name: Opened/ Reopned
         id: opened-reopned
@@ -268,7 +268,7 @@ jobs:
 
       - name: Print context 2
         if: always()
-        run: echo ${{ toJson(needs) }}
+        run: echo ${{ toJson(needs.fetch-details) }}
 #  pr-automation:
 #    runs-on: ubuntu-latest
 #
