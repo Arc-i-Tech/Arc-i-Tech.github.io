@@ -86,9 +86,7 @@ jobs:
 
       - name: Print context 1
         if: always()
-        uses: actions/github-script@v7
-        with:
-          script: console.log(toJSON(${{ steps }}))
+        run: console.log(toJSON(${{ steps }}))
           
   issue-automation:
     needs: fetch-details
