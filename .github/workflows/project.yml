@@ -41,6 +41,13 @@ jobs:
               }
             }`)
             
+            // Find project number and id from project name
+            const prj = resp.organization.projectsV2.nodes.filter((node) => node.title === "${{ vars.MAIN_PRJ }}")
+            if( prj.length === 0 ) {
+              console.log("No projects found with name: ${{ vars.MAIN_PRJ }}")
+              return false
+            } 
+            
             const getPrjFields = await github.graphql(`query getPrjFields($prjId: String!) {
               node(id:$prjId) {
                 ... on ProjectV2 {
@@ -69,12 +76,7 @@ jobs:
                 }
               }
             }`, {"prjId": prj[0].id})
-            // Find project number and id from project name
-            const prj = resp.organization.projectsV2.nodes.filter((node) => node.title === "${{ vars.MAIN_PRJ }}")
-            if( prj.length === 0 ) {
-              console.log("No projects found with name: ${{ vars.MAIN_PRJ }}")
-              return false
-            } 
+
             console.log("Resp: " + resp)
             console.log("Prj: " + getPrjFields)
             core.setOutput('REPO_ID', resp.repository.id)
