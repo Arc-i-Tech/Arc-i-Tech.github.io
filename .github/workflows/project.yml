@@ -86,7 +86,7 @@ jobs:
 
       - name: Print context 1
         if: always()
-        run: console.log(toJSON(${{ steps }}))
+        run: echo ${{ toJSON(steps) }}
           
   issue-automation:
     needs: fetch-details
