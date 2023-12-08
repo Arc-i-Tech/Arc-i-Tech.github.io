@@ -77,13 +77,13 @@ jobs:
               }
             }`, {"prjId": prj[0].id})
 
-            console.log("Resp: " + resp)
-            console.log("Prj: " + getPrjFields)
+            console.log("Resp: " + JSON.stringify(resp))
+            console.log("Prj: " + JSON.stringify(getPrjFields))
             core.setOutput('REPO_ID', resp.repository.id)
             core.setOutput('PRJ_ID', prj[0].id)
             core.setOutput('PRJ_NUM', prj[0].number)
             core.setOutput('ORG_ID', resp.organization.id)
-            core.setOutput('PRJ', getPrjFields.node.ProjectV2)
+            core.setOutput('PRJ', JSON.stringify(getPrjFields.node.ProjectV2))
 
       - name: Get Issue and Project details
         id: issue-prj-details
@@ -93,18 +93,20 @@ jobs:
             // Fetch data for github project
             const resp = await github.graphql(`query getIssueId {
               node(id:"${{ steps.get-required-ids.outputs.REPO_ID }}") {
-                id
-                issue(number: ${{ github.event.issue.number }}) {
+                ... on Repository {
                   id
-                  projectItems(first: 10) {
-                    totalCount
+                  issue(number: ${{ github.event.issue.number }}) {
+                    id
+                    projectItems(first: 10) {
+                      totalCount
+                    }
                   }
                 }
               }
             }`)
             
-            core.setOutput('ISSUE_ID', resp.node.issue.id)
-            core.setOutput('PRJ_CNT', resp.node.issue.projectItems.totalCount)
+            core.setOutput('ISSUE_ID', resp.node.Repository.issue.id)
+            core.setOutput('PRJ_CNT', resp.node.issue.Repository.projectItems.totalCount)
             
       - name: Opened/ Reopned
         id: opened-reopned
