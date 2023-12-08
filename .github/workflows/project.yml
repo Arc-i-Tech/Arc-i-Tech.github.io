@@ -52,6 +52,7 @@ jobs:
         id: fetch-prj-details
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
             const getPrjFields = await github.graphql(`query getPrjFields {
               node(id:"${{ steps.get-required-ids.outputs.PRJ_ID }}") {
@@ -87,7 +88,7 @@ jobs:
         if: always()
         uses: actions/github-script@v7
         with:
-          script: console.log(JSON.stringify(${{ steps }}))
+          script: console.log(toJSON(${{ steps }}))
           
   issue-automation:
     needs: fetch-details
