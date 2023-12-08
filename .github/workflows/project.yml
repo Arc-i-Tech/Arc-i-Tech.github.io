@@ -54,7 +54,7 @@ jobs:
         with:
           script: |
             const getPrjFields = await github.graphql(`query getPrjFields {
-              node(id:${{ steps.get-required-ids.outputs.PRJ_ID }}) {
+              node(id:"${{ steps.get-required-ids.outputs.PRJ_ID }}") {
                 ... on ProjectV2 {
                   id
                   fields(first: 20) {
@@ -133,9 +133,9 @@ jobs:
               //Add issue to project
               const AddIssueToProjectResp = await github.graphql(`mutation AddIssueToProject {
                 addProjectV2ItemById( input: {
-                  clientMutationId:${{ needs.fetch-details.steps.get-required-details.outputs.ORG_ID }}
-                  contentId:${{ steps.issue-details.outputs.ISSUE_ID }}
-                  projectId:${{ needs.fetch-details.steps.get-required-details.outputs.PRJ_ID }}
+                  clientMutationId:"${{ needs.fetch-details.steps.get-required-details.outputs.ORG_ID }}"
+                  contentId:"${{ steps.issue-details.outputs.ISSUE_ID }}"
+                  projectId:"${{ needs.fetch-details.steps.get-required-details.outputs.PRJ_ID }}"
                   }) {
                   clientMutationId
                   item {
