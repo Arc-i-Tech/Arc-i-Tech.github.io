@@ -47,8 +47,8 @@ jobs:
               console.log("No projects found with name: ${{ vars.MAIN_PRJ }}")
               return false
             } 
-            
-            const getPrjFields = await github.graphql(`query getPrjFields($prjId: String!) {
+
+            const getPrjFields = await github.graphql(`query getPrjFields($prjId: ID!) {
               node(id:$prjId) {
                 ... on ProjectV2 {
                   id
