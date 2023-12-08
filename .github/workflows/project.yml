@@ -1,14 +1,15 @@
 run-name: Project automate
 
 on:
-  issues: 
-    types: ['opened', 'reopened', 'labeled', 'unlabeled', 'assigned', 'unassigned']
-  
-  pull_request: 
-    types: ['opened', 'reopened', 'labeled', 'unlabeled']
+  issues:
+    types:
+      ["opened", "reopened", "labeled", "unlabeled", "assigned", "unassigned"]
+
+  pull_request:
+    types: ["opened", "reopened", "labeled", "unlabeled"]
 
 jobs:
-  add-to-project:
+  issue-automation:
     runs-on: ubuntu-latest
 
     steps:
@@ -38,7 +39,7 @@ jobs:
                 }
               }
             }`)
-            
+
             // Find project number and id from project name
             const prj = resp.organization.projectsV2.nodes.filter((node) => node.title === "${{ vars.MAIN_PRJ }}")
             if( prj.length === 0 ) {
@@ -51,8 +52,8 @@ jobs:
             core.setOutput('PRJ_NUM', prj[0].number)
             core.setOutput('ORG_ID', resp.organization.id)
 
-      - name: Handle Issue - ${{ github.event.issue.number }}
-        id: handle-issue
+      - name: Handle new Issue - ${{ github.event.issue.number }}
+        id: handle-new-issue
         if: ${{ github.event_name }} == 'issues'
         uses: actions/github-script@v7
         with:
@@ -184,6 +185,21 @@ jobs:
 
             }
 
+      - name: Labeled Issue - ${{ github.event.issue.numer }}
+      - name: Unlabeled Issue - ${{ github.event.issue.numer }}
+      - name: Assigned Issue - ${{ github.event.issue.number }}
+      - name: Unassigned Issue - ${{ github.event.issue.number }}
       - name: Print context
         if: always()
         run: echo ${{ job.status }}
+#  pr-automation:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout repository
+#      - name: Get required ids
+#      - name: Handle new Pull Request
+#      - name: Labeled Pull Request - ${{ github.event.issue.numer }}
+#      - name: Unlabeled Pull Request - ${{ github.event.issue.numer }}
+#      - name: Assigned Pull Request - ${{ github.event.issue.number }}
+#      - name: Unassigned Pull Request - ${{ github.event.issue.number }}
