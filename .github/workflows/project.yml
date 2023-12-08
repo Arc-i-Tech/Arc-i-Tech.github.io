@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get reuired details
-        id: get-required-details
+      - name: Get reuired IDs
+        id: get-required-ids
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
@@ -43,8 +43,18 @@ jobs:
               return false
             } 
 
-            const getPrjFields = await github.graphql(`query getPrjFields($prjId: ID!) {
-              node(id:$prjId) {
+            core.setOutput('REPO_ID', resp.repository.id)
+            core.setOutput('PRJ_ID', prj[0].id)
+            core.setOutput('PRJ_NUM', prj[0].number)
+            core.setOutput('ORG_ID', resp.organization.id)
+      
+      - name: Fetch project details
+        id: fetch-prj-details
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const getPrjFields = await github.graphql(`query getPrjFields {
+              node(id:${{ steps.get-required-ids.outputs.PRJ_ID }}) {
                 ... on ProjectV2 {
                   id
                   fields(first: 20) {
@@ -70,20 +80,14 @@ jobs:
                   }
                 }
               }
-            }`, {"prjId": prj[0].id})
+            }`)
+            console.log(JSON.stringify(getPrjFields))
 
-            console.log("Resp: " + JSON.stringify(resp))
-            console.log("Prj: " + JSON.stringify(getPrjFields.ProjectV2))
-            core.setOutput('REPO_ID', resp.repository.id)
-            core.setOutput('PRJ_ID', prj[0].id)
-            core.setOutput('PRJ_NUM', prj[0].number)
-            core.setOutput('ORG_ID', resp.organization.id)
-            core.setOutput('PRJ', `JSON.stringify(getPrjFields.ProjectV2)`)
-          
       - name: Print context 1
         if: always()
-        run: |
-          echo ${{ toJson(steps) }}
+        uses: actions/github-script@v7
+        with:
+          script: console.log(JSON.stringify(${{ steps }}))
           
   issue-automation:
     needs: fetch-details
