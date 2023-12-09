@@ -11,8 +11,7 @@ on:
 jobs:
   fetch-details:
     runs-on: ubuntu-latest
-    outputs: 
-      get-required-ids: ${{ steps.get-required-ids.outputs }}
+    
     steps:
       - name: Get reuired IDs
         id: get-required-ids
@@ -84,6 +83,9 @@ jobs:
               }
             }`)
             console.log(JSON.stringify(getPrjFields))
+
+      - name: output
+        run: echo ${{ toJSON(steps.*.outputs) }}
           
   issue-automation:
     needs: fetch-details
