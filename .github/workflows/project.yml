@@ -12,6 +12,7 @@ jobs:
   fetch-details:
     runs-on: ubuntu-latest
     outputs: 
+      ids: ${{ steps.get-required-ids.ids }}
       steps: ${{ steps.set-output.steps-output }}
     steps:
       - name: Get reuired IDs
@@ -49,14 +50,12 @@ jobs:
               'PRJ_ID': prj[0].id,
               'PRJ_NUM': prj[0].number,
               'ORG_ID': resp.organization.id,
-              'PRJ': JSON.stringify(prj)
             }
-            console.log(IDs)
             core.setOutput('REPO_ID', resp.repository.id)
             core.setOutput('PRJ_ID', prj[0].id)
             core.setOutput('PRJ_NUM', prj[0].number)
             core.setOutput('ORG_ID', resp.organization.id)
-            core.setOutput('DEMO', JSON.stringify(IDs))
+            core.setOutput('ids', JSON.stringify(IDs))
       
       - name: Fetch project details
         id: fetch-prj-details
@@ -93,14 +92,7 @@ jobs:
               }
             }`)
             console.log(JSON.stringify(getPrjFields))
-      
-      - name: Set output
-        id: set-output
-        shell: bash
-        run: |
-          set -eux
-          DATA=$(echo "${{ toJSON(steps) }}")
-          echo "steps-output:$DATA" >> "$GITHUB_OUTPUT"
+            core.setOutput('PRJ', JSON.stringify(getPrjFields.node))
 
   issue-automation:
     needs: fetch-details
