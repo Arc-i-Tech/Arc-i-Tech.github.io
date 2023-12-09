@@ -106,7 +106,6 @@ jobs:
 
   issue-automation:
     needs: fetch-details
-
     if: ${{ github.event_name }} == 'issues'
     runs-on: ubuntu-latest
 
@@ -283,7 +282,7 @@ jobs:
       - name: Print context 1
         if: always()
         run: |
-          echo ${{ toJson(steps) }}
+          echo ${{ toJson(needs.fetch-details.outputs.PRJ) }}
 
       - name: Print context 2
         if: always()
