@@ -116,7 +116,7 @@ jobs:
         with: 
           script: |
             // Fetch data for github project
-            const vars = JSON.parse(${{ needs.fetch-details.outputs.ids }})
+            const vars = ${{ needs.fetch-details.outputs.ids }}
             const resp = await github.graphql(`query getIssueId($REPO_ID: String!) {
               node(id:$REPO_ID) {
                 ... on Repository {
