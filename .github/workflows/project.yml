@@ -330,8 +330,7 @@ jobs:
         if: always()
         uses: actions/github-script@v7
         with:
-          script: console.log(${{ toJson(needs.fetch-details.outputs.PRJ) }})
-            console.log(${{ needs.fetch-details.outputs.ids.REPO_ID }})
+          script: console.log(${{ toJson(steps) }})
 
       - name: Print context 2
         if: always()
