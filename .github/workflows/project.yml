@@ -160,7 +160,7 @@ jobs:
                 }
               }`, vars)
 
-              if( AddIssueToProjectResp.clientMutationId === vars.ORG_ID ) {
+              if( AddIssueToProjectResp.addProjectV2ItemById.clientMutationId === vars.ORG_ID ) {
                 console.log("Issue got added to project: ${{ vars.MAIN_PRJ }}")
                 return true
               }
@@ -169,7 +169,7 @@ jobs:
                 return false
               }
             }
-            console.log("Issue already has associate github projects with it.");
+            console.log("Issue already associate with github project.");
             return false
 
       - name: Labeled
