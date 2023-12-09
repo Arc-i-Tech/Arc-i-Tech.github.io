@@ -190,11 +190,11 @@ jobs:
             }
             const prj = ${{ needs.fetch-details.outputs.PRJ }}
             const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() === 'status'.toUpperCase())
-            if( ${{ github.event.label.name }} === 'epic') {
+            if( "${{ github.event.label.name }}" === 'epic') {
               vars["FIELD_ID"] = fieldNode[0].id
               vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name === ":file_cabinet: Epic")
             }
-            else if( ${{ github.event.label.name }} === 'accepted' ) {
+            else if( "${{ github.event.label.name }}" === 'accepted' ) {
               vars["FIELD_ID"] = fieldNode[0].id
               vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name === "📋 Product Backlog")
             }
