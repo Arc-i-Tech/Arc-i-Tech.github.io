@@ -43,7 +43,15 @@ jobs:
               console.log("No projects found with name: ${{ vars.MAIN_PRJ }}")
               return false
             } 
-
+            
+            const IDs = {
+              'REPO_ID': resp.repository.id,
+              'PRJ_ID': prj[0].id,
+              'PRJ_NUM': prj[0].number,
+              'ORG_ID': resp.organization.id,
+              'PRJ': JSON.stringify(prj)
+            }
+            console.log(IDs)
             core.setOutput('REPO_ID', resp.repository.id)
             core.setOutput('PRJ_ID', prj[0].id)
             core.setOutput('PRJ_NUM', prj[0].number)
@@ -87,9 +95,10 @@ jobs:
       
       - name: Set output
         id: set-output
+        shell: bash
         run: |
           set -eux
-          DATA=$(echo `${{ toJSON(steps) }})`
+          DATA=$(echo "${{ toJSON(steps) }}")
           echo "steps-output:$DATA" >> "$GITHUB_OUTPUT"
 
   issue-automation:
