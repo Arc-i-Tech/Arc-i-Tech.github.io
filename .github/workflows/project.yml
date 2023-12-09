@@ -94,6 +94,16 @@ jobs:
             console.log(JSON.stringify(getPrjFields))
             core.setOutput('PRJ', JSON.stringify(getPrjFields.node))
 
+      - name: Print outputs
+        id: print-outputs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            console.log("Steps: ")
+            console.log(${{ toJSON(steps) }})
+            console.log("Job: ")
+            console.log(${{ job }})
+
   issue-automation:
     needs: fetch-details
 
