@@ -133,6 +133,7 @@ jobs:
             }`, vars)
             core.setOutput('ISSUE_ID', resp.node.issue.id)
             core.setOutput('PRJ_CNT', resp.node.issue.projectItems.totalCount)
+            console.log(resp.node.issue.projectItems.totalCount)
             
       - name: Opened/ Reopned
         id: opened-reopned
