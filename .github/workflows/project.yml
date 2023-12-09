@@ -105,6 +105,7 @@ jobs:
             console.log(${{ toJSON(job) }})
 
   issue-automation:
+    name: Issue automation- ${{ github.event.issue.number }}
     needs: fetch-details
     if: ${{ github.event_name }} == 'issues'
     runs-on: ubuntu-latest
@@ -136,7 +137,7 @@ jobs:
             
       - name: Opened/ Reopned
         id: opened-reopned
-        if: ${{ github.action.action }} === 'opned' || ${{ github.action.action }} === 'reopned'
+        if: ${{ github.event.action }} === 'opened' || ${{ github.event.action }} === 'reopened'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
@@ -145,7 +146,6 @@ jobs:
             const vars = ${{ needs.fetch-details.outputs.ids }}
 
             if( totalCount === 0 ) {
-              console.log("Issue is not added to any github projects.");
               //Add issue to project
               const AddIssueToProjectResp = await github.graphql(`mutation AddIssueToProject($ORG_ID: String!, $PRJ_ID: ID!) {
                 addProjectV2ItemById( input: {
@@ -174,21 +174,52 @@ jobs:
 
       - name: Labeled
         id: labeled
-        if: ${{ github.action.action }} === 'labeled'
+        if: ${{ github.event.action }} === 'labeled'
         uses: actions/github-script@v7
         with: 
           script: |
+            const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
+            const vars = ${{ needs.fetch-details.outputs.ids }}
+
+            if( totalCount === 0 ) {
+              console.log("Issue not associate with any github project.");
+              return false
+            }
+            if( false ) {
+              const AddIssueToProjectResp = await github.graphql(`mutation AddIssueToProject($ORG_ID: String!, $PRJ_ID: ID!) {
+                addProjectV2ItemById( input: {
+                  clientMutationId:$ORG_ID
+                  contentId:"${{ steps.issue-details.outputs.ISSUE_ID }}"
+                  projectId:$PRJ_ID
+                  }) {
+                  clientMutationId
+                  item {
+                    id
+                  }
+                }
+              }`, vars)
+
+              if( AddIssueToProjectResp.addProjectV2ItemById.clientMutationId === vars.ORG_ID ) {
+                console.log("Issue got added to project: ${{ vars.MAIN_PRJ }}")
+                return true
+              }
+              else {
+                console.log("Error while adding Issue: ${{ github.event.issue.number }} to project: ${{ vars.MAIN_PRJ }}")
+                return false
+              }
+            }
+            console.log(${{toJSON(github)}})
 
       - name: Unlabeled
         id: unlabeled
-        if: ${{ github.action.action }} === 'unlableled'
+        if: ${{ github.event.action }} === 'unlableled'
         uses: actions/github-script@v7
         with: 
           script: |
 
       - name: Assigned
         id: assigned
-        if: ${{ github.action.action }} === 'assigned'
+        if: ${{ github.event.action }} === 'assigned'
         uses: actions/github-script@v7
         with:
           script: |
@@ -276,7 +307,7 @@ jobs:
 
       - name: Unassigned
         id: unassigned
-        if: ${{ github.action.action }} === 'unassigned'
+        if: ${{ github.event.action }} === 'unassigned'
         uses: actions/github-script@v7
         with: 
           script: |
