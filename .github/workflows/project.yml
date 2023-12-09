@@ -181,6 +181,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
             if( totalCount === 0 ) {
               console.log("Issue not associate with any github project.");
               return false
@@ -325,7 +326,7 @@ jobs:
         if: always()
         uses: actions/github-script@v7
         with:
-          script: console.log(${{ toJson(needs.fetch-details) }})
+          script: console.log(${{ toJson(github) }})
 
   pr-automation:
     needs: fetch-details
