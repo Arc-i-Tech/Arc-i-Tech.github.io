@@ -176,9 +176,10 @@ jobs:
       - name: Get ITEM ID
         id: get-item-id
         if: github.event.action != 'opened' || github.event.action != 'reopened'
+        env:
+          github-token: ${{ secrets.ACCESS_TOKEN }}
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
             const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
             if( totalCount === 0 ) {
@@ -203,6 +204,7 @@ jobs:
                           ... on Issue {
                             number
                             title
+                          }
                         }
                       }
                     }
