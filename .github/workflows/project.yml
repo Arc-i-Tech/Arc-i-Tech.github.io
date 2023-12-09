@@ -89,7 +89,7 @@ jobs:
         id: set-output
         run: |
           set -eux
-          DATA=$(echo ${{ steps }})
+          DATA=$(echo `${{ toJSON(steps) }})`
           echo "steps-output:$DATA" >> "$GITHUB_OUTPUT"
 
   issue-automation:
