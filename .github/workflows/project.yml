@@ -189,7 +189,7 @@ jobs:
             const vars = ${{ needs.fetch-details.outputs.ids }}
             const isFound = false
             const isOver = false
-            vars.cusrsor = ""
+            vars.cursor = ""
             const itemNodes = []
 
             while(!isFound || !isOver) {
