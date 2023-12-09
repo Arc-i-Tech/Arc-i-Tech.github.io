@@ -107,7 +107,7 @@ jobs:
   issue-automation:
     name: Issue automation- ${{ github.event.issue.number }}
     needs: fetch-details
-    if: ${{ github.event_name }} == 'issues'
+    if: github.event_name == 'issues'
     runs-on: ubuntu-latest
 
     steps:
@@ -138,7 +138,7 @@ jobs:
             
       - name: Opened/ Reopned
         id: opened-reopned
-        if: ${{ github.event.action }} == 'opened' || ${{ github.event.action }} == 'reopened'
+        if: github.event.action == 'opened' || github.event.action == 'reopened'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
@@ -173,9 +173,71 @@ jobs:
             console.log("Issue already associate with github project.");
             return false
 
+      - name: Get ITEM ID
+        id: get-item-id
+        if: github.event.action != 'opened' || github.event.action != 'reopened'
+        env:
+          github-token: ${{ secrets.ACCESS_TOKEN }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            if( totalCount === 0 ) {
+              console.log("Issue not associate with any github project.");
+              return false
+            }
+            const vars = ${{ needs.fetch-details.outputs.ids }}
+            const isFound = false
+            const isOver = false
+            vars.cusrsor = ""
+            const itemNodes = []
+
+            while(!isFound || !isOver) {
+              const getItemIdResp = await github.graphql(`query getItemID($PRJ_ID: ID!, $cursor: String!) {
+                node(id:$PRJ_ID) {
+                  ... on ProjectV2 {
+                    id
+                    items(first: 10, after:$cursor) {
+                      nodes {
+                        id
+                        content {
+                          ... on Issue {
+                            number
+                            title
+                        }
+                      }
+                    }
+                    pageInfo {
+                      endCursor
+                      hasNextPage
+                    }
+                  }
+                }
+              }`, vars)
+
+              itemNodes = getItemIdResp.node.items.nodes.filter((node) => node.content.__typename === 'Issue' && node.content.number === ${{ github.event.issue.number }})
+              if( itemNodes.length > 0 ) {
+                isFound = true
+                break;
+              }
+              if( getItemIdResp.node.items.pageInfo.hasNextPage ) {
+                vars.cursor = getItemIdResp.node.items.pageInfo.endCursor
+              }
+              else {
+                isOver = true
+                break;
+              }
+              if( isFound ) {
+                core.setOutput('ITEM_ID', itemNodes[0].id)
+              }
+              else {
+                console.log("Issue: ${{ github.event.issue.number }} is not associated with any GitHub projects.")
+                return false
+              }
+            }
+
       - name: Labeled
         id: labeled
-        if: ${{ github.event.action }} == 'labeled'
+        if: github.event.action == 'labeled'
         uses: actions/github-script@v7
         with: 
           github-token: ${{ secrets.ACCESS_TOKEN }}
@@ -183,7 +245,6 @@ jobs:
             const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
             const vars = ${{ needs.fetch-details.outputs.ids }}
             
-
             if( totalCount === 0 ) {
               console.log("Issue not associate with any github project.");
               return false
@@ -205,7 +266,7 @@ jobs:
               updateProjectV2ItemFieldValue( input: {
                 clientMutationId:$ORG_ID
                 projectId:$PRJ_ID
-                itemId:${{ steps.issue-details.outputs.ISSUE_ID }}
+                itemId:${{ steps.get-item-id.outputs.ITEM_ID }}
                 fieldId:$FIELD_ID
                 value: {
                   singleSelectOptionId: $OPTION_ID
@@ -245,81 +306,6 @@ jobs:
               console.log("Issue is not added to any github projects.");
               console.log("Unable to move issue to 'In progress' column");
               return false
-            }
-
-            // Variables
-            const variables = {
-              "cursor": ""
-            }
-            const isFound = false
-            const isOver = false
-            variables.cusrsor = ""
-            const issue = null
-
-            while(!isFound || !isOver) {
-              const getItemIdResp = await github.graphql(`query getItemID($cursor: String!) {
-                node(id:${{ steps.get-required-ids.outputs.PRJ_ID }}) {
-                  ... on ProjectV2 {
-                    id
-                    fields(first:20) {
-                      nodes {
-                      __typename
-                      ... on ProjectV2SingleSelectField {
-                        id
-                        name
-                        options {
-                          id
-                          name
-                        }
-                      }
-                    }
-                    items(first: 10, after:$cursor) {
-                      nodes {
-                        id
-                        content {
-                          ... on Issue {
-                            number
-                            title
-                        }
-                      }
-                    }
-                    pageInfo {
-                      endCursor
-                      hasNextPage
-                    }
-                  }
-                }
-              }`, variables)
-
-              issue = getItemIdResp.node.items.nodes.filter((node) => node.content.__typename === 'Issue' && node.content.number === ${{ github.event.issue.number }})
-              if( issue.length > 0 ) {
-                isFound = true
-                const updateIssueStatusResp = await github.graphql(`mutation UpdateIssueStatus($orgId: String!, $itemId: ID!, $prjId: ID!, $fieldId: String!, ) {
-                  updateProjectV2ItemFieldValue( input: {
-                    clientMutationId: $orgId
-                    projectId: $prjId
-                    itemId:$itemId
-                    fieldId:"PVTSSF_lADOBDuDa84AHalLzgERFX0"
-                      value: {
-                        singleSelectOptionId: "f9c7693d"
-                      }
-                  }) {
-                    clientMutationId
-                    projectV2Item {
-                      id
-                    }
-                  }
-                }`)
-                if( updateIssueStatusResp.clientMutationId ===  )
-                break;
-              }
-              if( getItemIdResp.node.items.pageInfo.hasNextPage ) {
-                variables.cursor = getItemIdResp.node.items.pageInfo.endCursor
-              }
-              else {
-                isOver = true
-                break;
-              }
             }
 
       - name: Unassigned
