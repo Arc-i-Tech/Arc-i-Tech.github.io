@@ -116,8 +116,9 @@ jobs:
         with: 
           script: |
             // Fetch data for github project
-            const resp = await github.graphql(`query getIssueId {
-              node(id:"${{ needs.fetch-details.steps.get-required-details.outputs.REPO_ID }}") {
+            const vars = JSON.parse(${{ needs.fetch-details.outputs.ids }})
+            const resp = await github.graphql(`query getIssueId($REPO_ID: String!) {
+              node(id:$REPO_ID) {
                 ... on Repository {
                   id
                   issue(number: ${{ github.event.issue.number }}) {
@@ -128,7 +129,7 @@ jobs:
                   }
                 }
               }
-            }`)
+            }`, vars)
             
             core.setOutput('ISSUE_ID', resp.node.issue.id)
             core.setOutput('PRJ_CNT', resp.node.issue.projectItems.totalCount)
@@ -141,24 +142,25 @@ jobs:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
             const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
+            const vars = JSON.parse(${{ needs.fetch-details.outputs.ids }})
 
             if( totalCount === 0 ) {
               console.log("Issue is not added to any github projects.");
               //Add issue to project
-              const AddIssueToProjectResp = await github.graphql(`mutation AddIssueToProject {
+              const AddIssueToProjectResp = await github.graphql(`mutation AddIssueToProject($ORG_ID: String!, $PRJ_ID: ID!) {
                 addProjectV2ItemById( input: {
-                  clientMutationId:"${{ needs.fetch-details.steps.get-required-details.outputs.ORG_ID }}"
+                  clientMutationId:$ORG_ID
                   contentId:"${{ steps.issue-details.outputs.ISSUE_ID }}"
-                  projectId:"${{ needs.fetch-details.steps.get-required-details.outputs.PRJ_ID }}"
+                  projectId:$PRJ_ID
                   }) {
                   clientMutationId
                   item {
                     id
                   }
                 }
-              }`)
+              }`, vars)
 
-              if( AddIssueToProjectResp.clientMutationId === ${{ needs.fetch-details.steps.get-required-details.outputs.ORG_ID }} ) {
+              if( AddIssueToProjectResp.clientMutationId === vars.ORG_ID ) {
                 console.log("Issue got added to project: ${{ vars.MAIN_PRJ }}")
                 return true
               }
@@ -281,16 +283,22 @@ jobs:
 
       - name: Print context 1
         if: always()
-        run: |
-          echo ${{ toJson(needs.fetch-details.outputs.PRJ) }}
+        uses: actions/github-script@v7
+        with:
+          script: console.log(${{ toJson(needs.fetch-details.outputs.PRJ) }})
 
       - name: Print context 2
         if: always()
-        run: echo ${{ toJson(needs.fetch-details) }}
-#  pr-automation:
-#    runs-on: ubuntu-latest
-#
-#    steps:
+        uses: actions/github-script@v7
+        with:
+          script: console.log(${{ toJson(needs.fetch-details) }})
+
+  pr-automation:
+    needs: fetch-details
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: echo "Pull request automation"
 #      - name: Checkout repository
 #      - name: Get required ids
 #      - name: Handle new Pull Request
