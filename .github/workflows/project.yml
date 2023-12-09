@@ -207,10 +207,10 @@ jobs:
                           }
                         }
                       }
-                    }
-                    pageInfo {
-                      endCursor
-                      hasNextPage
+                      pageInfo {
+                        endCursor
+                        hasNextPage
+                      }
                     }
                   }
                 }
