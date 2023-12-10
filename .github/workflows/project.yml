@@ -250,14 +250,15 @@ jobs:
               console.log("Issue not associate with any github project.");
               return false
             }
+
             const prj = ${{ needs.fetch-details.outputs.PRJ }}
             const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() === 'status'.toUpperCase())
+            vars["FIELD_ID"] = fieldNode[0].id
+
             if( "${{ github.event.label.name }}" === 'epic') {
-              vars["FIELD_ID"] = fieldNode[0].id
               vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name === ":file_cabinet: Epic")
             }
             else if( "${{ github.event.label.name }}" === 'accepted' ) {
-              vars["FIELD_ID"] = fieldNode[0].id
               vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name === "📋 Product Backlog")
             }
             else {
@@ -285,17 +286,61 @@ jobs:
               return true
             }
             else {
-              console.log("Error while changind Issue: ${{ github.event.issue.number }} status to: " + fieldNode[0].name)
+              console.log("Error while changing Issue: ${{ github.event.issue.number }} status to: " + fieldNode[0].name)
               return false
             }
           
       - name: Unlabeled
         id: unlabeled
-        if: ${{ github.event.action }} == 'unlableled'
+        if: ${{ github.event.action }} == 'unlabeled'
         uses: actions/github-script@v7
         with: 
           script: |
+            const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
+            const vars = ${{ needs.fetch-details.outputs.ids }}
+            
+            if( totalCount === 0 ) {
+              console.log("Issue not associate with any github project.");
+              return false
+            }
+            const prj = ${{ needs.fetch-details.outputs.PRJ }}
+            const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() === 'status'.toUpperCase())
+            vars["FIELD_ID"] = fieldNode[0].id
+            if( "${{ github.event.label.name }}" === 'epic') {
+              vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name === "📋 Product Backlog")
+            }
+            else if( "${{ github.event.label.name }}" === 'accepted' ) {
+              vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name === "🆕 New")
+            }
+            else {
+              return
+            }
+            const UpdateIssueStatusResp = await github.graphql(`mutation UpdateIssueStatus($ORG_ID: String!, $PRJ_ID: ID!, $FIELD_ID: ID!, $OPTION_ID: String!) {
+              updateProjectV2ItemFieldValue( input: {
+                clientMutationId:$ORG_ID
+                projectId:$PRJ_ID
+                itemId:${{ steps.get-item-id.outputs.ITEM_ID }}
+                fieldId:$FIELD_ID
+                value: {
+                  singleSelectOptionId: $OPTION_ID
+                }
+              }) {
+                clientMutationId
+                projectV2Item {
+                  id
+                }
+              }
+            }`, vars)
 
+            if( AddIssueToProjectResp.addProjectV2ItemById.clientMutationId === vars.ORG_ID ) {
+              console.log("Issue Status changes to: " + fieldNode[0].name)
+              return true
+            }
+            else {
+              console.log("Error while changing Issue: ${{ github.event.issue.number }} Status to: " + fieldNode[0].name)
+              return false
+            }
+          
       - name: Assigned
         id: assigned
         if: ${{ github.event.action }} == 'assigned'
