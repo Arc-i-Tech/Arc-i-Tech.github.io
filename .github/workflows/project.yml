@@ -267,12 +267,11 @@ jobs:
               }
             }
             else if( "${{ github.event.action }}" == 'unlabeled' ) {
-                if( "${{ github.event.label.name }}" == "accepted" ) {
-                  targetOptionVal = "🆕 New"
-                }
-                else {
-                  targetOptionVal = "📋 Product Backlog"
-                }
+              if( "${{ github.event.label.name }}" == "accepted" ) {
+                targetOptionVal = "🆕 New"
+              }
+              else {
+                targetOptionVal = "📋 Product Backlog"
               }
             }
             else if( "${{ github.event.action }}" == 'assigned' ) {
@@ -280,11 +279,11 @@ jobs:
             }
             else if( "${{ github.event.action }}" == 'unassigned' ) {
               if( labels.includes("accepted") ) {
-                  targetOptionVal = "📋 Product Backlog"
-                }
-                else {
-                  targetOptionVal = "🆕 New"
-                }
+                targetOptionVal = "📋 Product Backlog"
+              }
+              else {
+                targetOptionVal = "🆕 New"
+              }
             }
             else {
               console.log("No valid targey value found for Event: ${{ github.event.action}}")
