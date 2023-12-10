@@ -260,26 +260,29 @@ jobs:
             const prj = ${{ needs.fetch-details.outputs.PRJ }}
             const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
             vars["FIELD_ID"] = fieldNode[0].id
+            var optionNode
 
             if( "${{ github.event.label.name }}" == 'epic') {
               if( "${{ github.event.action }}" == 'labeled' ) {
-                vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name == ":file_cabinet: Epic")[0].id
+                optionNode = fieldNode[0].options.filter((option) => option.name == ":file_cabinet: Epic")
               }
               else {
-                vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name == "📋 Product Backlog")[0].id
+                optionNode = fieldNode[0].options.filter((option) => option.name == "📋 Product Backlog")
               }
             }
             else if( "${{ github.event.label.name }}" == 'accepted' ) {
               if( "${{ github.event.action }}" == 'labeled' ) {
-                vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name == "📋 Product Backlog")[0].id
+                optionNode = fieldNode[0].options.filter((option) => option.name == "📋 Product Backlog")
               }
               else {
-                vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name == "🆕 New")[0].id
+                optionNode = fieldNode[0].options.filter((option) => option.name == "🆕 New")
               }
             }
             else {
               return
             }
+
+            vars["OPTION_ID"] = optionNode[0].id
 
             const UpdateIssueStatusResp = await github.graphql(`mutation UpdateIssueStatus($ORG_ID: String!, $PRJ_ID: ID!, $FIELD_ID: ID!, $OPTION_ID: String!) {
               updateProjectV2ItemFieldValue( input: {
@@ -299,11 +302,11 @@ jobs:
             }`, vars)
 
             if( UpdateIssueStatusResp.updateProjectV2ItemFieldValue.clientMutationId == vars.ORG_ID ) {
-              console.log("Issue Status changes to: " + fieldNode[0].name)
+              console.log("Issue Status changes to: " + optionNode[0].name)
               return true
             }
             else {
-              console.log("Error while changing Issue: ${{ github.event.issue.number }} status to: " + fieldNode[0].name)
+              console.log("Error while changing Issue: ${{ github.event.issue.number }} status to: " + optionNode[0].name)
               return false
             }
           
