@@ -299,7 +299,7 @@ jobs:
               q2 = ` value: {
                     iterationId: $ITR_ID
                   }`
-              q3 = " updateProjectV2ItemFieldValue"
+              q3 = "updateProjectV2ItemFieldValue"
             }
             else {
               q3 = "clearProjectV2ItemFieldValue"
@@ -312,7 +312,7 @@ jobs:
               fieldId: $FIELD_ID` + q2 + `}) {
                 clientMutationId
                 projectV2Item {
-                    id
+                  id
                 }
               }
             }`
