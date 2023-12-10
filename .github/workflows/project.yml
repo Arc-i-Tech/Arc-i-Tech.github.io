@@ -309,7 +309,7 @@ jobs:
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
-            const optionNode = ${{ toJSON(steps.find-target-status.outputs.OPTION_NODE) }}
+            const optionNode = ${{ steps.find-target-status.outputs.OPTION_NODE }}
             console.log(optionNode)
             const vars = ${{ needs.fetch-details.outputs.ids }}
             vars["FIELD_ID"] = "${{ steps.find-target-status.outputs.FIELD_ID }}"
