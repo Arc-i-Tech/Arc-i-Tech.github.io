@@ -302,7 +302,7 @@ jobs:
 
       - name: Update Status
         id: update-status
-        if: steps.find-target-status.outputs.UPDATE_STATUS == "true"
+        if: steps.find-target-status.outputs.UPDATE_STATUS == 'true'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
