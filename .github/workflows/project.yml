@@ -175,7 +175,7 @@ jobs:
 
       - name: Get ITEM ID
         id: get-item-id
-        if: github.event.action != 'opened' || github.event.action != 'reopened'
+        if: github.event.action != 'opened' && github.event.action != 'reopened'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
@@ -314,7 +314,7 @@ jobs:
             }`, vars)
 
             if( UpdateIssueStatusResp.updateProjectV2ItemFieldValue.clientMutationId == vars.ORG_ID ) {
-              console.log("Issue Status changes to: " + optionNode[0].name)
+              console.log("Issue Status changed to: " + optionNode[0].name)
               return true
             }
             else {
@@ -324,23 +324,72 @@ jobs:
           
       - name: Assigned
         id: assigned
-        if: github.event.action == 'assigned'
+        if: github.event.action == 'assigned' || github.event.action == 'unassigned'
         uses: actions/github-script@v7
         with:
           script: |
-            // Check assigned event
-            if( ${{ steps.issue-details.outputs.PRJ_CNT }} == 0 ) {
-              console.log("Issue is not added to any github projects.");
-              console.log("Unable to move issue to 'In progress' column");
+            const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
+            const vars = ${{ needs.fetch-details.outputs.ids }}
+            
+            if( totalCount == 0 ) {
+              console.log("Issue not associate with any github project.");
               return false
             }
+            
+            const labels = ${{ toJSON(github.event.issue.labels.*.name) }}
+            
+            const prj = ${{ needs.fetch-details.outputs.PRJ }}
+            const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
+            vars["FIELD_ID"] = fieldNode[0].id
+            var optionNode
+            const assignees = ${{ github.event.issue.assignees }}
 
-      - name: Unassigned
-        id: unassigned
-        if: github.event.action == 'unassigned'
-        uses: actions/github-script@v7
-        with: 
-          script: |
+            if( labels.includes('epic') ) {
+              optionNode = fieldNode[0].options.filter((option) => option.name == ":file_cabinet: Epic")
+            }
+            else if( "${{ github.event.action }}" == 'assigned' ) {
+                optionNode = fieldNode[0].options.filter((option) => option.name == "🔖 Sprint Backlog")
+            }
+            else if( "${{ github.event.action }}" == 'unassigned' && assignees.length <= 0 ) {
+              else if( labels.includes('accepted') ) {
+                optionNode = fieldNode[0].options.filter((option) => option.name == "📋 Product Backlog")
+              }
+              else {
+                optionNode = fieldNode[0].options.filter((option) => option.name == "🆕 New")
+              }
+            }
+            else {
+              console.log("Issue status won't change for assignee: ${{ github.event.assignee.name }}")
+              return
+            }
+
+            vars["OPTION_ID"] = optionNode[0].id
+
+            const UpdateIssueStatusResp = await github.graphql(`mutation UpdateIssueStatus($ORG_ID: String!, $PRJ_ID: ID!, $FIELD_ID: ID!, $OPTION_ID: String!) {
+              updateProjectV2ItemFieldValue( input: {
+                clientMutationId:$ORG_ID
+                projectId:$PRJ_ID
+                itemId:"${{ steps.get-item-id.outputs.ITEM_ID }}"
+                fieldId:$FIELD_ID
+                value: {
+                  singleSelectOptionId: $OPTION_ID
+                }
+              }) {
+                clientMutationId
+                projectV2Item {
+                  id
+                }
+              }
+            }`, vars)
+
+            if( UpdateIssueStatusResp.updateProjectV2ItemFieldValue.clientMutationId == vars.ORG_ID ) {
+              console.log("Issue Status changed to: " + optionNode[0].name)
+              return true
+            }
+            else {
+              console.log("Error while changing Issue: ${{ github.event.issue.number }} status to: " + optionNode[0].name)
+              return false
+            }
 
       - name: Print context 1
         if: always()
