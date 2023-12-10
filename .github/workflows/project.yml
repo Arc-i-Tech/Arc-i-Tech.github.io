@@ -294,9 +294,12 @@ jobs:
               return
             }
 
-            optionNode = fieldNode[0].options.filter((option) => option.name == targetOptionVal )
+            const prj = ${{ needs.fetch-details.outputs.PRJ }}
+            const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
+            const optionNode = fieldNode[0].options.filter((option) => option.name == targetOptionVal )
 
             core.setOutput("OPTION_NODE", JSON.stringify(optionNode))
+            core.setOutput("FIELD_ID", fieldNode[0].id)
             core.setOutput("UPDATE_STATUS", "true")
 
       - name: Update Status
@@ -306,11 +309,9 @@ jobs:
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
-            const prj = ${{ needs.fetch-details.outputs.PRJ }}
-            const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
             const optionNode = ${{ toJSON(steps.find-target-status.outputs.OPTION_NODE) }}
 
-            vars["FIELD_ID"] = fieldNode[0].id
+            vars["FIELD_ID"] = ${{ steps.find-target-status.outputs.FIELD_ID }}
             vars["OPTION_ID"] = optionNode[0].id
 
             const UpdateIssueStatusResp = await github.graphql(`mutation UpdateIssueStatus($ORG_ID: String!, $PRJ_ID: ID!, $FIELD_ID: ID!, $OPTION_ID: String!) {
