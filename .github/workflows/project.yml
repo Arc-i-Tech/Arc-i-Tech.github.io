@@ -186,12 +186,12 @@ jobs:
               return false
             }
             const vars = ${{ needs.fetch-details.outputs.ids }}
-            boolean isFound = false
-            boolean isOver = false
+            var isFound = false
+            var isOver = false
             vars.cursor = ""
             var itemNodes = []
 
-            while(!isFound || !isOver) {
+            while(isFound === false && isOver === false) {
               const getItemIdResp = await github.graphql(`query getItemID($PRJ_ID: ID!, $cursor: String!) {
                 node(id:$PRJ_ID) {
                   ... on ProjectV2 {
@@ -221,10 +221,7 @@ jobs:
               itemNodes = getItemIdResp.node.items.nodes.filter((node) => node.content.__typename === 'Issue' && node.content.number === ${{ github.event.issue.number }})
               if( itemNodes.length > 0 ) {
                 isFound = true
-                core.setOutput('ITEM_ID', itemNodes[0].id)
-                return true
               }
-              console.log(JSON.stringify(getItemIdResp.node))
               if( getItemIdResp.node.items.pageInfo.hasNextPage ) {
                 vars.cursor = getItemIdResp.node.items.pageInfo.endCursor
               }
@@ -233,10 +230,13 @@ jobs:
                 break;
               }
             }
-            
+            console.log(JSON.stringify(itemNodes))
+            if( isFound === true) {
+              core.setOutput('ITEM_ID', itemNodes[0].id)
+              return true
+            }
             console.log("Issue: ${{ github.event.issue.number }} is not associated with GitHub project: ${{ vars.MAIN_PRJ }}")
             return false
-            
 
       - name: Labeled
         id: labeled
