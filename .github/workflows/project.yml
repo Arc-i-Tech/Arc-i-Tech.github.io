@@ -257,8 +257,9 @@ jobs:
               return false
             }
             
-            const labels = ${{ github.event.issue.labels }}
-
+            const labels = ${{ toJSON(github.event.issue.labels) }}
+            console.log(${{ toJSON(github.event.issue.labels) }})
+            
             const prj = ${{ needs.fetch-details.outputs.PRJ }}
             const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
             vars["FIELD_ID"] = fieldNode[0].id
