@@ -257,10 +257,10 @@ jobs:
             vars["FIELD_ID"] = fieldNode[0].id
 
             if( "${{ github.event.label.name }}" === 'epic') {
-              vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name === ":file_cabinet: Epic")
+              vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name === ":file_cabinet: Epic")[0].id
             }
             else if( "${{ github.event.label.name }}" === 'accepted' ) {
-              vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name === "📋 Product Backlog")
+              vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name === "📋 Product Backlog")[0].id
             }
             else {
               return
@@ -309,10 +309,10 @@ jobs:
             const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() === 'status'.toUpperCase())
             vars["FIELD_ID"] = fieldNode[0].id
             if( "${{ github.event.label.name }}" === 'epic') {
-              vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name === "📋 Product Backlog")
+              vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name === "📋 Product Backlog")[0].id
             }
             else if( "${{ github.event.label.name }}" === 'accepted' ) {
-              vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name === "🆕 New")
+              vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name === "🆕 New")[0].id
             }
             else {
               return
