@@ -219,15 +219,8 @@ jobs:
                 }
               }`, vars)
 
-              console.log(isFound)
-              console.log(isOver)
-              
               itemNodes = getItemIdResp.node.items.nodes.filter((node) => node.content.__typename === 'Issue' && node.content.number === ${{ github.event.issue.number }})
-              
-              console.log(JSON.stringify(getItemIdResp.node.items))
-              console.log("ITEM NODE --------------------------------")
-              console.log(JSON.stringify(itemNodes))
-              
+
               if( itemNodes.length > 0 ) {
                 isFound = true
                 break
@@ -241,13 +234,7 @@ jobs:
                 break;
               }
             }
-            console.log(JSON.stringify(itemNodes))
-            console.log(isFound)
-            console.log(isOver)
-            console.log(typeof isFound)
-            console.log(typeof isOver)
-            console.log(isFound == true)
-            console.log(typeof true)
+
             if( isFound == true) {
               core.setOutput('ITEM_ID', itemNodes[0].id)
               return true
@@ -300,7 +287,7 @@ jobs:
               }
             }`, vars)
 
-            if( AddIssueToProjectResp.addProjectV2ItemById.clientMutationId == vars.ORG_ID ) {
+            if( UpdateIssueStatusResp.updateProjectV2ItemFieldValue.clientMutationId == vars.ORG_ID ) {
               console.log("Issue Status changes to: " + fieldNode[0].name)
               return true
             }
@@ -352,7 +339,7 @@ jobs:
               }
             }`, vars)
 
-            if( AddIssueToProjectResp.addProjectV2ItemById.clientMutationId == vars.ORG_ID ) {
+            if( UpdateIssueStatusResp.updateProjectV2ItemFieldValue.clientMutationId == vars.ORG_ID ) {
               console.log("Issue Status changes to: " + fieldNode[0].name)
               return true
             }
