@@ -286,10 +286,10 @@ jobs:
               }
             }
             else {
-              console.log("No valid targey value found for Event: ${{ github.event.action}}")
+              console.log("No valid target value found for Event: ${{ github.event.action}}")
               return
             } 
-            if( targetOptionVal == item.fieldValueByName.fieldValueByName.name ) {
+            if( targetOptionVal == item.fieldValueByName.name ) {
               console.log("Target Status value and current status values are same: " + targetOptionVal)
               return
             }
