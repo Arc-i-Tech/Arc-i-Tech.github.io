@@ -312,14 +312,14 @@ jobs:
             const optionNode = ${{ toJSON(steps.find-target-status.outputs.OPTION_NODE) }}
 
             const vars = ${{ needs.fetch-details.outputs.ids }}
-            vars["FIELD_ID"] = ${{ steps.find-target-status.outputs.FIELD_ID }}
+            vars["FIELD_ID"] = "${{ steps.find-target-status.outputs.FIELD_ID }}"
             vars["OPTION_ID"] = optionNode[0].id
 
             const UpdateIssueStatusResp = await github.graphql(`mutation UpdateIssueStatus($ORG_ID: String!, $PRJ_ID: ID!, $FIELD_ID: ID!, $OPTION_ID: String!) {
               updateProjectV2ItemFieldValue( input: {
                 clientMutationId:$ORG_ID
                 projectId:$PRJ_ID
-                itemId:"${{ steps.get-item-id.outputs.ITEM_ID }}"
+                itemId:"${{ steps.find-item.outputs.ITEM_ID }}"
                 fieldId:$FIELD_ID
                 value: {
                   singleSelectOptionId: $OPTION_ID
