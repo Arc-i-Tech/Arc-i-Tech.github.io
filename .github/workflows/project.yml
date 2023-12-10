@@ -3,7 +3,7 @@ run-name: Project automate
 on:
   issues:
     types:
-      ["opened", "reopened", "labeled", "unlabeled", "assigned", "unassigned"]
+      ["labeled", "unlabeled", "assigned", "unassigned"]
 
   pull_request:
     types: ["opened", "reopened", "labeled", "unlabeled"]
@@ -85,6 +85,12 @@ jobs:
                       ... on ProjectV2IterationField {
                         id
                         name
+                        configuration {
+                          iterations {
+                            id
+                            title
+                          }
+                        }
                       }
                     }
                   }
@@ -101,68 +107,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get Issue details
-        id: issue-details
-        uses: actions/github-script@v7
-        with: 
-          github-token: ${{ secrets.ACCESS_TOKEN }}
-          script: |
-            // Fetch data for github project
-            const vars = ${{ needs.fetch-details.outputs.ids }}
-            const resp = await github.graphql(`query getIssueId($REPO_ID: ID!) {
-              node(id:$REPO_ID) {
-                ... on Repository {
-                  id
-                  issue(number: ${{ github.event.issue.number }}) {
-                    id
-                    projectItems(first: 10) {
-                      totalCount
-                    }
-                  }
-                }
-              }
-            }`, vars)
-            core.setOutput('ISSUE_ID', resp.node.issue.id)
-            core.setOutput('PRJ_CNT', resp.node.issue.projectItems.totalCount)
-            console.log(resp.node.issue.projectItems.totalCount)
-            
-      - name: Opened/ Reopned
-        id: opened-reopned
-        if: github.event.action == 'opened' || github.event.action == 'reopened'
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.ACCESS_TOKEN }}
-          script: |
-            const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
-            const vars = ${{ needs.fetch-details.outputs.ids }}
-
-            if( totalCount == 0 ) {
-              //Add issue to project
-              const AddIssueToProjectResp = await github.graphql(`mutation AddIssueToProject($ORG_ID: String!, $PRJ_ID: ID!) {
-                addProjectV2ItemById( input: {
-                  clientMutationId:$ORG_ID
-                  contentId:"${{ steps.issue-details.outputs.ISSUE_ID }}"
-                  projectId:$PRJ_ID
-                  }) {
-                  clientMutationId
-                  item {
-                    id
-                  }
-                }
-              }`, vars)
-
-              if( AddIssueToProjectResp.addProjectV2ItemById.clientMutationId == vars.ORG_ID ) {
-                console.log("Issue got added to project: ${{ vars.MAIN_PRJ }}")
-                return true
-              }
-              else {
-                console.log("Error while adding Issue: ${{ github.event.issue.number }} to project: ${{ vars.MAIN_PRJ }}")
-                return false
-              }
-            }
-            console.log("Issue already associate with github project.");
-            return false
-
       - name: Find ITEM
         id: find-item
         if: github.event.action != 'opened' && github.event.action != 'reopened'
@@ -170,11 +114,6 @@ jobs:
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
-            const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
-            if( totalCount == 0 ) {
-              console.log("Issue not associate with any github project.");
-              return false
-            }
             const vars = ${{ needs.fetch-details.outputs.ids }}
             var isFound = false
             var isOver = false
@@ -255,7 +194,7 @@ jobs:
             if( labels.includes('epic') ) {
               targetOptionVal = ":file_cabinet: Epic"
             }
-            else if( assignees.length > 0 ) { 
+            else if( assignees.length > 0 || "${{ github.event.action }}" == 'assigned') { 
               targetOptionVal = "🔖 Sprint Backlog"
             }
             else if( "${{ github.event.action }}" == 'labeled' ) {
@@ -274,9 +213,6 @@ jobs:
                 targetOptionVal = "📋 Product Backlog"
               }
             }
-            else if( "${{ github.event.action }}" == 'assigned' ) {
-              targetOptionVal = "🔖 Sprint Backlog"
-            }
             else if( "${{ github.event.action }}" == 'unassigned' ) {
               if( labels.includes("accepted") ) {
                 targetOptionVal = "📋 Product Backlog"
@@ -290,7 +226,7 @@ jobs:
               return
             } 
             if( targetOptionVal == item.fieldValueByName.name ) {
-              console.log("Target Status value and current status values are same: " + targetOptionVal)
+              console.log("Target Status value and current status value are same: " + targetOptionVal)
               return
             }
 
@@ -302,6 +238,8 @@ jobs:
             core.setOutput("FIELD_ID", fieldNode[0].id)
             core.setOutput("UPDATE_STATUS", "true")
 
+            console.log("Target Status value: " + targetOptionVal)
+
       - name: Update Status
         id: update-status
         if: steps.find-target-status.outputs.UPDATE_STATUS == 'true'
@@ -310,7 +248,7 @@ jobs:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
             const optionNode = ${{ steps.find-target-status.outputs.OPTION_NODE }}
-            console.log(optionNode)
+
             const vars = ${{ needs.fetch-details.outputs.ids }}
             vars["FIELD_ID"] = "${{ steps.find-target-status.outputs.FIELD_ID }}"
             vars["OPTION_ID"] = optionNode[0].id
@@ -341,17 +279,54 @@ jobs:
               return false
             }
 
-      - name: Print context 1
-        if: always()
+      - name: Update Sprint
+        id: update-sprint
+        if: github.event.action == 'assigned' || github.event.action == 'unassigned'
         uses: actions/github-script@v7
         with:
-          script: console.log(${{ toJson(steps) }})
+          github-token: ${{ secrets.ACCESS_TOKEN }}
+          script: |
+            const prj = ${{ needs.fetch-details.outputs.PRJ }}
+            const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == "🏃 Sprint".toUpperCase())
+            const vars = ${{ needs.fetch-details.outputs.ids }}
+            vars["FIELD_ID"] = fieldNode[0].id
+            vars["ITR_ID"] = fieldNode[0].configuration.iterations[0].id
+            var q1 = ""
+            var q2 = ""
+            var q3 = ""
+            if( ${{ github.event.action }} == 'assigned' ) {
+              q1 = ", $ITR_ID: String!"
+              q2 = `value: {
+                    iterationId: $ITR_ID
+                  }`
+              q3 = "updateProjectV2ItemFieldValue"
+            }
+            else {
+              q3 = "clearProjectV2ItemFieldValue"
+            }
+            var query = "mutation UpdateSprint($ORG_ID: String!, $PRJ_ID: ID!, $FIELD_ID: ID!" +
+            q1 + `) {` + q3 + `(input: {
+              clientMutationId: $ORG_ID
+              projectId: $PRJ_ID
+              itemId: "${{ steps.find-item.outputs.ITEM_ID }}"
+              fieldId: $FIELD_ID` + q2 + `}) {
+                clientMutationId
+                projectV2Item {
+                    id
+                }
+              }
+            }`
 
-      - name: Print context 2
-        if: always()
-        uses: actions/github-script@v7
-        with:
-          script: console.log(${{ toJson(github) }})
+            const UpdateSprintResp = await github.graphql(query, vars)
+
+            if( UpdateSprintResp.errors.length > 0 ) {
+              console.log("Unable to update sprint field")
+              return false
+            }
+            else {
+              console.log("Update Sprint")
+              return true
+            }
 
   pr-automation:
     if: github.event_name == 'pull_request'
