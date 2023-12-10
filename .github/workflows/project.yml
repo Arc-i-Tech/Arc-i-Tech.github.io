@@ -203,6 +203,7 @@ jobs:
                       nodes {
                         id
                         content {
+                          __typename
                           ... on Issue {
                             number
                             title
@@ -217,16 +218,21 @@ jobs:
                   }
                 }
               }`, vars)
+
               console.log(isFound)
               console.log(isOver)
-              itemNodes = getItemIdResp.node.items.nodes.filter((node) => node.content.__typename == 'Issue' && node.content.number == ${{ github.event.issue.number }})
+              
+              itemNodes = getItemIdResp.node.items.nodes.filter((node) => node.content.__typename === 'Issue' && node.content.number === ${{ github.event.issue.number }})
+              
               console.log(JSON.stringify(getItemIdResp.node.items))
               console.log("ITEM NODE --------------------------------")
               console.log(JSON.stringify(itemNodes))
+              
               if( itemNodes.length > 0 ) {
                 isFound = true
                 break
               }
+              
               if( getItemIdResp.node.items.pageInfo.hasNextPage ) {
                 vars.cursor = getItemIdResp.node.items.pageInfo.endCursor
               }
