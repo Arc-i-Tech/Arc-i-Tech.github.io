@@ -94,20 +94,10 @@ jobs:
             console.log(JSON.stringify(getPrjFields))
             core.setOutput('PRJ', JSON.stringify(getPrjFields.node))
 
-      - name: Print outputs
-        id: print-outputs
-        uses: actions/github-script@v7
-        with:
-          script: |
-            console.log("Steps: ")
-            console.log(${{ toJSON(steps) }})
-            console.log("Job: ")
-            console.log(${{ toJSON(job) }})
-
   issue-automation:
+    if: github.event_name == 'issues'
     name: Issue automation- ${{ github.event.issue.number }}
     needs: fetch-details
-    if: github.event_name == 'issues'
     runs-on: ubuntu-latest
 
     steps:
@@ -173,8 +163,8 @@ jobs:
             console.log("Issue already associate with github project.");
             return false
 
-      - name: Get ITEM ID
-        id: get-item-id
+      - name: Find ITEM
+        id: find-item
         if: github.event.action != 'opened' && github.event.action != 'reopened'
         uses: actions/github-script@v7
         with:
@@ -202,6 +192,12 @@ jobs:
                     }) {
                       nodes {
                         id
+                        fieldValueByName(name:"Status") {
+                          ... on ProjectV2ItemFieldSingleSelectValue {
+                            id
+                            name
+                          }
+                        }
                         content {
                           __typename
                           ... on Issue {
@@ -237,139 +233,85 @@ jobs:
 
             if( isFound == true) {
               core.setOutput('ITEM_ID', itemNodes[0].id)
+              core.setOutput('ITEM', JSON.stringify(itemNodes[0]))
               return true
             }
             console.log("Issue: ${{ github.event.issue.number }} is not associated with GitHub project: ${{ vars.MAIN_PRJ }}")
             return false
 
-      - name: Labeled/ Unlabeled
-        id: labeled-unlabeled
-        if: github.event.action == 'labeled' || github.event.action == 'unlabeled'
-        uses: actions/github-script@v7
-        with: 
-          github-token: ${{ secrets.ACCESS_TOKEN }}
-          script: |
-            const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
-            const vars = ${{ needs.fetch-details.outputs.ids }}
-            
-            if( totalCount == 0 ) {
-              console.log("Issue not associate with any github project.");
-              return false
-            }
-            
-            const labels = ${{ toJSON(github.event.issue.labels.*.name) }}
-            const assignees = ${{ toJSON(github.event.issue.assignees) }}
-            
-            const prj = ${{ needs.fetch-details.outputs.PRJ }}
-            const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
-            vars["FIELD_ID"] = fieldNode[0].id
-            var optionNode
-
-            if( "${{ github.event.label.name }}" == 'epic' ) {
-              if( "${{ github.event.action }}" == 'labeled' ) {
-                optionNode = fieldNode[0].options.filter((option) => option.name == ":file_cabinet: Epic")
-              }
-              else {
-                if( assignees.length > 0) {
-                  optionNode = fieldNode[0].options.filter((option) => option.name == "🔖 Sprint Backlog")
-                }
-                else if( labels.includes('accepted') ) {
-                  optionNode = fieldNode[0].options.filter((option) => option.name == "📋 Product Backlog")
-                }
-                else {
-                  optionNode = fieldNode[0].options.filter((option) => option.name == "🆕 New")
-                }
-              }
-            }
-            else if( "${{ github.event.label.name }}" == 'accepted' ) {
-              if( labels.includes('epic') ) {
-                optionNode = fieldNode[0].options.filter((option) => option.name == ":file_cabinet: Epic")
-              }
-              else if( assignees.length > 0) {
-                optionNode = fieldNode[0].options.filter((option) => option.name == "🔖 Sprint Backlog")
-              }
-              else if( "${{ github.event.action }}" == 'labeled' ) {
-                optionNode = fieldNode[0].options.filter((option) => option.name == "📋 Product Backlog")
-              }
-              else {
-                optionNode = fieldNode[0].options.filter((option) => option.name == "🆕 New")
-              }
-            }
-            else {
-              console.log("Issue status won't change for label: ${{ github.event.label.name }}")
-              return
-            }
-
-            vars["OPTION_ID"] = optionNode[0].id
-
-            const UpdateIssueStatusResp = await github.graphql(`mutation UpdateIssueStatus($ORG_ID: String!, $PRJ_ID: ID!, $FIELD_ID: ID!, $OPTION_ID: String!) {
-              updateProjectV2ItemFieldValue( input: {
-                clientMutationId:$ORG_ID
-                projectId:$PRJ_ID
-                itemId:"${{ steps.get-item-id.outputs.ITEM_ID }}"
-                fieldId:$FIELD_ID
-                value: {
-                  singleSelectOptionId: $OPTION_ID
-                }
-              }) {
-                clientMutationId
-                projectV2Item {
-                  id
-                }
-              }
-            }`, vars)
-
-            if( UpdateIssueStatusResp.updateProjectV2ItemFieldValue.clientMutationId == vars.ORG_ID ) {
-              console.log("Issue Status changed to: " + optionNode[0].name)
-              return true
-            }
-            else {
-              console.log("Error while changing Issue: ${{ github.event.issue.number }} status to: " + optionNode[0].name)
-              return false
-            }
-          
-      - name: Assigned/ Unassigned
-        id: assigned-unassigned
-        if: github.event.action == 'assigned' || github.event.action == 'unassigned'
+      - name: Find target Status
+        id: find-target-status
+        if: github.event.action != 'opened' && github.event.action != 'reopened'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
-            const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
-            const vars = ${{ needs.fetch-details.outputs.ids }}
-            
-            if( totalCount == 0 ) {
-              console.log("Issue not associate with any github project.");
-              return false
-            }
-            
-            const labels = ${{ toJSON(github.event.issue.labels.*.name) }}
-            
-            const prj = ${{ needs.fetch-details.outputs.PRJ }}
-            const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
-            vars["FIELD_ID"] = fieldNode[0].id
-            var optionNode
-            const assignees = ${{ toJSON(github.event.issue.assignees) }}
+            const item = ${{ steps.find-item.outputs.ITEM }}
 
+            const labels = ${{ toJSON(github.event.issue.labels.*.name) }}
+            const assignees = ${{ toJSON(github.event.issue.assignees) }}
+            
+            var targetOptionVal = ""
             if( labels.includes('epic') ) {
-              optionNode = fieldNode[0].options.filter((option) => option.name == ":file_cabinet: Epic")
+              targetOptionVal = ":file_cabinet: Epic"
+            }
+            else if( assignees.length > 0 ) { 
+              targetOptionVal = "🔖 Sprint Backlog"
+            }
+            else if( "${{ github.event.action }}" == 'labeled' ) {
+              if( "${{ github.event.label.name }}" == 'epic' ) {
+                targetOptionVal = ":file_cabinet: Epic"
+              }
+              else if( "${{ github.event.label.name }}" == 'accepted' ) {
+                targetOptionVal = "📋 Product Backlog"
+              }
+            }
+            else if( "${{ github.event.action }}" == 'unlabeled' ) {
+                if( "${{ github.event.label.name }}" == "accepted" ) {
+                  targetOptionVal = "🆕 New"
+                }
+                else {
+                  targetOptionVal = "📋 Product Backlog"
+                }
+              }
             }
             else if( "${{ github.event.action }}" == 'assigned' ) {
-              optionNode = fieldNode[0].options.filter((option) => option.name == "🔖 Sprint Backlog")
+              targetOptionVal = "🔖 Sprint Backlog"
             }
-            else if( "${{ github.event.action }}" == 'unassigned' && assignees.length <= 0 ) {
-              if( labels.includes('accepted') ) {
-                optionNode = fieldNode[0].options.filter((option) => option.name == "📋 Product Backlog")
-              }
-              else {
-                optionNode = fieldNode[0].options.filter((option) => option.name == "🆕 New")
-              }
+            else if( "${{ github.event.action }}" == 'unassigned' ) {
+              if( labels.includes("accepted") ) {
+                  targetOptionVal = "📋 Product Backlog"
+                }
+                else {
+                  targetOptionVal = "🆕 New"
+                }
             }
             else {
-              console.log("Issue status won't change for assignee: ${{ github.event.assignee.name }}")
+              console.log("No valid targey value found for Event: ${{ github.event.action}}")
+              return
+            } 
+            if( targetOptionVal == item.fieldValueByName.fieldValueByName.name ) {
+              console.log("Target Status value and current status values are same: " + targetOptionVal)
               return
             }
 
+            optionNode = fieldNode[0].options.filter((option) => option.name == targetOptionVal )
+
+            core.setOutput("OPTION_NODE", JSON.stringify(optionNode))
+            core.setOutput("UPDATE_STATUS", "true")
+
+      - name: Update Status
+        id: update-status
+        if: steps.find-target-status.outputs.UPDATE_STATUS == "true"
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.ACCESS_TOKEN }}
+          script: |
+            const prj = ${{ needs.fetch-details.outputs.PRJ }}
+            const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
+            const optionNode = ${{ toJSON(steps.find-target-status.outputs.OPTION_NODE) }}
+
+            vars["FIELD_ID"] = fieldNode[0].id
             vars["OPTION_ID"] = optionNode[0].id
 
             const UpdateIssueStatusResp = await github.graphql(`mutation UpdateIssueStatus($ORG_ID: String!, $PRJ_ID: ID!, $FIELD_ID: ID!, $OPTION_ID: String!) {
@@ -411,6 +353,7 @@ jobs:
           script: console.log(${{ toJson(github) }})
 
   pr-automation:
+    if: github.event_name == 'pull_request'
     needs: fetch-details
     runs-on: ubuntu-latest
 
