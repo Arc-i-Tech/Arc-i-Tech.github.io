@@ -296,10 +296,10 @@ jobs:
             var q3 = ""
             if( "${{ github.event.action }}" == 'assigned' ) {
               q1 = ", $ITR_ID: String!"
-              q2 = `value: {
+              q2 = ` value: {
                     iterationId: $ITR_ID
                   }`
-              q3 = "updateProjectV2ItemFieldValue"
+              q3 = " updateProjectV2ItemFieldValue"
             }
             else {
               q3 = "clearProjectV2ItemFieldValue"
