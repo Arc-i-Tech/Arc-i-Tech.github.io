@@ -39,8 +39,8 @@ jobs:
             }`)
             
             // Find project number and id from project name
-            const prj = resp.organization.projectsV2.nodes.filter((node) => node.title === "${{ vars.MAIN_PRJ }}")
-            if( prj.length === 0 ) {
+            const prj = resp.organization.projectsV2.nodes.filter((node) => node.title == "${{ vars.MAIN_PRJ }}")
+            if( prj.length == 0 ) {
               console.log("No projects found with name: ${{ vars.MAIN_PRJ }}")
               return false
             } 
@@ -146,7 +146,7 @@ jobs:
             const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
             const vars = ${{ needs.fetch-details.outputs.ids }}
 
-            if( totalCount === 0 ) {
+            if( totalCount == 0 ) {
               //Add issue to project
               const AddIssueToProjectResp = await github.graphql(`mutation AddIssueToProject($ORG_ID: String!, $PRJ_ID: ID!) {
                 addProjectV2ItemById( input: {
@@ -161,7 +161,7 @@ jobs:
                 }
               }`, vars)
 
-              if( AddIssueToProjectResp.addProjectV2ItemById.clientMutationId === vars.ORG_ID ) {
+              if( AddIssueToProjectResp.addProjectV2ItemById.clientMutationId == vars.ORG_ID ) {
                 console.log("Issue got added to project: ${{ vars.MAIN_PRJ }}")
                 return true
               }
@@ -181,7 +181,7 @@ jobs:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
             const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
-            if( totalCount === 0 ) {
+            if( totalCount == 0 ) {
               console.log("Issue not associate with any github project.");
               return false
             }
@@ -191,7 +191,7 @@ jobs:
             vars.cursor = ""
             var itemNodes = []
 
-            while(isFound === false && isOver === false) {
+            while(isFound == false && isOver == false) {
               const getItemIdResp = await github.graphql(`query getItemID($PRJ_ID: ID!, $cursor: String!) {
                 node(id:$PRJ_ID) {
                   ... on ProjectV2 {
@@ -217,10 +217,12 @@ jobs:
                   }
                 }
               }`, vars)
-              
-              itemNodes = getItemIdResp.node.items.nodes.filter((node) => node.content.__typename === 'Issue' && node.content.number === ${{ github.event.issue.number }})
+              console.log(isFound)
+              console.log(isOver)
+              itemNodes = getItemIdResp.node.items.nodes.filter((node) => node.content.__typename == 'Issue' && node.content.number == ${{ github.event.issue.number }})
               if( itemNodes.length > 0 ) {
                 isFound = true
+                break
               }
               if( getItemIdResp.node.items.pageInfo.hasNextPage ) {
                 vars.cursor = getItemIdResp.node.items.pageInfo.endCursor
@@ -231,7 +233,13 @@ jobs:
               }
             }
             console.log(JSON.stringify(itemNodes))
-            if( isFound === true) {
+            console.log(isFound)
+            console.log(isOver)
+            console.log(typeof isFound)
+            console.log(typeof isOver)
+            console.log(isFound == true)
+            console.log(typeof true)
+            if( isFound == true) {
               core.setOutput('ITEM_ID', itemNodes[0].id)
               return true
             }
@@ -248,20 +256,20 @@ jobs:
             const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
             const vars = ${{ needs.fetch-details.outputs.ids }}
             
-            if( totalCount === 0 ) {
+            if( totalCount == 0 ) {
               console.log("Issue not associate with any github project.");
               return false
             }
 
             const prj = ${{ needs.fetch-details.outputs.PRJ }}
-            const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() === 'status'.toUpperCase())
+            const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
             vars["FIELD_ID"] = fieldNode[0].id
 
-            if( "${{ github.event.label.name }}" === 'epic') {
-              vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name === ":file_cabinet: Epic")[0].id
+            if( "${{ github.event.label.name }}" == 'epic') {
+              vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name == ":file_cabinet: Epic")[0].id
             }
-            else if( "${{ github.event.label.name }}" === 'accepted' ) {
-              vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name === "📋 Product Backlog")[0].id
+            else if( "${{ github.event.label.name }}" == 'accepted' ) {
+              vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name == "📋 Product Backlog")[0].id
             }
             else {
               return
@@ -283,7 +291,7 @@ jobs:
               }
             }`, vars)
 
-            if( AddIssueToProjectResp.addProjectV2ItemById.clientMutationId === vars.ORG_ID ) {
+            if( AddIssueToProjectResp.addProjectV2ItemById.clientMutationId == vars.ORG_ID ) {
               console.log("Issue Status changes to: " + fieldNode[0].name)
               return true
             }
@@ -302,18 +310,18 @@ jobs:
             const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
             const vars = ${{ needs.fetch-details.outputs.ids }}
             
-            if( totalCount === 0 ) {
+            if( totalCount == 0 ) {
               console.log("Issue not associate with any github project.");
               return false
             }
             const prj = ${{ needs.fetch-details.outputs.PRJ }}
-            const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() === 'status'.toUpperCase())
+            const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
             vars["FIELD_ID"] = fieldNode[0].id
-            if( "${{ github.event.label.name }}" === 'epic') {
-              vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name === "📋 Product Backlog")[0].id
+            if( "${{ github.event.label.name }}" == 'epic') {
+              vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name == "📋 Product Backlog")[0].id
             }
-            else if( "${{ github.event.label.name }}" === 'accepted' ) {
-              vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name === "🆕 New")[0].id
+            else if( "${{ github.event.label.name }}" == 'accepted' ) {
+              vars["OPTION_ID"] = fieldNode[0].options.filter((option) => option.name == "🆕 New")[0].id
             }
             else {
               return
@@ -335,7 +343,7 @@ jobs:
               }
             }`, vars)
 
-            if( AddIssueToProjectResp.addProjectV2ItemById.clientMutationId === vars.ORG_ID ) {
+            if( AddIssueToProjectResp.addProjectV2ItemById.clientMutationId == vars.ORG_ID ) {
               console.log("Issue Status changes to: " + fieldNode[0].name)
               return true
             }
@@ -351,7 +359,7 @@ jobs:
         with:
           script: |
             // Check assigned event
-            if( ${{ steps.issue-details.outputs.PRJ_CNT }} === 0 ) {
+            if( ${{ steps.issue-details.outputs.PRJ_CNT }} == 0 ) {
               console.log("Issue is not added to any github projects.");
               console.log("Unable to move issue to 'In progress' column");
               return false
