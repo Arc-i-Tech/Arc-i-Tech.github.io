@@ -319,13 +319,12 @@ jobs:
 
             const UpdateSprintResp = await github.graphql(query, vars)
 
-            if( UpdateSprintResp.errors.length > 0 ) {
+            if( UpdateSprintResp[q3].clientMutationId == vars.ORG_ID && UpdateSprintResp[q3].projectV2Item.id == vars.PRJ_ID ) {
+              console.log("Update Sprint")
+              return true            }
+            else {
               console.log("Unable to update sprint field")
               return false
-            }
-            else {
-              console.log("Update Sprint")
-              return true
             }
 
   pr-automation:
