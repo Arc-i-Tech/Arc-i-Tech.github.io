@@ -196,7 +196,10 @@ jobs:
                 node(id:$PRJ_ID) {
                   ... on ProjectV2 {
                     id
-                    items(first: 10, after:$cursor) {
+                    items(first: 10, after:$cursor, orderBy: {
+                      field:POSITION,
+                      direction:DESC
+                    }) {
                       nodes {
                         id
                         content {
@@ -219,7 +222,8 @@ jobs:
               itemNodes = getItemIdResp.node.items.nodes.filter((node) => node.content.__typename === 'Issue' && node.content.number === ${{ github.event.issue.number }})
               if( itemNodes.length > 0 ) {
                 isFound = true
-                break;  
+                core.setOutput('ITEM_ID', itemNodes[0].id)
+                return true
               }
               if( getItemIdResp.node.items.pageInfo.hasNextPage ) {
                 vars.cursor = getItemIdResp.node.items.pageInfo.endCursor
@@ -229,13 +233,10 @@ jobs:
                 break;
               }
             }
-            if( isFound ) {
-              core.setOutput('ITEM_ID', itemNodes[0].id)
-            }
-            else {
-              console.log("Issue: ${{ github.event.issue.number }} is not associated with any GitHub project: ${{ vars.MAIN_PRJ }}")
-              return false
-            }
+            
+            console.log("Issue: ${{ github.event.issue.number }} is not associated with GitHub project: ${{ vars.MAIN_PRJ }}")
+            return false
+            
 
       - name: Labeled
         id: labeled
@@ -269,7 +270,7 @@ jobs:
               updateProjectV2ItemFieldValue( input: {
                 clientMutationId:$ORG_ID
                 projectId:$PRJ_ID
-                itemId:${{ steps.get-item-id.outputs.ITEM_ID }}
+                itemId:"${{ steps.get-item-id.outputs.ITEM_ID }}"
                 fieldId:$FIELD_ID
                 value: {
                   singleSelectOptionId: $OPTION_ID
@@ -321,7 +322,7 @@ jobs:
               updateProjectV2ItemFieldValue( input: {
                 clientMutationId:$ORG_ID
                 projectId:$PRJ_ID
-                itemId:${{ steps.get-item-id.outputs.ITEM_ID }}
+                itemId:"${{ steps.get-item-id.outputs.ITEM_ID }}"
                 fieldId:$FIELD_ID
                 value: {
                   singleSelectOptionId: $OPTION_ID
