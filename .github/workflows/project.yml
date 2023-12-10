@@ -186,8 +186,8 @@ jobs:
               return false
             }
             const vars = ${{ needs.fetch-details.outputs.ids }}
-            var isFound = false
-            var isOver = false
+            boolean isFound = false
+            boolean isOver = false
             vars.cursor = ""
             var itemNodes = []
 
@@ -218,13 +218,13 @@ jobs:
                 }
               }`, vars)
               
-              console.log(JSON.stringify(getItemIdResp.node))
               itemNodes = getItemIdResp.node.items.nodes.filter((node) => node.content.__typename === 'Issue' && node.content.number === ${{ github.event.issue.number }})
               if( itemNodes.length > 0 ) {
                 isFound = true
                 core.setOutput('ITEM_ID', itemNodes[0].id)
                 return true
               }
+              console.log(JSON.stringify(getItemIdResp.node))
               if( getItemIdResp.node.items.pageInfo.hasNextPage ) {
                 vars.cursor = getItemIdResp.node.items.pageInfo.endCursor
               }
