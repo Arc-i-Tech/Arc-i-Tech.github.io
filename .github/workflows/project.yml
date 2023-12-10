@@ -294,7 +294,7 @@ jobs:
             var q1 = ""
             var q2 = ""
             var q3 = ""
-            if( ${{ github.event.action }} == 'assigned' ) {
+            if( "${{ github.event.action }}" == 'assigned' ) {
               q1 = ", $ITR_ID: String!"
               q2 = `value: {
                     iterationId: $ITR_ID
