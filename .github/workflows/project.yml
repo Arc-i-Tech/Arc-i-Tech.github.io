@@ -258,7 +258,7 @@ jobs:
             }
             
             const labels = ${{ toJSON(github.event.issue.labels.*.name) }}
-            console.log(${{ toJSON(github.event.issue.labels.*.name) }})
+            const assignees = ${{ github.event.issue.assignees }}
             
             const prj = ${{ needs.fetch-details.outputs.PRJ }}
             const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
@@ -270,7 +270,10 @@ jobs:
                 optionNode = fieldNode[0].options.filter((option) => option.name == ":file_cabinet: Epic")
               }
               else {
-                if( labels.includes('accepted') ) {
+                if( assignees.length >= 0) {
+                  optionNode = fieldNode[0].options.filter((option) => option.name == "🔖 Sprint Backlog")
+                }
+                else if( labels.includes('accepted') ) {
                   optionNode = fieldNode[0].options.filter((option) => option.name == "📋 Product Backlog")
                 }
                 else {
@@ -281,6 +284,9 @@ jobs:
             else if( "${{ github.event.label.name }}" == 'accepted' ) {
               if( labels.includes('epic') ) {
                 optionNode = fieldNode[0].options.filter((option) => option.name == ":file_cabinet: Epic")
+              }
+              else if( assignees.length >= 0) {
+                optionNode = fieldNode[0].options.filter((option) => option.name == "🔖 Sprint Backlog")
               }
               else if( "${{ github.event.action }}" == 'labeled' ) {
                 optionNode = fieldNode[0].options.filter((option) => option.name == "📋 Product Backlog")
