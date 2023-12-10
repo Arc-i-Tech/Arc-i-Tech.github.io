@@ -257,8 +257,8 @@ jobs:
               return false
             }
             
-            const labels = ${{ toJSON(github.event.issue.labels) }}
-            console.log(${{ toJSON(github.event.issue.labels) }})
+            const labels = ${{ toJSON(github.event.issue.labels.*.name) }}
+            console.log(${{ toJSON(github.event.issue.labels.*.name) }})
             
             const prj = ${{ needs.fetch-details.outputs.PRJ }}
             const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
