@@ -178,7 +178,6 @@ jobs:
         if: github.event.action != 'opened' || github.event.action != 'reopened'
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
             const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
             if( totalCount === 0 ) {
@@ -186,10 +185,10 @@ jobs:
               return false
             }
             const vars = ${{ needs.fetch-details.outputs.ids }}
-            const isFound = false
-            const isOver = false
-            vars.cursor = ""
-            const itemNodes = []
+            var isFound = false
+            var isOver = false
+            vars.cusrsor = ""
+            var itemNodes = []
 
             while(!isFound || !isOver) {
               const getItemIdResp = await github.graphql(`query getItemID($PRJ_ID: ID!, $cursor: String!) {
@@ -214,11 +213,12 @@ jobs:
                   }
                 }
               }`, vars)
-
+              
+              console.log(JSON.stringify(getItemIdResp.node))
               itemNodes = getItemIdResp.node.items.nodes.filter((node) => node.content.__typename === 'Issue' && node.content.number === ${{ github.event.issue.number }})
               if( itemNodes.length > 0 ) {
                 isFound = true
-                break;
+                break;  
               }
               if( getItemIdResp.node.items.pageInfo.hasNextPage ) {
                 vars.cursor = getItemIdResp.node.items.pageInfo.endCursor
@@ -227,13 +227,13 @@ jobs:
                 isOver = true
                 break;
               }
-              if( isFound ) {
-                core.setOutput('ITEM_ID', itemNodes[0].id)
-              }
-              else {
-                console.log("Issue: ${{ github.event.issue.number }} is not associated with any GitHub projects.")
-                return false
-              }
+            }
+            if( isFound ) {
+              core.setOutput('ITEM_ID', itemNodes[0].id)
+            }
+            else {
+              console.log("Issue: ${{ github.event.issue.number }} is not associated with any GitHub project: ${{ vars.MAIN_PRJ }}")
+              return false
             }
 
       - name: Labeled
