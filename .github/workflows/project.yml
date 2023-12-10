@@ -327,6 +327,7 @@ jobs:
         if: github.event.action == 'assigned' || github.event.action == 'unassigned'
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
             const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
             const vars = ${{ needs.fetch-details.outputs.ids }}
