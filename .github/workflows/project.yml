@@ -270,7 +270,7 @@ jobs:
                 optionNode = fieldNode[0].options.filter((option) => option.name == ":file_cabinet: Epic")
               }
               else {
-                if( assignees.length >= 0) {
+                if( assignees.length > 0) {
                   optionNode = fieldNode[0].options.filter((option) => option.name == "🔖 Sprint Backlog")
                 }
                 else if( labels.includes('accepted') ) {
@@ -285,7 +285,7 @@ jobs:
               if( labels.includes('epic') ) {
                 optionNode = fieldNode[0].options.filter((option) => option.name == ":file_cabinet: Epic")
               }
-              else if( assignees.length >= 0) {
+              else if( assignees.length > 0) {
                 optionNode = fieldNode[0].options.filter((option) => option.name == "🔖 Sprint Backlog")
               }
               else if( "${{ github.event.action }}" == 'labeled' ) {
