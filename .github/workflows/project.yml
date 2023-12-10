@@ -258,7 +258,7 @@ jobs:
             }
             
             const labels = ${{ toJSON(github.event.issue.labels.*.name) }}
-            const assignees = ${{ github.event.issue.assignees }}
+            const assignees = ${{ toJSON(github.event.issue.assignees) }}
             
             const prj = ${{ needs.fetch-details.outputs.PRJ }}
             const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
@@ -349,7 +349,7 @@ jobs:
             const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
             vars["FIELD_ID"] = fieldNode[0].id
             var optionNode
-            const assignees = ${{ github.event.issue.assignees }}
+            const assignees = ${{ toJSON(github.event.issue.assignees) }}
 
             if( labels.includes('epic') ) {
               optionNode = fieldNode[0].options.filter((option) => option.name == ":file_cabinet: Epic")
