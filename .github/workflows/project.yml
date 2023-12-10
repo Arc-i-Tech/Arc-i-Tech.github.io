@@ -178,6 +178,7 @@ jobs:
         if: github.event.action != 'opened' || github.event.action != 'reopened'
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
             const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
             if( totalCount === 0 ) {
@@ -295,6 +296,7 @@ jobs:
         if: ${{ github.event.action }} == 'unlabeled'
         uses: actions/github-script@v7
         with: 
+          github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
             const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
             const vars = ${{ needs.fetch-details.outputs.ids }}
