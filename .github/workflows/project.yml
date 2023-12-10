@@ -256,22 +256,32 @@ jobs:
               console.log("Issue not associate with any github project.");
               return false
             }
+            
+            const labels = ${{ github.event.issue.labels }}
 
             const prj = ${{ needs.fetch-details.outputs.PRJ }}
             const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
             vars["FIELD_ID"] = fieldNode[0].id
             var optionNode
 
-            if( "${{ github.event.label.name }}" == 'epic') {
+            if( "${{ github.event.label.name }}" == 'epic' ) {
               if( "${{ github.event.action }}" == 'labeled' ) {
                 optionNode = fieldNode[0].options.filter((option) => option.name == ":file_cabinet: Epic")
               }
               else {
-                optionNode = fieldNode[0].options.filter((option) => option.name == "📋 Product Backlog")
+                if( labels.includes('accepted') ) {
+                  optionNode = fieldNode[0].options.filter((option) => option.name == "📋 Product Backlog")
+                }
+                else {
+                  optionNode = fieldNode[0].options.filter((option) => option.name == "🆕 New")
+                }
               }
             }
             else if( "${{ github.event.label.name }}" == 'accepted' ) {
-              if( "${{ github.event.action }}" == 'labeled' ) {
+              if( labels.includes('epic') ) {
+                optionNode = fieldNode[0].options.filter((option) => option.name == ":file_cabinet: Epic")
+              }
+              else if( "${{ github.event.action }}" == 'labeled' ) {
                 optionNode = fieldNode[0].options.filter((option) => option.name == "📋 Product Backlog")
               }
               else {
@@ -279,6 +289,7 @@ jobs:
               }
             }
             else {
+              console.log("Issue status won't change for label: ${{ github.event.label.name }}")
               return
             }
 
