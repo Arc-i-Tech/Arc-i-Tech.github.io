@@ -280,7 +280,7 @@ jobs:
           vars["OPTION_ID"] = optionNode[0].id
           vars["ITEM_ID"] = ITEM.id
 
-          const UpdateIssueStatusResp = await github.graphql(`mutation UpdateIssueStatus($ORG_ID: String!, $PRJ_ID: ID!, $ITEM_ID ID!, $FIELD_ID: ID!, $OPTION_ID: String!) {
+          const UpdateIssueStatusResp = await github.graphql(`mutation UpdateIssueStatus($ORG_ID: String!, $PRJ_ID: ID!, $ITEM_ID: ID!, $FIELD_ID: ID!, $OPTION_ID: String!) {
             updateProjectV2ItemFieldValue( input: {
               clientMutationId:$ORG_ID
               projectId:$PRJ_ID
@@ -370,22 +370,3 @@ jobs:
 #      - name: Unlabeled Pull Request - ${{ github.event.issue.numer }}
 #      - name: Assigned Pull Request - ${{ github.event.issue.number }}
 #      - name: Unassigned Pull Request - ${{ github.event.issue.number }}
-
-  context-printer:
-    needs: get-details
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Context 2
-        uses: actions/github-script@v7
-        if: always()
-        with:
-          script: |
-            console.log('${{ toJSON(needs) }}')
-
-      - name: Context 2
-        uses: actions/github-script@v7
-        if: always()
-        with:
-          script: |
-            console.log("${{ toJSON(github) }}")
