@@ -31,7 +31,7 @@ jobs:
             if( !eventLabels.includes("${{ github.event.label.name}}") ){
               console.log("Workflow is only applicable for below issues:")
               console.log(eventLabels)
-              return 0
+              core.core.setFailed("Workflow is only applicable for below issues:\n" + eventLabels)
             }
           }
 
@@ -45,14 +45,14 @@ jobs:
                 core.setOutput('RM_LABEL', 'true')
                 core.setOutput('LABELS', '${{ github.event.label.name}}')
                 core.setOutput('MSG', "Only assignees are allowed to remove or add label: `started-working`!")
-                return false
+                core.setFailed("Only assignees are allowed to remove or add label: `started-working`!")
               }
             }
             else if( "${{ github.event.action }}" == 'unlabeled' ) {
               // 3. Only the assignee can remove label
               if( assignees.length <= 0 || !assignees.includes("${{ github.triggering_actor }}") ) {
                 core.setOutput('MSG', "Only assignees are allowed to remove or add label: `started-working`!")
-                return false
+                core.setFailed("Only assignees are allowed to remove or add label: `started-working`!")
               }
             }
           }
@@ -127,7 +127,7 @@ jobs:
           const prj = resp.organization.projectsV2.nodes.filter((node) => node.title == "${{ vars.MAIN_PRJ }}")
           if( prj.length == 0 ) {
             console.log("No projects found with name: ${{ vars.MAIN_PRJ }}")
-            return false
+            core.setFailed("No projects found with name: ${{ vars.MAIN_PRJ }}")
           } 
           
           const IDs = {
@@ -143,6 +143,7 @@ jobs:
 
           if( resp.repository.issueOrPullRequest.projectsV2.totalCount <= 0 ) {
             console.log("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} not associate with any github project.");
+            core.setFailed("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} not associate with any github project.")
           }
     
     - name: Fetch project details
@@ -153,8 +154,8 @@ jobs:
         script: |
           const totalCount = ${{ steps.get-required-ids.outputs.PRJ_CNT }}
           if( totalCount == 0 ) {
-            console.log("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} not associate with any github project.");
-            return false
+            console.log("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} not associate with any github project.")
+            core.setFailed("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} not associate with any github project.")
           }
           const getPrjFields = await github.graphql(`query getPrjFields {
             node(id:"${{ steps.get-required-ids.outputs.PRJ_ID }}") {
@@ -203,7 +204,7 @@ jobs:
           const totalCount = ${{ steps.get-required-ids.outputs.PRJ_CNT }}
           if( totalCount == 0 ) {
             console.log("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} not associate with any github project.");
-            return false
+            core.setFailed("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} not associate with any github project.")
           }
           const vars = ${{ steps.get-required-ids.outputs.ids }}
 
@@ -267,11 +268,8 @@ jobs:
             return true
           }
           console.log("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} is not associated with GitHub project: ${{ vars.MAIN_PRJ }}")
-          return false
+          core.setFailed("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} is not associated with GitHub project: ${{ vars.MAIN_PRJ }}")
 
-    - name: print steps
-      if: always()
-      run: echo ${{ toJSON(steps) }}
 
   issue-automation:
     if: github.event_name == 'issues'
@@ -333,17 +331,17 @@ jobs:
           }
           else {
             console.log("No valid target value found for Event: ${{ github.event.action}}")
-            return
+            core.setFailed("No valid target value found for Event: ${{ github.event.action}}")
           } 
           if( targetOptionVal == item.fieldValueByName.name ) {
             console.log("Target Status value and current status value are same: " + targetOptionVal)
-            return
+            core.setFailed("Target Status value and current status value are same: " + targetOptionVal)
           }
 
           const prj = ${{ needs.get-details.outputs.PRJ }}
           const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
           const optionNode = fieldNode[0].options.filter((option) => option.name == targetOptionVal )
-
+          
           core.setOutput("OPTION_NODE", JSON.stringify(optionNode))
           core.setOutput("FIELD_ID", fieldNode[0].id)
           core.setOutput("UPDATE_STATUS", "true")
@@ -387,7 +385,7 @@ jobs:
           }
           else {
             console.log("Error while changing Issue: ${{ github.event.issue.number }} status to: " + optionNode[0].name)
-            return false
+            core.setFailed("Error while changing Issue: ${{ github.event.issue.number }} status to: " + optionNode[0].name)
           }
 
     - name: Update Sprint
@@ -437,7 +435,7 @@ jobs:
             return true            }
           else {
             console.log("Unable to update sprint field")
-            return false
+            core.setFailed("Unable to update sprint field")
           }
 
   pr-automation:
