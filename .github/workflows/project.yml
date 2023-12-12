@@ -80,7 +80,7 @@ jobs:
           const resp = await github.graphql(`query getOrgProjRepoId {
             repository(owner:"${{ github.repository_owner }}", name:"${{ github.event.repository.name }}") {
               id
-              issueOrPullRequest(number: 16) {
+              issueOrPullRequest(number: ${{ github.event.issue.number }}) {
                 ... on Issue {
                   id
                   number
