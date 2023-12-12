@@ -31,7 +31,7 @@ jobs:
             if( !eventLabels.includes("${{ github.event.label.name}}") ){
               console.log("Workflow is only applicable for below issues:")
               console.log(eventLabels)
-              return false
+              return 0
             }
           }
 
@@ -142,7 +142,7 @@ jobs:
           core.setOutput('PRJ_CNT',  resp.repository.issueOrPullRequest.projectsV2.totalCount)
 
           if( resp.repository.issueOrPullRequest.projectsV2.totalCount <= 0 ) {
-            console.log(resp.repository.issueOrPullRequest.__typename + ':${{ }}'
+            console.log("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} not associate with any github project.");
           }
     
     - name: Fetch project details
