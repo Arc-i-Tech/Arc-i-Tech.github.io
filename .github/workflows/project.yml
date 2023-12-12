@@ -35,7 +35,7 @@ jobs:
 
           const labels = ${{ toJSON(github.event.issue.labels.*.name) }}
           const assignees = ${{ toJSON(github.event.issue.assignees) }}
-          if( "${{ github.event.label.name}}" == 'started_working') {
+          if( "${{ github.event.label.name}}" == 'started-working') {
             if( "${{ github.event.action }}" == 'labeled' ) {
               // 1. Labeler must be an issue owner (issue assigned to)
               // 2. Without an assignee cannot be labelled
@@ -424,7 +424,7 @@ jobs:
     - run: echo "Pull request automation"
 
   misc:
-    needs: check-valid-run
+    needs: [check-valid-run, issue-automation]
     if: needs.check-valid-run.outputs.RM_LABEL == 'true' || needs.check-valid-run.outputs.MSG != ''
     runs-on: ubuntu-latest
     steps:
