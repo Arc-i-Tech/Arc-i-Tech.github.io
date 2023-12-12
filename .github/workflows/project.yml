@@ -12,7 +12,58 @@ on:
     types: [submitted]
 
 jobs:
+  check-valid-run: 
+    runs-on: ubuntu-latest
+    outputs:
+      RM_LABEL: ${{ steps.check-run.outputs.RM_LABEL }}
+      LABELS: ${{ steps.check-run.outputs.LABELS }}
+      MSG: ${{ steps.check-run.outputs.MSG }}
+    steps: 
+    - name: Check run
+      id: check-run
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const eventLabels = ["epic", "accepted", "started-working"]
+          if( "${{github.event.action }}" == "labeled" || "${{github.event.action }}" == "unlabeled" ) {
+            if( !eventLabels.includes("${{ github.event.label.name}}") ){
+              console.log("Workflow is only applicable for below issues:")
+              console.log(eventLabels)
+              return false
+            }
+          }
+
+          const labels = ${{ toJSON(github.event.issue.labels.*.name) }}
+          const assignees = ${{ toJSON(github.event.issue.assignees) }}
+          if( "${{ github.event.label.name}}" == 'started_working') {
+            if( "${{ github.event.action }}" == 'labeled' ) {
+              // 1. Labeler must be an issue owner (issue assigned to)
+              // 2. Without an assignee cannot be labelled
+              if( assignees.length <= 0 || !assignees.includes("${{ github.triggering_actor }}") ) {
+                core.setOutput('RM_LABEL', 'true')
+                core.setOutput('LABELS', '${{ github.event.label.name}}')
+                core.setOutput('MSG', "Only assignees are allowed to remove or add label: `started-working`!")
+                return false
+              }
+            }
+            else if( "${{ github.event.action }}" == 'unlabeled' ) {
+              // 3. Only the assignee can remove label
+              if( assignees.length <= 0 || !assignees.includes("${{ github.triggering_actor }}") ) {
+                core.setOutput('MSG', "Only assignees are allowed to remove or add label: `started-working`!")
+                return false
+              }
+            }
+          }
+          // 4. If issue is unassigned and there is no other assignee remove label
+          if( "${{ github.event_name }}" == 'issues' && "${{ github.event.action }}" == 'unassigned' && labels.includes("started-working")) {
+            core.setOutput('RM_LABEL', 'true')
+            core.setOutput('LABELS', '${{ github.event.label.name}}')
+          }
+          core.setOutput('MSG', "")
+
+
   get-details:
+    needs: check-valid-run
     runs-on: ubuntu-latest
     outputs: 
       ids: ${{ steps.get-required-ids.outputs.ids }}
@@ -221,7 +272,12 @@ jobs:
             targetOptionVal = ":file_cabinet: Epic"
           }
           else if( assignees.length > 0 || "${{ github.event.action }}" == 'assigned') { 
-            targetOptionVal = "🔖 Sprint Backlog"
+            if( labels.includes('started-working') || ( "${{ github.event.action }}" == 'labeled' && "${{ github.event.label.name }}" == 'started-working' )) {
+              targetOptionVal = "🏗 In progress"
+            }
+            else {
+              targetOptionVal = "🔖 Sprint Backlog"
+            }
           }
           else if( "${{ github.event.action }}" == 'labeled' ) {
             if( "${{ github.event.label.name }}" == 'epic' ) {
@@ -245,6 +301,9 @@ jobs:
             }
             else {
               targetOptionVal = "🆕 New"
+            }
+            if( labels.includes("started-working") ) {
+              // Remove label: Handled in ${{ needs.check-valid-run }}
             }
           }
           else {
@@ -362,11 +421,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo "Pull request automation"
-#      - name: Checkout repository
-#      - name: Get required ids
-#      - name: Handle new Pull Request
-#      - name: Labeled Pull Request - ${{ github.event.issue.numer }}
-#      - name: Unlabeled Pull Request - ${{ github.event.issue.numer }}
-#      - name: Assigned Pull Request - ${{ github.event.issue.number }}
-#      - name: Unassigned Pull Request - ${{ github.event.issue.number }}
+    - run: echo "Pull request automation"
+
+  misc:
+    needs: check-valid-run
+    if: needs.check-valid-run.outputs.RM_LABEL == 'true' || needs.check-valid-run.outputs.MSG != ''
+    runs-on: ubuntu-latest
+    steps:
+    - name: Remove Label
+      id: remove-label
+      if: needs.check-valid-run.outputs.RM_LABEL == 'true'
+      uses: buildsville/add-remove-label@v2.0.1
+      with: 
+        token: ${{ secrets.ACCESS_TOKEN }}
+        labels: ${{ needs.check-valid-run.output.LABELS }}
+        type: remove
+    
+    - name: Comment on Issue
+      id: issue-comment
+      if: needs.check-valid-run.outputs.MSG != ''
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            body: "${{ needs.check-valid-run.outputs.MSG }}"
+          })
+  
