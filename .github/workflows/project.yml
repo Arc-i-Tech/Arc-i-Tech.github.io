@@ -3,10 +3,13 @@ run-name: Project automate
 on:
   issues:
     types:
-      ["labeled", "unlabeled", "assigned", "unassigned"]
+      [labeled, unlabeled, assigned, unassigned]
 
   pull_request:
-    types: ["opened", "reopened", "labeled", "unlabeled"]
+    types: [opened, reopened, ready_for_review, review_requested, review_request_removed]
+  
+  pull_request_review: 
+    types: [submitted]
 
 jobs:
   fetch-details:
@@ -14,91 +17,177 @@ jobs:
     outputs: 
       ids: ${{ steps.get-required-ids.outputs.ids }}
       PRJ: ${{ steps.fetch-prj-details.outputs.PRJ }}
+      ITEM: ${{ steps.find-item.outputs.ITEM }}
     steps:
-      - name: Get reuired IDs
-        id: get-required-ids
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.ACCESS_TOKEN }}
-          script: |
-            // Fetch data for github project
-            const resp = await github.graphql(`query getOrgProjRepoId {
-              repository(owner:"${{ github.repository_owner }}", name:"${{ github.event.repository.name }}") {
-                id
-              },
-              organization(login:"${{ github.repository_owner }}") {
-                id
-                projectsV2(first: 10) {
-                  nodes {
-                    number,
-                    title,
-                    id
-                  }
+    - name: Get reuired IDs
+      id: get-required-ids
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.ACCESS_TOKEN }}
+        script: |
+          // Fetch data for github project
+          const resp = await github.graphql(`query getOrgProjRepoId {
+            repository(owner:"${{ github.repository_owner }}", name:"${{ github.event.repository.name }}") {
+              id
+              issueOrPullRequest(number: 16) {
+                ... on Issue {
+                  id
+                  number
+                  title
+                }
+                ... on PullRequest {
+                  id
+                  number
+                  title
                 }
               }
-            }`)
-            
-            // Find project number and id from project name
-            const prj = resp.organization.projectsV2.nodes.filter((node) => node.title == "${{ vars.MAIN_PRJ }}")
-            if( prj.length == 0 ) {
-              console.log("No projects found with name: ${{ vars.MAIN_PRJ }}")
-              return false
-            } 
-            
-            const IDs = {
-              'REPO_ID': resp.repository.id,
-              'PRJ_ID': prj[0].id,
-              'PRJ_NUM': prj[0].number,
-              'ORG_ID': resp.organization.id,
-            }
-            core.setOutput('REPO_ID', resp.repository.id)
-            core.setOutput('PRJ_ID', prj[0].id)
-            core.setOutput('PRJ_NUM', prj[0].number)
-            core.setOutput('ORG_ID', resp.organization.id)
-            core.setOutput('ids', JSON.stringify(IDs))
-      
-      - name: Fetch project details
-        id: fetch-prj-details
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.ACCESS_TOKEN }}
-          script: |
-            const getPrjFields = await github.graphql(`query getPrjFields {
-              node(id:"${{ steps.get-required-ids.outputs.PRJ_ID }}") {
-                ... on ProjectV2 {
+            },
+            organization(login:"${{ github.repository_owner }}") {
+              id
+              projectsV2(first: 10) {
+                nodes {
+                  number,
+                  title,
                   id
-                  fields(first: 20) {
-                    totalCount
-                    nodes {
-                      ... on ProjectV2Field {
+                }
+              }
+            }
+          }`)
+          
+          // Find project number and id from project name
+          const prj = resp.organization.projectsV2.nodes.filter((node) => node.title == "${{ vars.MAIN_PRJ }}")
+          if( prj.length == 0 ) {
+            console.log("No projects found with name: ${{ vars.MAIN_PRJ }}")
+            return false
+          } 
+          
+          const IDs = {
+            'REPO_ID': resp.repository.id,
+            'PRJ_ID': prj[0].id,
+            'PRJ_NUM': prj[0].number,
+            'ORG_ID': resp.organization.id,
+            'I_PR_ID': resp.repository.issueOrPullRequest.id
+          }
+          core.setOutput('PRJ_ID', prj[0].id)
+          core.setOutput('ids', JSON.stringify(IDs))
+    
+    - name: Fetch project details
+      id: fetch-prj-details
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.ACCESS_TOKEN }}
+        script: |
+          const getPrjFields = await github.graphql(`query getPrjFields {
+            node(id:"${{ steps.get-required-ids.outputs.PRJ_ID }}") {
+              ... on ProjectV2 {
+                id
+                fields(first: 20) {
+                  totalCount
+                  nodes {
+                    ... on ProjectV2Field {
+                      id
+                      name
+                    }
+                    ... on ProjectV2SingleSelectField {
+                      id
+                      name
+                      options {
                         id
                         name
                       }
-                      ... on ProjectV2SingleSelectField {
-                        id
-                        name
-                        options {
+                    }
+                    ... on ProjectV2IterationField {
+                      id
+                      name
+                      configuration {
+                        iterations {
                           id
-                          name
-                        }
-                      }
-                      ... on ProjectV2IterationField {
-                        id
-                        name
-                        configuration {
-                          iterations {
-                            id
-                            title
-                          }
+                          title
                         }
                       }
                     }
                   }
                 }
               }
-            }`)
-            console.log(JSON.stringify(getPrjFields))
-            core.setOutput('PRJ', JSON.stringify(getPrjFields.node))
+            }
+          }`)
+          console.log(JSON.stringify(getPrjFields))
+          core.setOutput('PRJ', JSON.stringify(getPrjFields.node))
+
+    - name: Find ITEM
+      id: find-item
+      if: github.event.action != 'opened' && github.event.action != 'reopened'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.ACCESS_TOKEN }}
+        script: |
+          const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
+          if( totalCount == 0 ) {
+            console.log(" not associate with any github project.");
+            return false
+          }
+          const vars = ${{ needs.fetch-details.outputs.ids }}
+          var isFound = false
+          var isOver = false
+          vars.cursor = ""
+          var itemNodes = []
+
+          while(isFound == false && isOver == false) {
+            const getItemIdResp = await github.graphql(`query getItemID($PRJ_ID: ID!, $cursor: String!) {
+              node(id:$PRJ_ID) {
+                ... on ProjectV2 {
+                  id
+                  items(first: 10, after:$cursor, orderBy: {
+                    field:POSITION,
+                    direction:DESC
+                  }) {
+                    nodes {
+                      id
+                      fieldValueByName(name:"Status") {
+                        ... on ProjectV2ItemFieldSingleSelectValue {
+                          id
+                          name
+                        }
+                      }
+                      content {
+                        __typename
+                        ... on Issue {
+                          number
+                          title
+                        }
+                      }
+                    }
+                    pageInfo {
+                      endCursor
+                      hasNextPage
+                    }
+                  }
+                }
+              }
+            }`, vars)
+
+            itemNodes = getItemIdResp.node.items.nodes.filter((node) => node.content.__typename === 'Issue' && node.content.number === ${{ github.event.issue.number }})
+
+            if( itemNodes.length > 0 ) {
+              isFound = true
+              break
+            }
+            
+            if( getItemIdResp.node.items.pageInfo.hasNextPage ) {
+              vars.cursor = getItemIdResp.node.items.pageInfo.endCursor
+            }
+            else {
+              isOver = true
+              break;
+            }
+          }
+
+          if( isFound == true) {
+            core.setOutput('ITEM', JSON.stringify(itemNodes[0]))
+            return true
+          }
+          console.log("Issue: ${{ github.event.issue.number }} is not associated with GitHub project: ${{ vars.MAIN_PRJ }}")
+          return false
 
   issue-automation:
     if: github.event_name == 'issues'
@@ -107,225 +196,157 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Find ITEM
-        id: find-item
-        if: github.event.action != 'opened' && github.event.action != 'reopened'
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.ACCESS_TOKEN }}
-          script: |
-            const vars = ${{ needs.fetch-details.outputs.ids }}
-            var isFound = false
-            var isOver = false
-            vars.cursor = ""
-            var itemNodes = []
+    - name: Find target Status
+      id: find-target-status
+      if: github.event.action != 'opened' && github.event.action != 'reopened'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.ACCESS_TOKEN }}
+        script: |
+          const item = ${{ needs.fetch-details.outputs.ITEM }}
 
-            while(isFound == false && isOver == false) {
-              const getItemIdResp = await github.graphql(`query getItemID($PRJ_ID: ID!, $cursor: String!) {
-                node(id:$PRJ_ID) {
-                  ... on ProjectV2 {
-                    id
-                    items(first: 10, after:$cursor, orderBy: {
-                      field:POSITION,
-                      direction:DESC
-                    }) {
-                      nodes {
-                        id
-                        fieldValueByName(name:"Status") {
-                          ... on ProjectV2ItemFieldSingleSelectValue {
-                            id
-                            name
-                          }
-                        }
-                        content {
-                          __typename
-                          ... on Issue {
-                            number
-                            title
-                          }
-                        }
-                      }
-                      pageInfo {
-                        endCursor
-                        hasNextPage
-                      }
-                    }
-                  }
-                }
-              }`, vars)
-
-              itemNodes = getItemIdResp.node.items.nodes.filter((node) => node.content.__typename === 'Issue' && node.content.number === ${{ github.event.issue.number }})
-
-              if( itemNodes.length > 0 ) {
-                isFound = true
-                break
-              }
-              
-              if( getItemIdResp.node.items.pageInfo.hasNextPage ) {
-                vars.cursor = getItemIdResp.node.items.pageInfo.endCursor
-              }
-              else {
-                isOver = true
-                break;
-              }
-            }
-
-            if( isFound == true) {
-              core.setOutput('ITEM_ID', itemNodes[0].id)
-              core.setOutput('ITEM', JSON.stringify(itemNodes[0]))
-              return true
-            }
-            console.log("Issue: ${{ github.event.issue.number }} is not associated with GitHub project: ${{ vars.MAIN_PRJ }}")
-            return false
-
-      - name: Find target Status
-        id: find-target-status
-        if: github.event.action != 'opened' && github.event.action != 'reopened'
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.ACCESS_TOKEN }}
-          script: |
-            const item = ${{ steps.find-item.outputs.ITEM }}
-
-            const labels = ${{ toJSON(github.event.issue.labels.*.name) }}
-            const assignees = ${{ toJSON(github.event.issue.assignees) }}
-            
-            var targetOptionVal = ""
-            if( labels.includes('epic') ) {
+          const labels = ${{ toJSON(github.event.issue.labels.*.name) }}
+          const assignees = ${{ toJSON(github.event.issue.assignees) }}
+          
+          var targetOptionVal = ""
+          if( labels.includes('epic') ) {
+            targetOptionVal = ":file_cabinet: Epic"
+          }
+          else if( assignees.length > 0 || "${{ github.event.action }}" == 'assigned') { 
+            targetOptionVal = "🔖 Sprint Backlog"
+          }
+          else if( "${{ github.event.action }}" == 'labeled' ) {
+            if( "${{ github.event.label.name }}" == 'epic' ) {
               targetOptionVal = ":file_cabinet: Epic"
             }
-            else if( assignees.length > 0 || "${{ github.event.action }}" == 'assigned') { 
-              targetOptionVal = "🔖 Sprint Backlog"
+            else if( "${{ github.event.label.name }}" == 'accepted' ) {
+              targetOptionVal = "📋 Product Backlog"
             }
-            else if( "${{ github.event.action }}" == 'labeled' ) {
-              if( "${{ github.event.label.name }}" == 'epic' ) {
-                targetOptionVal = ":file_cabinet: Epic"
-              }
-              else if( "${{ github.event.label.name }}" == 'accepted' ) {
-                targetOptionVal = "📋 Product Backlog"
-              }
-            }
-            else if( "${{ github.event.action }}" == 'unlabeled' ) {
-              if( "${{ github.event.label.name }}" == "accepted" ) {
-                targetOptionVal = "🆕 New"
-              }
-              else {
-                targetOptionVal = "📋 Product Backlog"
-              }
-            }
-            else if( "${{ github.event.action }}" == 'unassigned' ) {
-              if( labels.includes("accepted") ) {
-                targetOptionVal = "📋 Product Backlog"
-              }
-              else {
-                targetOptionVal = "🆕 New"
-              }
+          }
+          else if( "${{ github.event.action }}" == 'unlabeled' ) {
+            if( "${{ github.event.label.name }}" == "accepted" ) {
+              targetOptionVal = "🆕 New"
             }
             else {
-              console.log("No valid target value found for Event: ${{ github.event.action}}")
-              return
-            } 
-            if( targetOptionVal == item.fieldValueByName.name ) {
-              console.log("Target Status value and current status value are same: " + targetOptionVal)
-              return
+              targetOptionVal = "📋 Product Backlog"
             }
+          }
+          else if( "${{ github.event.action }}" == 'unassigned' ) {
+            if( labels.includes("accepted") ) {
+              targetOptionVal = "📋 Product Backlog"
+            }
+            else {
+              targetOptionVal = "🆕 New"
+            }
+          }
+          else {
+            console.log("No valid target value found for Event: ${{ github.event.action}}")
+            return
+          } 
+          if( targetOptionVal == item.fieldValueByName.name ) {
+            console.log("Target Status value and current status value are same: " + targetOptionVal)
+            return
+          }
 
-            const prj = ${{ needs.fetch-details.outputs.PRJ }}
-            const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
-            const optionNode = fieldNode[0].options.filter((option) => option.name == targetOptionVal )
+          const prj = ${{ needs.fetch-details.outputs.PRJ }}
+          const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
+          const optionNode = fieldNode[0].options.filter((option) => option.name == targetOptionVal )
 
-            core.setOutput("OPTION_NODE", JSON.stringify(optionNode))
-            core.setOutput("FIELD_ID", fieldNode[0].id)
-            core.setOutput("UPDATE_STATUS", "true")
+          core.setOutput("OPTION_NODE", JSON.stringify(optionNode))
+          core.setOutput("FIELD_ID", fieldNode[0].id)
+          core.setOutput("UPDATE_STATUS", "true")
 
-            console.log("Target Status value: " + targetOptionVal)
+          console.log("Target Status value: " + targetOptionVal)
 
-      - name: Update Status
-        id: update-status
-        if: steps.find-target-status.outputs.UPDATE_STATUS == 'true'
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.ACCESS_TOKEN }}
-          script: |
-            const optionNode = ${{ steps.find-target-status.outputs.OPTION_NODE }}
+    - name: Update Status
+      id: update-status
+      if: steps.find-target-status.outputs.UPDATE_STATUS == 'true'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.ACCESS_TOKEN }}
+        script: |
+          const optionNode = ${{ steps.find-target-status.outputs.OPTION_NODE }}
+          const ITEM = ${{ needs.fetch-details.outputs.ITEM }}
+          const vars = ${{ needs.fetch-details.outputs.ids }}
+          vars["FIELD_ID"] = "${{ steps.find-target-status.outputs.FIELD_ID }}"
+          vars["OPTION_ID"] = optionNode[0].id
+          vars["ITEM_ID"] = ITEM.id
 
-            const vars = ${{ needs.fetch-details.outputs.ids }}
-            vars["FIELD_ID"] = "${{ steps.find-target-status.outputs.FIELD_ID }}"
-            vars["OPTION_ID"] = optionNode[0].id
-
-            const UpdateIssueStatusResp = await github.graphql(`mutation UpdateIssueStatus($ORG_ID: String!, $PRJ_ID: ID!, $FIELD_ID: ID!, $OPTION_ID: String!) {
-              updateProjectV2ItemFieldValue( input: {
-                clientMutationId:$ORG_ID
-                projectId:$PRJ_ID
-                itemId:"${{ steps.find-item.outputs.ITEM_ID }}"
-                fieldId:$FIELD_ID
-                value: {
-                  singleSelectOptionId: $OPTION_ID
-                }
-              }) {
-                clientMutationId
-                projectV2Item {
-                  id
-                }
+          const UpdateIssueStatusResp = await github.graphql(`mutation UpdateIssueStatus($ORG_ID: String!, $PRJ_ID: ID!, $ITEM_ID ID!, $FIELD_ID: ID!, $OPTION_ID: String!) {
+            updateProjectV2ItemFieldValue( input: {
+              clientMutationId:$ORG_ID
+              projectId:$PRJ_ID
+              itemId:$ITEM_ID
+              fieldId:$FIELD_ID
+              value: {
+                singleSelectOptionId: $OPTION_ID
               }
-            }`, vars)
-
-            if( UpdateIssueStatusResp.updateProjectV2ItemFieldValue.clientMutationId == vars.ORG_ID ) {
-              console.log("Issue Status changed to: " + optionNode[0].name)
-              return true
-            }
-            else {
-              console.log("Error while changing Issue: ${{ github.event.issue.number }} status to: " + optionNode[0].name)
-              return false
-            }
-
-      - name: Update Sprint
-        id: update-sprint
-        if: github.event.action == 'assigned' || github.event.action == 'unassigned'
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.ACCESS_TOKEN }}
-          script: |
-            const prj = ${{ needs.fetch-details.outputs.PRJ }}
-            const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == "🏃 Sprint".toUpperCase())
-            const vars = ${{ needs.fetch-details.outputs.ids }}
-            vars["FIELD_ID"] = fieldNode[0].id
-            vars["ITR_ID"] = fieldNode[0].configuration.iterations[0].id
-            var q1 = ""
-            var q2 = ""
-            var q3 = ""
-            if( "${{ github.event.action }}" == 'assigned' ) {
-              q1 = ", $ITR_ID: String!"
-              q2 = ` value: {
-                    iterationId: $ITR_ID
-                  }`
-              q3 = "updateProjectV2ItemFieldValue"
-            }
-            else {
-              q3 = "clearProjectV2ItemFieldValue"
-            }
-            var query = "mutation UpdateSprint($ORG_ID: String!, $PRJ_ID: ID!, $FIELD_ID: ID!" +
-            q1 + `) {` + q3 + `(input: {
-              clientMutationId: $ORG_ID
-              projectId: $PRJ_ID
-              itemId: "${{ steps.find-item.outputs.ITEM_ID }}"
-              fieldId: $FIELD_ID` + q2 + `}) {
-                clientMutationId
-                projectV2Item {
-                  id
-                }
+            }) {
+              clientMutationId
+              projectV2Item {
+                id
               }
-            }`
-
-            const UpdateSprintResp = await github.graphql(query, vars)
-
-            if( UpdateSprintResp[q3].clientMutationId == vars.ORG_ID && UpdateSprintResp[q3].projectV2Item.id == vars.PRJ_ID ) {
-              console.log("Update Sprint")
-              return true            }
-            else {
-              console.log("Unable to update sprint field")
-              return false
             }
+          }`, vars)
+
+          if( UpdateIssueStatusResp.updateProjectV2ItemFieldValue.clientMutationId == vars.ORG_ID ) {
+            console.log("Issue Status changed to: " + optionNode[0].name)
+            return true
+          }
+          else {
+            console.log("Error while changing Issue: ${{ github.event.issue.number }} status to: " + optionNode[0].name)
+            return false
+          }
+
+    - name: Update Sprint
+      id: update-sprint
+      if: github.event.action == 'assigned' || github.event.action == 'unassigned'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.ACCESS_TOKEN }}
+        script: |
+          const prj = ${{ needs.fetch-details.outputs.PRJ }}
+          const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == "🏃 Sprint".toUpperCase())
+          const vars = ${{ needs.fetch-details.outputs.ids }}
+          const ITEM = ${{ needs.fetch-details.outputs.ITEM }}
+          vars["FIELD_ID"] = fieldNode[0].id
+          vars["ITR_ID"] = fieldNode[0].configuration.iterations[0].id
+          vars["ITEM_ID"] = ITEM.id
+          var q1 = ""
+          var q2 = ""
+          var q3 = ""
+          if( "${{ github.event.action }}" == 'assigned' ) {
+            q1 = ", $ITR_ID: String!"
+            q2 = ` value: {
+                  iterationId: $ITR_ID
+                }`
+            q3 = "updateProjectV2ItemFieldValue"
+          }
+          else {
+            q3 = "clearProjectV2ItemFieldValue"
+          }
+          var query = "mutation UpdateSprint($ORG_ID: String!, $PRJ_ID: ID!, $ITEM_ID ID!, $FIELD_ID: ID!" +
+          q1 + `) {` + q3 + `(input: {
+            clientMutationId: $ORG_ID
+            projectId: $PRJ_ID
+            itemId: $ITEM_ID
+            fieldId: $FIELD_ID` + q2 + `}) {
+              clientMutationId
+              projectV2Item {
+                id
+              }
+            }
+          }`
+
+          const UpdateSprintResp = await github.graphql(query, vars)
+
+          if( UpdateSprintResp[q3].clientMutationId == vars.ORG_ID && UpdateSprintResp[q3].projectV2Item.id == vars.PRJ_ID ) {
+            console.log("Update Sprint")
+            return true            }
+          else {
+            console.log("Unable to update sprint field")
+            return false
+          }
 
   pr-automation:
     if: github.event_name == 'pull_request'
