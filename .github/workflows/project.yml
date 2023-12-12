@@ -127,13 +127,14 @@ jobs:
       uses: actions/github-script@v7
       with:
         github-token: ${{ secrets.ACCESS_TOKEN }}
-        script: |
+        script: |          
           const totalCount = ${{ steps.get-required-ids.outputs.PRJ_CNT }}
           if( totalCount == 0 ) {
             console.log(" not associate with any github project.");
             return false
           }
           const vars = ${{ needs.get-details.outputs.ids }}
+          
           var isFound = false
           var isOver = false
           vars.cursor = ""
@@ -369,3 +370,20 @@ jobs:
 #      - name: Unlabeled Pull Request - ${{ github.event.issue.numer }}
 #      - name: Assigned Pull Request - ${{ github.event.issue.number }}
 #      - name: Unassigned Pull Request - ${{ github.event.issue.number }}
+
+  context-printer:
+    needs: get-details
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Context 2
+        uses: actions/github-script@v7
+        with:
+          script: |
+            console.log("${{ toJSON(needs) }}")
+
+      - name: Context 2
+        uses: actions/github-script@v7
+        with:
+          script: |
+            console.log("${{ toJSON(github) }}")
