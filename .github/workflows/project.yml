@@ -12,7 +12,7 @@ on:
     types: [submitted]
 
 jobs:
-  fetch-details:
+  get-details:
     runs-on: ubuntu-latest
     outputs: 
       ids: ${{ steps.get-required-ids.outputs.ids }}
@@ -34,11 +34,17 @@ jobs:
                   id
                   number
                   title
+                  projectsV2 {
+                    totalCount
+                  }
                 }
                 ... on PullRequest {
                   id
                   number
                   title
+                  projectsV2 {
+                    totalCount
+                  }
                 }
               }
             },
@@ -70,6 +76,7 @@ jobs:
           }
           core.setOutput('PRJ_ID', prj[0].id)
           core.setOutput('ids', JSON.stringify(IDs))
+          core.setOutput('PRJ_CNT',  resp.repository.issueOrPullRequest.projectsV2.totalCount)
     
     - name: Fetch project details
       id: fetch-prj-details
@@ -121,12 +128,12 @@ jobs:
       with:
         github-token: ${{ secrets.ACCESS_TOKEN }}
         script: |
-          const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
+          const totalCount = ${{ steps.get-required-ids.outputs.PRJ_CNT }}
           if( totalCount == 0 ) {
             console.log(" not associate with any github project.");
             return false
           }
-          const vars = ${{ needs.fetch-details.outputs.ids }}
+          const vars = ${{ needs.get-details.outputs.ids }}
           var isFound = false
           var isOver = false
           vars.cursor = ""
@@ -192,7 +199,7 @@ jobs:
   issue-automation:
     if: github.event_name == 'issues'
     name: Issue automation- ${{ github.event.issue.number }}
-    needs: fetch-details
+    needs: get-details
     runs-on: ubuntu-latest
 
     steps:
@@ -203,7 +210,7 @@ jobs:
       with:
         github-token: ${{ secrets.ACCESS_TOKEN }}
         script: |
-          const item = ${{ needs.fetch-details.outputs.ITEM }}
+          const item = ${{ needs.get-details.outputs.ITEM }}
 
           const labels = ${{ toJSON(github.event.issue.labels.*.name) }}
           const assignees = ${{ toJSON(github.event.issue.assignees) }}
@@ -248,7 +255,7 @@ jobs:
             return
           }
 
-          const prj = ${{ needs.fetch-details.outputs.PRJ }}
+          const prj = ${{ needs.get-details.outputs.PRJ }}
           const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
           const optionNode = fieldNode[0].options.filter((option) => option.name == targetOptionVal )
 
@@ -266,8 +273,8 @@ jobs:
         github-token: ${{ secrets.ACCESS_TOKEN }}
         script: |
           const optionNode = ${{ steps.find-target-status.outputs.OPTION_NODE }}
-          const ITEM = ${{ needs.fetch-details.outputs.ITEM }}
-          const vars = ${{ needs.fetch-details.outputs.ids }}
+          const ITEM = ${{ needs.get-details.outputs.ITEM }}
+          const vars = ${{ needs.get-details.outputs.ids }}
           vars["FIELD_ID"] = "${{ steps.find-target-status.outputs.FIELD_ID }}"
           vars["OPTION_ID"] = optionNode[0].id
           vars["ITEM_ID"] = ITEM.id
@@ -305,10 +312,10 @@ jobs:
       with:
         github-token: ${{ secrets.ACCESS_TOKEN }}
         script: |
-          const prj = ${{ needs.fetch-details.outputs.PRJ }}
+          const prj = ${{ needs.get-details.outputs.PRJ }}
           const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == "🏃 Sprint".toUpperCase())
-          const vars = ${{ needs.fetch-details.outputs.ids }}
-          const ITEM = ${{ needs.fetch-details.outputs.ITEM }}
+          const vars = ${{ needs.get-details.outputs.ids }}
+          const ITEM = ${{ needs.get-details.outputs.ITEM }}
           vars["FIELD_ID"] = fieldNode[0].id
           vars["ITR_ID"] = fieldNode[0].configuration.iterations[0].id
           vars["ITEM_ID"] = ITEM.id
@@ -350,7 +357,7 @@ jobs:
 
   pr-automation:
     if: github.event_name == 'pull_request'
-    needs: fetch-details
+    needs: get-details
     runs-on: ubuntu-latest
 
     steps:
