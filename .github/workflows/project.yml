@@ -333,7 +333,7 @@ jobs:
           else {
             q3 = "clearProjectV2ItemFieldValue"
           }
-          var query = "mutation UpdateSprint($ORG_ID: String!, $PRJ_ID: ID!, $ITEM_ID ID!, $FIELD_ID: ID!" +
+          var query = "mutation UpdateSprint($ORG_ID: String!, $PRJ_ID: ID!, $ITEM_ID: ID!, $FIELD_ID: ID!" +
           q1 + `) {` + q3 + `(input: {
             clientMutationId: $ORG_ID
             projectId: $PRJ_ID
