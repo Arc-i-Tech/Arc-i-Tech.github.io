@@ -133,8 +133,8 @@ jobs:
             console.log(" not associate with any github project.");
             return false
           }
-          const vars = ${{ needs.get-details.outputs.ids }}
-          
+          const vars = ${{ steps.get-required-ids.outputs.ids }}
+
           var isFound = false
           var isOver = false
           vars.cursor = ""
@@ -378,12 +378,14 @@ jobs:
     steps:
       - name: Context 2
         uses: actions/github-script@v7
+        if: always()
         with:
           script: |
-            console.log("${{ toJSON(needs) }}")
+            console.log('${{ toJSON(needs) }}')
 
       - name: Context 2
         uses: actions/github-script@v7
+        if: always()
         with:
           script: |
             console.log("${{ toJSON(github) }}")
