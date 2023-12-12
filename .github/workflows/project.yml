@@ -250,7 +250,7 @@ jobs:
 
     - name: print steps
       if: always()
-      run: echo ${{ steps }}
+      run: echo ${{ toJSON(steps) }}
 
   issue-automation:
     if: github.event_name == 'issues'
