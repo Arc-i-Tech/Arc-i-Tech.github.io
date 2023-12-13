@@ -443,10 +443,14 @@ jobs:
             }`
 
             const UpdateSprintResp = await github.graphql(query, vars)
+            console.log(JSON.stringify(UpdateSprintResp))
+            console.log(JSON.stringify(UpdateSprintResp[q3]))
+
 
             if( UpdateSprintResp[q3].clientMutationId == vars.ORG_ID && UpdateSprintResp[q3].projectV2Item.id == vars.PRJ_ID ) {
               console.log("Update Sprint")
-              return true            }
+              return true            
+            }
             else {
               console.log("Unable to update sprint field")
               core.setFailed("Unable to update sprint field")
