@@ -37,7 +37,8 @@ jobs:
               if( !eventLabels.includes("${{ github.event.label.name}}") ){
                 console.log("Workflow is only applicable for below issues:")
                 console.log(eventLabels)
-                core.setFailed("Workflow is only applicable for below issue labels:\n" + eventLabels)
+                // core.setFailed("Workflow is only applicable for below issue labels:\n" + eventLabels)
+                return false
               }
             }
 
@@ -78,6 +79,9 @@ jobs:
               core.setOutput('type', 'PullReuqest')
             }
 
+      - name: check output
+        run: echo ${{ toJSON(steps) }}
+        
   get-details:
     needs: check-valid-run
     runs-on: ubuntu-latest
