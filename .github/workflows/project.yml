@@ -26,6 +26,7 @@ jobs:
       MSG: ${{ steps.check-run.outputs.MSG }}
       NUM: ${{ steps.check-run.outputs.NUM }}
       type: ${{ steps.check-run.outputs.type }}
+      result: ${{ steps.check-run.outputs.result }}
     steps:
       - name: Check run
         id: check-run
@@ -443,11 +444,8 @@ jobs:
             }`
 
             const UpdateSprintResp = await github.graphql(query, vars)
-            console.log(JSON.stringify(UpdateSprintResp))
-            console.log(JSON.stringify(UpdateSprintResp[q3]))
 
-
-            if( UpdateSprintResp[q3].clientMutationId == vars.ORG_ID && UpdateSprintResp[q3].projectV2Item.id == vars.PRJ_ID ) {
+            if( UpdateSprintResp[q3].clientMutationId == vars.ORG_ID && UpdateSprintResp[q3].projectV2Item.id == vars.ITEM_ID ) {
               console.log("Update Sprint")
               return true            
             }
