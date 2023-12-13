@@ -57,7 +57,7 @@ jobs:
               else if( "${{ github.event.action }}" == 'unlabeled' ) {
                 // 3. Only the assignee can remove label
                 assignees.push('ajayg2808')
-                if( assignees.length <= 0 || !assignees.includes("${{ github.triggering_actor }}") || ) {
+                if( assignees.length <= 0 || !assignees.includes("${{ github.triggering_actor }}") ) {
                   core.setOutput('OPTION', 'add')
                   core.setOutput('LABELS', '${{ github.event.label.name}}')
                   core.setOutput('MSG', "Only assignee or admin are allowed to remove label: `started-working`!\n@${{ github.triggering_actor }} please ask assigne or admin to remove label.")
