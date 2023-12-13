@@ -43,7 +43,7 @@ jobs:
             }
 
             const labels = ${{ toJSON(github.event.issue.labels.*.name) }}
-            const assignees = ${{ toJSON(github.event.issue.assignees) }}
+            const assignees = ${{ toJSON(github.event.issue.assignees.*.login) }}
             if( "${{ github.event.label.name}}" == 'started-working') {
               if( "${{ github.event.action }}" == 'labeled' ) {
                 // 1. Labeler must be an issue owner (issue assigned to)
@@ -464,7 +464,7 @@ jobs:
 
   misc:
     needs: [check-valid-run, issue-automation]
-    if: ( needs.check-valid-run.outputs.LABELS != '' || needs.issue-automation.outputs.LABELS != '' )
+    if: always() && ( needs.check-valid-run.outputs.LABELS != '' || needs.issue-automation.outputs.LABELS != '' )
     runs-on: ubuntu-latest
     steps:
       - name: Find labels and options and message
