@@ -5,14 +5,7 @@ on:
     types: [labeled, unlabeled, assigned, unassigned]
 
   pull_request:
-    types:
-      [
-        opened,
-        reopened,
-        ready_for_review,
-        review_requested,
-        review_request_removed,
-      ]
+    types: [opened, reopened, ready_for_review, review_requested, review_request_removed]
 
   pull_request_review:
     types: [submitted]
@@ -281,6 +274,9 @@ jobs:
     name: Issue automation- ${{ github.event.issue.number }}
     runs-on: ubuntu-latest
 
+    outputs:
+      OPTION: ${{ steps.find-target-status.outputs.OPTION }}
+      LABELS: ${{ steps.find-target-status.outputs.LABELS }}
     steps:
       - name: Find target Status
         id: find-target-status
@@ -473,14 +469,14 @@ jobs:
         with:
           script: |
             if( '${{ needs.check-valid-run.outputs.LABELS }}' != '' ) {
-              core.setOutput( 'LABELS', ${{ needs.check-valid-run.outputs.LABELS }} )
-              core.setOutput( 'MSG', ${{ needs.check-valid-run.outputs.MSG }} )
-              core.setOutput( 'OPTION', ${{ needs.check-valid-run.outputs.OPTION }} )
+              core.setOutput( 'LABELS', '${{ needs.check-valid-run.outputs.LABELS }}' )
+              core.setOutput( 'MSG', '${{ needs.check-valid-run.outputs.MSG }}' )
+              core.setOutput( 'OPTION', '${{ needs.check-valid-run.outputs.OPTION }}' )
             }
             else {
-              core.setOutput( 'LABELS', ${{ needs.issue-automation.outputs.LABELS }} )
-              core.setOutput( 'MSG', ${{ needs.issue-automation.outputs.MSG }} )
-              core.setOutput( 'OPTION', ${{ needs.issue-automation.outputs.OPTION }} )
+              core.setOutput( 'LABELS', '${{ needs.issue-automation.outputs.LABELS }}' )
+              core.setOutput( 'MSG', '${{ needs.issue-automation.outputs.MSG }}' )
+              core.setOutput( 'OPTION', '${{ needs.issue-automation.outputs.OPTION }}' )
             }
 
       - name: Remove Label
