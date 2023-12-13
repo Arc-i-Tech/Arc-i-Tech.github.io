@@ -44,7 +44,7 @@ jobs:
                 if( assignees.length <= 0 || !assignees.includes("${{ github.triggering_actor }}") ) {
                   core.setOutput('OPTION', 'remove')
                   core.setOutput('LABELS', '${{ github.event.label.name}}')
-                  core.setOutput('MSG', "Only assignees are allowed to add label: `started-working`!\n@${{ github.triggering_actor }} please assigne issue or ask assignee to add label.")
+                  core.setOutput('MSG', "Only assignees are allowed to add label: started-working!\n@${{ github.triggering_actor }} please assigne issue or ask assignee to add label.")
                   core.setFailed("Only assignees are allowed to add label: `started-working`!")
                 }
               }
