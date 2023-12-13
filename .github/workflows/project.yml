@@ -19,7 +19,6 @@ jobs:
       COMMENT: ${{ steps.check-run.outputs.COMMENT }}
       NUM: ${{ steps.check-run.outputs.NUM }}
       type: ${{ steps.check-run.outputs.type }}
-      result: ${{ steps.check-run.outputs.result }}
     steps:
       - name: Check run
         id: check-run
@@ -71,6 +70,7 @@ jobs:
               core.setOutput('NUM', ${{ github.event.number }})
               core.setOutput('type', 'PullReuqest')
             }
+            console.log("After setFailed")
 
   get-details:
     needs: check-valid-run
