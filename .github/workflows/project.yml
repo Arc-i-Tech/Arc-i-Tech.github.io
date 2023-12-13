@@ -500,5 +500,6 @@ jobs:
               issue_number: context.issue.number,
               body: "${{ steps.find-labels-options.outputs.MSG }}"
             })
-
-            console.log('${{ toJSON(needs) }}')
+      
+      - name: print
+        run: echo ${{ toJSON(needs) }}
