@@ -19,7 +19,7 @@ jobs:
       COMMENT: ${{ steps.check-run.outputs.COMMENT }}
       NUM: ${{ steps.check-run.outputs.NUM }}
       type: ${{ steps.check-run.outputs.type }}
-      result: ${{ steps.job-result.outputs.result }}
+      job-result: ${{ steps.job-result.outputs.result }}
     steps:
     - name: Check run
       id: check-run
@@ -83,6 +83,7 @@ jobs:
             core.setOutput('result', 'false' )
             console.log(stepsResult)
           }
+          console.log(JSON.stringify(${{ toJSON(steps) }}))
 
   get-details:
     needs: check-valid-run
