@@ -77,8 +77,8 @@ jobs:
       uses: actions/github-script@v7
       with: 
         script: |
-          console.log(`${{ toJSON(steps) }}`)
-
+          const stepsResult = ${{ toJSON(steps.*.outputs.result) }}
+          core.setOutput('result', !stepsResult.includes('false'))
 
   get-details:
     needs: check-valid-run
@@ -276,6 +276,14 @@ jobs:
           }
           core.setFailed("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} is not associated with GitHub project: ${{ vars.MAIN_PRJ }}")
           return
+
+    - name: Job result
+      id: job-result
+      if: always()
+      uses: actions/github-script@v7
+      with: 
+        script: |
+          console.log(JSON.stringify(${{ toJSON(needs) }}))
 
   issue-automation:
     needs: get-details
