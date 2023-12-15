@@ -28,7 +28,7 @@ jobs:
           const eventLabels = ["epic", "accepted", "started-working"]
           if( "${{github.event.action }}" == "labeled" || "${{github.event.action }}" == "unlabeled" ) {
             if( !eventLabels.includes("${{ github.event.label.name}}") ){
-              core.setFailed("Workflow is only applicable for below issue labels:\n" + eventLabels)
+              console.log("Workflow is only applicable for below issue labels:\n" + eventLabels)
               return false
             }
           }
@@ -43,7 +43,7 @@ jobs:
                 core.setOutput('OPTION', 'remove')
                 core.setOutput('LABELS', '${{ github.event.label.name}}')
                 core.setOutput('COMMENT', 'Only assignees are allowed to add label: `started-working`!<br>@${{ github.triggering_actor }} please assign issue to someone or ask assignee to add label.')
-                core.setFailed("Only assignees are allowed to add label: `started-working`!")
+                console.log("Only assignees are allowed to add label: `started-working`!")
                 return false
               }
             }
@@ -54,7 +54,7 @@ jobs:
                 core.setOutput('OPTION', 'add')
                 core.setOutput('LABELS', '${{ github.event.label.name}}')
                 core.setOutput('COMMENT', "Only assignee or admin are allowed to remove label: `started-working`!<br>@${{ github.triggering_actor }} please ask assigne or admin to remove label.")
-                core.setFailed("Only assignees are allowed to remove label: `started-working`!")
+                console.log("Only assignees are allowed to remove label: `started-working`!")
                 return false
               }
             }
