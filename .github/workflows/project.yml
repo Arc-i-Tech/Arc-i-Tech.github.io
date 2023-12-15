@@ -82,15 +82,16 @@ jobs:
           if( stepsResult.includes('false') ) {
             return false
           }
-          console.log(JSON.stringify(${{ toJSON(steps) }}))
 
   get-details:
     needs: check-valid-run
+    if: needs.check-valid-run.outputs.result != 'false'
     runs-on: ubuntu-latest
     outputs:
       ids: ${{ steps.get-required-ids.outputs.ids }}
       PRJ: ${{ steps.fetch-prj-details.outputs.PRJ }}
       ITEM: ${{ steps.find-item.outputs.ITEM }}
+      result: ${{ steps.job-result.outputs.result }}
     steps:
     - name: Get reuired IDs
       id: get-required-ids
@@ -137,8 +138,8 @@ jobs:
           // Find project number and id from project name
           const prj = resp.organization.projectsV2.nodes.filter((node) => node.title == "${{ vars.MAIN_PRJ }}")
           if( prj.length == 0 ) {
-            core.setFailed("No projects found with name: ${{ vars.MAIN_PRJ }}")
-            return
+            console.log("No projects found with name: ${{ vars.MAIN_PRJ }}")
+            return false
           } 
 
           const IDs = {
@@ -153,20 +154,21 @@ jobs:
           core.setOutput('PRJ_CNT',  resp.repository.issueOrPullRequest.projectsV2.totalCount)
 
           if( resp.repository.issueOrPullRequest.projectsV2.totalCount <= 0 ) {
-            core.setFailed("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} not associate with any github project.")
-            return
+            console.log("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} not associate with any github project.")
+            return false
           }
 
     - name: Fetch project details
       id: fetch-prj-details
+      if: steps.get-required-ids.outputs.result != 'false'
       uses: actions/github-script@v7
       with:
         github-token: ${{ secrets.ACCESS_TOKEN }}
         script: |
           const totalCount = ${{ steps.get-required-ids.outputs.PRJ_CNT }}
           if( totalCount == 0 ) {
-            core.setFailed("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} not associate with any github project.")
-            return
+            console.log("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} not associate with any github project.")
+            return false
           }
           const getPrjFields = await github.graphql(`query getPrjFields {
             node(id:"${{ steps.get-required-ids.outputs.PRJ_ID }}") {
@@ -207,15 +209,15 @@ jobs:
 
     - name: Find ITEM
       id: find-item
-      if: github.event.action != 'opened' && github.event.action != 'reopened'
+      if: steps.fetch-prj-details.outputs.result != 'false' && github.event.action != 'opened' && github.event.action != 'reopened'
       uses: actions/github-script@v7
       with:
         github-token: ${{ secrets.ACCESS_TOKEN }}
         script: |
           const totalCount = ${{ steps.get-required-ids.outputs.PRJ_CNT }}
           if( totalCount == 0 ) {
-            core.setFailed("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} not associate with any github project.")
-            return
+            console.log("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} not associate with any github project.")
+            return false
           }
           const vars = ${{ steps.get-required-ids.outputs.ids }}
 
@@ -278,16 +280,18 @@ jobs:
             core.setOutput('ITEM', JSON.stringify(itemNodes[0]))
             return true
           }
-          core.setFailed("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} is not associated with GitHub project: ${{ vars.MAIN_PRJ }}")
-          return
+          console.log("${{ needs.check-valid-run.outputs.type }}: ${{ needs.check-valid-run.outputs.NUM }} is not associated with GitHub project: ${{ vars.MAIN_PRJ }}")
+          return false
 
     - name: Job result
       id: job-result
-      if: always()
       uses: actions/github-script@v7
       with: 
         script: |
-          console.log(JSON.stringify(${{ toJSON(needs) }}))
+          const stepsResult = ${{ toJSON(steps.*.outputs.result) }}
+          if( stepsResult.includes('false') ) {
+            return false
+          }
 
   issue-automation:
     needs: get-details
@@ -297,6 +301,7 @@ jobs:
     outputs:
       OPTION: ${{ steps.find-target-status.outputs.OPTION }}
       LABELS: ${{ steps.find-target-status.outputs.LABELS }}
+      result: ${{ steps.job-result.outputs.result }}
     steps:
     - name: Find target Status
       id: find-target-status
@@ -361,12 +366,12 @@ jobs:
             }
           }
           else {
-            core.setFailed("No valid target value found for Event: ${{ github.event.action}}")
-            return
+            console.log("No valid target value found for Event: ${{ github.event.action}}")
+            return false
           } 
           if( targetOptionVal == item.fieldValueByName.name ) {
-            core.setFailed("Target Status value and current status value are same: " + targetOptionVal)
-            return
+            console.log("Target Status value and current status value are same: " + targetOptionVal)
+            return false
           }
 
           const prj = ${{ needs.get-details.outputs.PRJ }}
@@ -381,7 +386,7 @@ jobs:
 
     - name: Update Status
       id: update-status
-      if: steps.find-target-status.outputs.UPDATE_STATUS == 'true'
+      if: steps.find-target-status.outputs.result != 'false' && steps.find-target-status.outputs.UPDATE_STATUS == 'true'
       uses: actions/github-script@v7
       with:
         github-token: ${{ secrets.ACCESS_TOKEN }}
@@ -415,13 +420,13 @@ jobs:
             return true
           }
           else {
-            core.setFailed("Error while changing Issue: ${{ github.event.issue.number }} status to: " + optionNode[0].name)
-            return
+            console.log("Error while changing Issue: ${{ github.event.issue.number }} status to: " + optionNode[0].name)
+            return false
           }
 
     - name: Update Sprint
       id: update-sprint
-      if: github.event.action == 'assigned' || github.event.action == 'unassigned'
+      if: steps.update-status.outputs.result != 'false' && ( github.event.action == 'assigned' || github.event.action == 'unassigned' )
       uses: actions/github-script@v7
       with:
         github-token: ${{ secrets.ACCESS_TOKEN }}
@@ -466,17 +471,39 @@ jobs:
             return true            
           }
           else {
-            core.setFailed("Unable to update sprint field")
-            return
+            console.log("Unable to update sprint field")
+            return false
+          }
+    
+    - name: Job result
+      id: job-result
+      uses: actions/github-script@v7
+      with: 
+        script: |
+          const stepsResult = ${{ toJSON(steps.*.outputs.result) }}
+          if( stepsResult.includes('false') ) {
+            return false
           }
 
   pr-automation:
     if: github.event_name == 'pull_request'
     needs: get-details
     runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.job-result.outputs.result }}
 
     steps:
-      - run: echo "Pull request automation"
+    - run: echo "Pull request automation"
+
+    - name: Job result
+      id: job-result
+      uses: actions/github-script@v7
+      with: 
+        script: |
+          const stepsResult = ${{ toJSON(steps.*.outputs.result) }}
+          if( stepsResult.includes('false') ) {
+            return false
+          }
 
   misc:
     needs: [check-valid-run, issue-automation]
