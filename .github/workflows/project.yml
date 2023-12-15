@@ -550,4 +550,4 @@ jobs:
             body: "${{ steps.find-labels-options.outputs.COMMENT }}"
           })
     - name: print
-      run: echo `${{ toJSON(needs) }}`
+      run: echo `${{ toJSON(github) }}`
