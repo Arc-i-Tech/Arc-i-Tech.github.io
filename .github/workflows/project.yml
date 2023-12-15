@@ -19,7 +19,7 @@ jobs:
       COMMENT: ${{ steps.check-run.outputs.COMMENT }}
       NUM: ${{ steps.check-run.outputs.NUM }}
       type: ${{ steps.check-run.outputs.type }}
-      ok: ${{ steps.job-result.outputs.ok }}
+      result: ${{ steps.job-result.outputs.result }}
     steps:
     - name: Check run
       id: check-run
@@ -80,8 +80,7 @@ jobs:
         script: |
           const stepsResult = ${{ toJSON(steps.*.outputs.result) }}
           if( stepsResult.includes('false') ) {
-            core.setOutput('ok', 'false' )
-            console.log(stepsResult)
+            return false
           }
           console.log(JSON.stringify(${{ toJSON(steps) }}))
 
