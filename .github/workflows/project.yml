@@ -12,6 +12,7 @@ on:
 
 jobs:
   check-valid-run:
+    if: github.triggering_actor != 'serv-cat'
     runs-on: ubuntu-latest
     outputs:
       OPTION: ${{ steps.check-run.outputs.OPTION }}
