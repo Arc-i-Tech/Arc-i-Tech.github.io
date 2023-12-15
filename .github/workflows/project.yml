@@ -80,6 +80,7 @@ jobs:
         script: |
           const stepsResult = ${{ toJSON(steps.*.outputs.result) }}
           core.setOutput('result', !stepsResult.includes('false'))
+          console.log(stepsResult)
 
   get-details:
     needs: check-valid-run
