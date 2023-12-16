@@ -8,6 +8,7 @@ on:
   pull_request: 
     branches: [main, '*-E-*'] 
     types: [opened, synchronize]
+    paths: ['src/**', 'pom.xml']
 
 jobs:
   check-duplicate-run:
@@ -188,7 +189,7 @@ jobs:
       - name: Push - failed on branch :${{ github.ref_name }}
         id: find-epic-issue-number
         if: failure() && github.event_name == 'push' && contains(github.ref_name, '-E-')
-        run: NUMBER=$(echo "93-E-github-action-workflows" | tr -dc '0-9'); 
+        run: NUMBER=$(echo "${{ github.ref_name }}" | tr -dc '0-9'); 
           echo "EPIC_NUMBER=$NUMBER" >> $GITHUB_OUTPUT
         shell: bash
 
