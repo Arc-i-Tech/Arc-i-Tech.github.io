@@ -310,6 +310,9 @@ jobs:
       OPTION_NODE: ${{ steps.find-target-status.outputs.OPTION_NODE }}
       FIELD_ID: ${{ steps.find-target-status.outputs.FIELD_ID }}
       UPDATE_STATUS: ${{ steps.find-target-status.outputs.UPDATE_STATUS }}
+      ITEM: ${{ needs.get-details.outputs.ITEM }}
+      PRJ: ${{ needs.get-details.outputs.PRJ }}
+      ids: ${{ needs.get-details.outputs.ids }}
       result: ${{ steps.job-result.outputs.result }}
       
     steps:
@@ -413,6 +416,9 @@ jobs:
       OPTION_NODE: ${{ steps.find-target-status.outputs.OPTION_NODE }}
       FIELD_ID: ${{ steps.find-target-status.outputs.FIELD_ID }}
       UPDATE_STATUS: ${{ steps.find-target-status.outputs.UPDATE_STATUS }}
+      ITEM: ${{ needs.get-details.outputs.ITEM }}
+      PRJ: ${{ needs.get-details.outputs.PRJ }}
+      ids: ${{ needs.get-details.outputs.ids }}
       result: ${{ steps.job-result.outputs.result }}
 
     steps:
@@ -526,11 +532,17 @@ jobs:
             core.setOutput('OPTION_NODE', '${{ needs.issue-automation.outputs.OPTION_NODE }}')
             core.setOutput('FIELD_ID', '${{ needs.issue-automation.outputs.FIELD_ID }}')
             core.setOutput('UPDATE_STATUS', '${{ needs.issue-automation.outputs.UPDATE_STATUS }}')
+            core.setOutput('ITEM', '${{ needs.issue-automation.outputs.ITEM }}')
+            core.setOutput('PRJ', '${{ needs.issue-automation.outputs.PRJ }}')
+            core.setOutput('ids', '${{ needs.issue-automation.outputs.ids }}')
           }
           else if( '${{ github.event_name }}' == 'pull_request' ) {
             core.setOutput('OPTION_NODE', '${{ needs.pr-automation.outputs.OPTION_NODE }}')
             core.setOutput('FIELD_ID', '${{ needs.pr-automation.outputs.FIELD_ID }}')
             core.setOutput('UPDATE_STATUS', '${{ needs.pr-automation.outputs.UPDATE_STATUS }}')
+            core.setOutput('ITEM', '${{ needs.pr-automation.outputs.ITEM }}')
+            core.setOutput('PRJ', '${{ needs.pr-automation.outputs.PRJ }}')
+            core.setOutput('ids', '${{ needs.pr-automation.outputs.ids }}')
           }
           else {
             return false
@@ -544,8 +556,8 @@ jobs:
         github-token: ${{ secrets.ACCESS_TOKEN }}
         script: |
           const optionNode = ${{ steps.collect-inputs.outputs.OPTION_NODE }}
-          const ITEM = ${{ needs.get-details.outputs.ITEM }}
-          const vars = ${{ needs.get-details.outputs.ids }}
+          const ITEM = ${{ steps.collect-inputs.outputs.ITEM }}
+          const vars = ${{ steps.collect-inputs.outputs.ids }}
           vars["FIELD_ID"] = "${{ steps.collect-inputs.outputs.FIELD_ID }}"
           vars["OPTION_ID"] = optionNode[0].id
           vars["ITEM_ID"] = ITEM.id
@@ -583,10 +595,10 @@ jobs:
       with:
         github-token: ${{ secrets.ACCESS_TOKEN }}
         script: |
-          const prj = ${{ needs.get-details.outputs.PRJ }}
+          const prj = ${{ steps.collect-inputs.outputs.PRJ }}
           const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == "🏃 Sprint".toUpperCase())
-          const vars = ${{ needs.get-details.outputs.ids }}
-          const ITEM = ${{ needs.get-details.outputs.ITEM }}
+          const vars = ${{ steps.collect-inputs.outputs.ids }}
+          const ITEM = ${{ steps.collect-inputs.outputs.ITEM }}
           vars["FIELD_ID"] = fieldNode[0].id
           vars["ITR_ID"] = fieldNode[0].configuration.iterations[0].id
           vars["ITEM_ID"] = ITEM.id
@@ -638,7 +650,7 @@ jobs:
           }
 
   remove-label-add-comment:
-    needs: [check-valid-run, update-status-sprint]
+    needs: [check-valid-run, issue-automation]
     if: always() && ( needs.check-valid-run.outputs.LABELS != '' || needs.issue-automation.outputs.LABELS != '' )
     runs-on: ubuntu-latest
     steps:
