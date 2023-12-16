@@ -510,7 +510,7 @@ jobs:
 
   update-status-sprint:
     needs: [issue-automation, pr-automation]
-    if: ( needs.issue-automation.outputs.result != 'false' || needs.pr-automation.outputs.result != 'false' ) && ( needs.issue-automation.result == 'success' || needs.pr-automation.result == 'success' )
+    if: always() && ( needs.issue-automation.outputs.result != 'false' || needs.pr-automation.outputs.result != 'false' ) && ( ( needs.issue-automation.result == 'success' && needs.pr-automation.result == 'skipped' ) || ( needs.issue-automation.result == 'skipped' && needs.pr-automation.result == 'success' ) )
     runs-on: ubuntu-latest
 
     outputs:
