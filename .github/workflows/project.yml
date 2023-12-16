@@ -639,7 +639,7 @@ jobs:
 
   remove-label-add-comment:
     needs: [check-valid-run, issue-automation]
-    if: needs.check-valid-run.outputs.LABELS != '' || needs.issue-automation.outputs.LABELS != '' 
+    if: always() && ( needs.check-valid-run.outputs.LABELS != '' || needs.issue-automation.outputs.LABELS != '' )
     runs-on: ubuntu-latest
     steps:
     - name: Find labels and options and message
