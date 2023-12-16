@@ -5,7 +5,7 @@ on:
     types: [labeled, unlabeled, assigned, unassigned]
 
   pull_request:
-    types: [opened, reopened, ready_for_review, review_requested, review_request_removed]
+    types: [opened, ready_for_review, review_requested, review_request_removed]
 
   pull_request_review:
     types: [submitted]
@@ -14,6 +14,7 @@ jobs:
   check-valid-run:
     if: github.triggering_actor != 'serv-cat'
     runs-on: ubuntu-latest
+
     outputs:
       OPTION: ${{ steps.check-run.outputs.OPTION }}
       LABELS: ${{ steps.check-run.outputs.LABELS }}
@@ -21,6 +22,7 @@ jobs:
       NUM: ${{ steps.check-run.outputs.NUM }}
       type: ${{ steps.check-run.outputs.type }}
       result: ${{ steps.job-result.outputs.result }}
+
     steps:
     - name: Check run
       id: check-run
@@ -88,11 +90,13 @@ jobs:
     needs: check-valid-run
     if: needs.check-valid-run.outputs.result != 'false'
     runs-on: ubuntu-latest
+
     outputs:
       ids: ${{ steps.get-required-ids.outputs.ids }}
       PRJ: ${{ steps.fetch-prj-details.outputs.PRJ }}
       ITEM: ${{ steps.find-item.outputs.ITEM }}
       result: ${{ steps.job-result.outputs.result }}
+
     steps:
     - name: Get reuired IDs
       id: get-required-ids
@@ -296,13 +300,18 @@ jobs:
 
   issue-automation:
     needs: get-details
+    if: needs.get-details.outputs.result != 'false' && github.event_name == 'issues'
     name: Issue automation- ${{ github.event.issue.number }}
     runs-on: ubuntu-latest
 
     outputs:
       OPTION: ${{ steps.find-target-status.outputs.OPTION }}
       LABELS: ${{ steps.find-target-status.outputs.LABELS }}
+      OPTION_NODE: ${{ steps.find-target-status.outputs.OPTION_NODE }}
+      FIELD_ID: ${{ steps.find-target-status.outputs.FIELD_ID }}
+      UPDATE_STATUS: ${{ steps.find-target-status.outputs.UPDATE_STATUS }}
       result: ${{ steps.job-result.outputs.result }}
+      
     steps:
     - name: Find target Status
       id: find-target-status
@@ -385,17 +394,159 @@ jobs:
 
           console.log("Target Status value: " + targetOptionVal)
 
-    - name: Update Status
-      id: update-status
-      if: steps.find-target-status.outputs.result != 'false' && steps.find-target-status.outputs.UPDATE_STATUS == 'true'
+    - name: Job result
+      id: job-result
+      uses: actions/github-script@v7
+      with: 
+        script: |
+          const stepsResult = ${{ toJSON(steps.*.outputs.result) }}
+          if( stepsResult.includes('false') ) {
+            return false
+          }
+
+  pr-automation:
+    needs: get-details
+    if: needs.get-details.outputs.result != 'false' && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    outputs:
+      OPTION_NODE: ${{ steps.find-target-status.outputs.OPTION_NODE }}
+      FIELD_ID: ${{ steps.find-target-status.outputs.FIELD_ID }}
+      UPDATE_STATUS: ${{ steps.find-target-status.outputs.UPDATE_STATUS }}
+      result: ${{ steps.job-result.outputs.result }}
+
+    steps:
+    - name: Opened
+      id: opened
+      if: github.event.action == 'opened'
       uses: actions/github-script@v7
       with:
         github-token: ${{ secrets.ACCESS_TOKEN }}
         script: |
-          const optionNode = ${{ steps.find-target-status.outputs.OPTION_NODE }}
+          const totalCount = ${{ steps.issue-details.outputs.PRJ_CNT }}
+          const vars = ${{ needs.get-details.outputs.ids }}
+          if( totalCount == 0 ) {
+            //Add PR to project
+            const AddPRToProjectResp = await github.graphql(`mutation AddPRToProject($ORG_ID: String!, $I_PR_ID ID!, $PRJ_ID: ID!) {
+              addProjectV2ItemById( input: {
+                clientMutationId:$ORG_ID
+                contentId:$I_PR_ID
+                projectId:$PRJ_ID
+                }) {
+                clientMutationId
+                item {
+                  id
+                }
+              }
+            }`, vars)
+            if( AddPRToProjectResp.addProjectV2ItemById.clientMutationId == vars.ORG_ID ) {
+              console.log("Pull request got added to project: ${{ vars.MAIN_PRJ }}")
+              return true
+            }
+            else {
+              console.log("Error while adding pull request: ${{ github.event.number }} to project: ${{ vars.MAIN_PRJ }}")
+              return false
+            }
+          }
+          console.log("Pull Request already associate with github project.");
+          return true
+
+    - name: Find target Status
+      id: find-target-status
+      if: steps.opened.outputs.result != 'false'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.ACCESS_TOKEN }}
+        script: |
+          const item = ${{ needs.get-details.outputs.ITEM }}
+
+          const reviewerTeams = ${{ toJSON(github.event.pull_request.requested_teams.*.name) }}
+          const reviewers = ${{ toJSON(github.event.pull_request.requested_reviewers) }}
+          
+          var targetOptionVal = ""
+          if( ${{ github.event.pull_request.draft }} ) {
+            targetOptionVal = "🏗 In progress"
+          } 
+          else if( reviewers.length > 0 || reviewerTeams.length > 0 ) {
+            targetOptionVal = "👀 In review"
+          }
+          else if( "${{ github.event.action }}" == "opened" || "${{ github.event.action }}" == "ready_for_review" {
+            targetOptionVal = "🔖 Sprint Backlog"
+          }
+          else if( "${{ github.event.action }}" == "review_request_removed") ) {
+            targetOptionVal = "🔖 Sprint Backlog"
+          }
+          else if( "${{ github.event.action }}" == "review_requested" ) {
+            targetOptionVal = "👀 In review"
+          }
+          else {
+            console.log("No valid target value found for Event: ${{ github.event.action}}")
+            return false
+          } 
+          if( targetOptionVal == item.fieldValueByName.name ) {
+            console.log("Target Status value and current status value are same: " + targetOptionVal)
+            return false
+          }
+
+          const prj = ${{ needs.fetch-details.outputs.PRJ }}
+          const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == 'status'.toUpperCase())
+          const optionNode = fieldNode[0].options.filter((option) => option.name == targetOptionVal )
+
+          core.setOutput("OPTION_NODE", JSON.stringify(optionNode))
+          core.setOutput("FIELD_ID", fieldNode[0].id)
+          core.setOutput("UPDATE_STATUS", "true")
+
+          console.log("Target Status value: " + targetOptionVal)
+
+    - name: Job result
+      id: job-result
+      uses: actions/github-script@v7
+      with: 
+        script: |
+          const stepsResult = ${{ toJSON(steps.*.outputs.result) }}
+          if( stepsResult.includes('false') ) {
+            return false
+          }
+
+  update-status-sprint:
+    needs: [issue-automation, pr-automation]
+    if: ( needs.issue-automation.outputs.result != 'false' || needs.pr-automation.outputs.result != 'false' ) && ( ( needs.issue-automation.result == 'success' && needs.pr-automation.result == 'skipped' ) || ( needs.issue-automation.result == 'skipped' && needs.pr-automation.result == 'success' ) )
+    runs-on: ubuntu-latest
+
+    outputs:
+      result: ${{ steps.job-result.outputs.result }}
+
+    steps:
+    - name: Collect inputs
+      id: collect-inputs
+      uses: actions/github-script@v7
+      with:
+        script: |
+          if( '${{ github.event_name }}' == 'Issues' ) {
+            core.setOutput('OPTION_NODE', ${{ needs.issue-automation.outputs.OPTION_NODE}} }})
+            core.setOutput('FIELD_ID', ${{ needs.issue-automation.outputs.FIELD_ID }})
+            core.setOutput('UPDATE_STATUS', ${{ needs.issue-automation.outputs.UPDATE_STATUS }})
+          }
+          else if( '${{ github.event_name }}' == 'pull_request' ) {
+            core.setOutput('OPTION_NODE', ${{ needs.pr-automation.outputs.OPTION_NODE}} }})
+            core.setOutput('FIELD_ID', ${{ needs.pr-automation.outputs.FIELD_ID }})
+            core.setOutput('UPDATE_STATUS', ${{ needs.pr-automation.outputs.UPDATE_STATUS }})
+          }
+          else {
+            return false
+          }
+
+    - name: Update Status
+      id: update-status
+      if: steps.collect-inputs.outputs.result != 'false' && steps.collect-inputs.outputs.UPDATE_STATUS == 'true'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.ACCESS_TOKEN }}
+        script: |
+          const optionNode = ${{ steps.collect-inputs.outputs.OPTION_NODE }}
           const ITEM = ${{ needs.get-details.outputs.ITEM }}
           const vars = ${{ needs.get-details.outputs.ids }}
-          vars["FIELD_ID"] = "${{ steps.find-target-status.outputs.FIELD_ID }}"
+          vars["FIELD_ID"] = "${{ steps.collect-inputs.outputs.FIELD_ID }}"
           vars["OPTION_ID"] = optionNode[0].id
           vars["ITEM_ID"] = ITEM.id
 
@@ -486,29 +637,9 @@ jobs:
             return false
           }
 
-  pr-automation:
-    if: github.event_name == 'pull_request'
-    needs: get-details
-    runs-on: ubuntu-latest
-    outputs:
-      result: ${{ steps.job-result.outputs.result }}
-
-    steps:
-    - run: echo "Pull request automation"
-
-    - name: Job result
-      id: job-result
-      uses: actions/github-script@v7
-      with: 
-        script: |
-          const stepsResult = ${{ toJSON(steps.*.outputs.result) }}
-          if( stepsResult.includes('false') ) {
-            return false
-          }
-
-  misc:
+  remove-label-add-comment:
     needs: [check-valid-run, issue-automation]
-    if: always() && ( needs.check-valid-run.outputs.LABELS != '' || needs.issue-automation.outputs.LABELS != '' )
+    if: needs.check-valid-run.outputs.LABELS != '' || needs.issue-automation.outputs.LABELS != '' 
     runs-on: ubuntu-latest
     steps:
     - name: Find labels and options and message
