@@ -331,6 +331,10 @@ jobs:
           var targetOptionVal = ""
           if( labels.includes('epic') ) {
             targetOptionVal = ":file_cabinet: Epic"
+            if( labels.includes("started-working") ) {
+              core.setOutput('OPTION', 'remove')
+              core.setOutput('LABELS', 'started-working')
+            }
           }
           else if( assignees.length > 0 || "${{ github.event.action }}" == 'assigned') { 
             if( labels.includes('started-working') || ( "${{ github.event.action }}" == 'labeled' && "${{ github.event.label.name }}" == 'started-working' )) {
@@ -343,6 +347,10 @@ jobs:
           else if( "${{ github.event.action }}" == 'labeled' ) {
             if( "${{ github.event.label.name }}" == 'epic' ) {
               targetOptionVal = ":file_cabinet: Epic"
+              if( labels.includes("started-working") ) {
+                core.setOutput('OPTION', 'remove')
+                core.setOutput('LABELS', 'started-working')
+              }
             }
             else if( "${{ github.event.label.name }}" == 'accepted' ) {
               targetOptionVal = "📋 Product Backlog"
