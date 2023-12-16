@@ -523,14 +523,14 @@ jobs:
       with:
         script: |
           if( '${{ github.event_name }}' == 'issues' ) {
-            core.setOutput('OPTION_NODE', ${{ needs.issue-automation.outputs.OPTION_NODE }})
-            core.setOutput('FIELD_ID', ${{ needs.issue-automation.outputs.FIELD_ID }})
-            core.setOutput('UPDATE_STATUS', ${{ needs.issue-automation.outputs.UPDATE_STATUS }})
+            core.setOutput('OPTION_NODE', '${{ needs.issue-automation.outputs.OPTION_NODE }}')
+            core.setOutput('FIELD_ID', '${{ needs.issue-automation.outputs.FIELD_ID }}')
+            core.setOutput('UPDATE_STATUS', '${{ needs.issue-automation.outputs.UPDATE_STATUS }}')
           }
           else if( '${{ github.event_name }}' == 'pull_request' ) {
-            core.setOutput('OPTION_NODE', ${{ needs.pr-automation.outputs.OPTION_NODE }})
-            core.setOutput('FIELD_ID', ${{ needs.pr-automation.outputs.FIELD_ID }})
-            core.setOutput('UPDATE_STATUS', ${{ needs.pr-automation.outputs.UPDATE_STATUS }})
+            core.setOutput('OPTION_NODE', '${{ needs.pr-automation.outputs.OPTION_NODE }}')
+            core.setOutput('FIELD_ID', '${{ needs.pr-automation.outputs.FIELD_ID }}')
+            core.setOutput('UPDATE_STATUS', '${{ needs.pr-automation.outputs.UPDATE_STATUS }}')
           }
           else {
             return false
