@@ -12,7 +12,7 @@ on:
 
 jobs:
   check-valid-run:
-    if: github.triggering_actor != 'serv-cat'
+    if: startsWith(github.triggering_actor, 'serv') && endsWith(github.triggering_actor, '-bot')
     runs-on: ubuntu-latest
 
     outputs:
