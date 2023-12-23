@@ -12,7 +12,7 @@ on:
 
 jobs:
   check-valid-run:
-    if: github.triggering_actor != 'serv-cat'
+    if: ! ( startsWith(github.triggering_actor, 'serv') && endsWith(github.triggering_actor, '-bot') )
     runs-on: ubuntu-latest
 
     outputs:
@@ -417,7 +417,7 @@ jobs:
 
   pr-automation:
     needs: get-details
-    if: needs.get-details.outputs.result != 'false' && github.event_name == 'pull_request'
+    if: needs.get-details.outputs.result != 'false' && ( github.event_name == 'pull_request' || github.event_name == 'pull_request_review' )
     runs-on: ubuntu-latest
 
     outputs:
