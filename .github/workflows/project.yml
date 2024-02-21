@@ -12,7 +12,7 @@ on:
 
 jobs:
   check-valid-run:
-    if: ! ( startsWith(github.triggering_actor, 'serv') && endsWith(github.triggering_actor, '-bot') )
+    if: ( !startsWith(github.triggering_actor, 'serv') && !endsWith(github.triggering_actor, 'cat') )
     runs-on: ubuntu-latest
 
     outputs:
@@ -24,6 +24,9 @@ jobs:
       result: ${{ steps.job-result.outputs.result }}
 
     steps:
+    - name: serv-cat test-run
+      run: echo ${{ ( startsWith(github.triggering_actor, 'serv') && endsWith(github.triggering_actor, 'cat') ) }}
+      
     - name: Check run
       id: check-run
       uses: actions/github-script@v7
