@@ -25,9 +25,7 @@ jobs:
 
     steps:
     - name: serv-cat test-run
-      run: echo ${{ github.triggering_actor }} |
-        exit 1
-
+      run: echo ${{ github.triggering_actor }}
     - name: Check run
       id: check-run
       uses: actions/github-script@v7
