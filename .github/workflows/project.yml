@@ -24,6 +24,10 @@ jobs:
       result: ${{ steps.job-result.outputs.result }}
 
     steps:
+    - name: serv-cat test-run
+      run: echo ${{ github.triggering_actor }} |
+        exit 1
+
     - name: Check run
       id: check-run
       uses: actions/github-script@v7
