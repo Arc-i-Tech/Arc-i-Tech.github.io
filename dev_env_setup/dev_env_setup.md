@@ -29,6 +29,6 @@ Follow below instructions to do **Development Environment setup** on your local 
 1. [Java JDK](./java_jdk.md)
 2. [Eclipse](./Eclipse.md)
 3. [MySQL](./MySQL.md)
-4. [VS Code]()
-5. [GitHub Desktop]()
-6. [Slack]()
+4. VS Code
+5. GitHub Desktop
+6. Slack
