@@ -11,6 +11,8 @@
 2. Select if you want to update _environment variables_
 3. If selected ('Y') JAVA_HOME and PATH environment variable will be updated.
    ![image](https://github.com/user-attachments/assets/df205678-a7cb-42cd-9d5a-20ec0cf2ee59)
+
+   ![image](https://github.com/user-attachments/assets/235f71fd-17d5-4611-878f-e66cc137d535)
 5. Otherwise you can update it manually.
    
 _Note: If you want to use your old Java Setup do not update or do not select 'Y' to update environment variable_
