@@ -1,11 +1,11 @@
 # Eclipse Installation through [tools_installer](./tools_installer.bat)
-- This eclipse installation will not remove or update your earlier eclipse installtion if already present.
-- Instaaltion will create Desktop shortcut named **eclipse-2024-03**
+- This eclipse installation will not remove or update your earlier eclipse installation if already present.
+- The installation will create a Desktop shortcut named **eclipse-jee-2024-03**
   
-1. For online installation script downloads **Eclipse 2024-03** from internet.
-2. For offline execution alredy available MySQL from '\Tools\' directory is used.
+1. For online installation script downloads **Eclipse JEE 2024-03** from the internet.
+2. For offline execution already available MySQL from '\Tools\' directory is used.
 
-## Installtion steps for script [tools_installer](./tools_installer.bat)
-1. Script will _unzip_ and create desktop shortcut for eclipse.
+## Installation steps for script [tools_installer](./tools_installer.bat)
+1. The script will _unzip_ and create a desktop shortcut for Eclipse.
    
 
