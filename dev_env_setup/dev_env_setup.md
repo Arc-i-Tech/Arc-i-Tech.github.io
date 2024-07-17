@@ -27,7 +27,7 @@ Follow below instructions to do **Development Environment setup** on your local 
 
 ### Tools intsructions - Installtion, Work Setup and further help
 1. [Java JDK](./java_jdk.md)
-2. [Eclipse](./Eclipse.md)
+2. [Eclipse JEE](./Eclipse.md)
 3. [MySQL](./MySQL.md)
 4. VS Code
 5. GitHub Desktop
