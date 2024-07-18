@@ -3,7 +3,7 @@
 - If you want to use this installation as default for your PC then set **'JAVA_HOME'** environment variable (The script will do it automatically).
 - For any other version follow the link - https://jdk.java.net/archive/
 
-1. For online installation, the script downloads **Java** JDK 11.0.2**
+1. For online installation, the script downloads **Java JDK 11.0.2**
 2. For offline execution already available Java JDK from '\Tools\' directory is used.
 
 ## Installation steps for script [tools_installer](./tools_installer.bat)
