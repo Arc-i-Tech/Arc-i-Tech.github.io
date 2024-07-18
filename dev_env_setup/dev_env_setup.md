@@ -35,6 +35,6 @@ _Note: Java JDK or Eclipse installation do not touch your earlier installation i
 1. [Java JDK](./java_jdk.md)
 2. [Eclipse JEE](./Eclipse.md)
 3. [MySQL](./MySQL.md)
-4. VS Code - AUto install no manual steps required
-5. GitHub Desktop - Auto install no manual steps required
-6. Slack - Auto install no manual steps required
+4. [VS Code](./vs_code.md)
+5. [GitHub Desktop](./gh_desktop.md)
+6. [Slack](./slack.md)
