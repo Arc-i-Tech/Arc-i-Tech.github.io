@@ -28,7 +28,7 @@ Follow below instructions to do **Development Environment setup** on your local 
    ![image](https://github.com/user-attachments/assets/c5a5415a-692a-4411-806a-d7e5601815e5)
 
 4. Script start installation of tools one by one
-5. Follow below [Tool instructions](#user-content-tools-instructions---installation-work-setup-and-further-help)
+5. Follow below the [Tool instructions](#user-content-tools-instructions---installation-work-setup-and-further-help)
 
 ### Tools instructions - Installation, Work Setup and further help
 _Note: Java JDK or Eclipse installation do not touch your earlier installation if any_

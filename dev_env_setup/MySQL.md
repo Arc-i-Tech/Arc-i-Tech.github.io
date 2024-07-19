@@ -1,11 +1,11 @@
 # MySQL Installation through [tools_installer](./tools_installer.bat)
-- If you already have MySQL installed on your machine then please consent with [Ajay Deshmukh.](https://github.com/ajstyle2410) or ask on [Slack](https://join.slack.com/share/enQtNzQ0MDkxNTIxNjEwMC1jN2U1ZGQxZjAyYzVhNTcxYWQ0YzBkNGJmMTgxMGY1Njc1ZGQ1ZTg3NTMyY2RlOGRiNzJkMWRjM2UzNmNhMzdi)
+- If you already have MySQL installed on your machine then please consent with [Ajay Deshmukh.](https://github.com/ajstyle2410) or ask on [Slack](https://arc-i-tech-workspace.slack.com) on the **#help-needed** channel.
 
 1. For online installation script downloads **MySQL** from the internet.
 2. For offline execution already available MySQL from '\Tools\' directory is used.
 
 ## Installation steps for script [tools_installer](./tools_installer.bat)
-1. Script asks for a version to choose
+1. The script asks for a version to choose
    * For Windows 10 or 11 Select MySQL version: **8.0.38**
    * For Windows 8 or lower select MySQL version: **5.7.44**
 2. Based on your version selection script will call **MySQL Installer**
@@ -18,7 +18,7 @@
 4. Installation - On the below window click **Execute**
    ![image](https://github.com/user-attachments/assets/24a9434f-a58c-4cc0-ac45-d06f7ebe3178)
 
-   Wait for installation to be completed.
+   Wait for the installation to be completed.
    ![image](https://github.com/user-attachments/assets/18070b24-ff94-4c34-972b-e356762c3f0d)
 
    Once All completed click **Next**
@@ -76,7 +76,7 @@
    ![image](https://github.com/user-attachments/assets/f7cd766c-2cce-41fc-8aad-c8eadef68074)
 
    - Connect to Server
-     * Enter **root** account password
+     * Enter the **root** account password
      * **Check** password - You will see the connection Status: **Connection succeeded**
      * Click **Next**
      ![image](https://github.com/user-attachments/assets/196c09b4-2bb4-4d86-a6a6-9fea59da04f9)
@@ -94,5 +94,5 @@
    ![image](https://github.com/user-attachments/assets/d59fd8d0-6194-472c-8d52-03764b529da1)
 
 
-8. Installation is done successfully. If any difficulties contact or ask help [Ajay G.](https://github.com/ajayg2808) or [Ajay Deshmukh](https://github.com/ajstyle2410) or ask for help on [Slack](https://join.slack.com/share/enQtNzQ0MDkxNTIxNjEwMC1jN2U1ZGQxZjAyYzVhNTcxYWQ0YzBkNGJmMTgxMGY1Njc1ZGQ1ZTg3NTMyY2RlOGRiNzJkMWRjM2UzNmNhMzdi)
+8. Installation is done successfully. If any difficulties contact or ask for help [Ajay G.](https://github.com/ajayg2808)](https://github.com/ajayg2808) or [Ajay Deshmukh](https://github.com/ajstyle2410) or ask for help on [Slack](https://arc-i-tech-workspace.slack.com) on the **#help-needed** channel.
    
