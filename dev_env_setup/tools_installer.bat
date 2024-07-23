@@ -167,7 +167,7 @@ set /P input=" Do you want to set JAVA_HOME env variable? (Y/N) "
 if %input%==Y (
   echo  Setting JAVA_HOME environment variable
   setx JAVA_HOME %tools%jdk-11.0.2/bin /M
-  setx PATH %PATH%;%JAVA_HOME% /M
+  setx PATH "%PATH%;%JAVA_HOME%" /M
 )
 echo.
 echo  =================================================================
