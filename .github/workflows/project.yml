@@ -12,7 +12,7 @@ on:
 
 jobs:
   check-valid-run:
-    if: ( startsWith(github.triggering_actor, 'serv') && endsWith(github.triggering_actor, 'cat') ) != 'true'
+    if: !( startsWith(github.triggering_actor, 'serv') && endsWith(github.triggering_actor, 'cat') )
     runs-on: ubuntu-latest
 
     outputs:
