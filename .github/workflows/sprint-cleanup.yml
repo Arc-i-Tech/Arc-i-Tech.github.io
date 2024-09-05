@@ -1,0 +1,25 @@
+run-name: Clean sprint backlog
+
+on:
+  schedule:
+    - cron: '00 1 * * 0'
+  workflow_dispatch:
+
+jobs:
+  clen-sprint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Check current sprint
+      id: check-current-sprint
+      run: echo "Check current sprint'
+
+    - name: Get issues from current sprint
+      id: gets-issues-from-current-sprint
+      run: echo 'yes'
+
+    - name: Move issues to next sprint
+      id: moves-issues-to-next-sprint
+      run: echo 'yes'
+      
+
