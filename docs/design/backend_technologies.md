@@ -1,0 +1,14 @@
+- Java 11
+- SpringBoot
+  - data-jpa
+  - web
+  - webmvc
+  - security
+    - core
+    - config
+    - web 
+  - test
+  - springfox (SwaggerUI)
+- Database
+  - MySQL
+  - JPA
