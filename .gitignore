@@ -1,2 +1,3 @@
-# Metadata
+/target/*
+!/target/*.war
 /.metadata/
