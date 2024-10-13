@@ -1,14 +1,6 @@
-- Java 11
-- SpringBoot
-  - data-jpa
-  - web
-  - webmvc
-  - security
-    - core
-    - config
-    - web 
-  - test
-  - springfox (SwaggerUI)
-- Database
-  - MySQL
-  - JPA
+- Node 22
+- Angular 18
+- JavaScript ES6
+- TypeScript 5.4
+- Bootstrap 5
+- HTML 5
