@@ -5,6 +5,8 @@
 *.xmi
 *.index
 !.metadata/**/Arc-i-Tech/.indexes/*.index
+/.metadata/**/.history/
+.metadata/**.history
 /.metadata/.plugins/org.eclipse.jdt.core
 /.metadata/.plugins/org.eclipse.jdt.launching
 /.metadata/.plugins/org.eclipse.m2e.core
