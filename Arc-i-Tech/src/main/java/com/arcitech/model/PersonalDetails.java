@@ -7,6 +7,7 @@ package com.arcitech.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
 /**
@@ -16,11 +17,15 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class PersonalDetails extends CommonFields {
 
+	@Column(nullable = false)
 	private String name;
 	private LocalDate dob;
 	private String address;
+	@Column(unique = true, nullable = false)
 	private int moNo;
+	@Column(nullable = false)
 	private int city;
+	@Column(nullable = false)
 	private int pincode;
 
 	/**

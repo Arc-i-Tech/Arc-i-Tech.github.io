@@ -7,6 +7,7 @@ package com.arcitech.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrePersist;
 
@@ -17,6 +18,7 @@ import javax.persistence.PrePersist;
 @Entity
 public class User extends PersonalDetails {
 
+	@Column(unique = true, nullable = false)
 	private String username;
 	private LocalDate createdAt;
 

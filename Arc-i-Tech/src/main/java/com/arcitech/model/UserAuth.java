@@ -5,6 +5,7 @@
  */
 package com.arcitech.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -16,7 +17,10 @@ import javax.persistence.OneToOne;
 @Entity
 public class UserAuth extends CommonFields {
 
+	@Column(unique = true, nullable = false)
 	private String username;
+	
+	@Column(nullable = false)
 	private String password;
 
 	@OneToOne
