@@ -95,6 +95,13 @@ powershell -command "Invoke-WebRequest 'https://slack.com/api/desktop.latestRele
 echo.
 echo  =================================================================
 
+echo. 
+rem Download Node 
+echo Downloading Node 20.18
+curl "https://nodejs.org/dist/v20.18.0/node-v20.18.0-x64.msi" -o node_v20.18.0_x64.msi
+echo.
+echo =================================================================
+
 rem install tools
 goto install
 
@@ -155,6 +162,7 @@ echo  3. MySQL
 echo  4. VS Code
 echo  5. Github Desktop
 echo  6. Slack
+echo  7. Node JS
 echo.
 echo  =================================================================
 
@@ -167,7 +175,7 @@ set /P input=" Do you want to set JAVA_HOME env variable? (Y/N) "
 if %input%==Y (
   echo  Setting JAVA_HOME environment variable
   setx JAVA_HOME %tools%jdk-11.0.2/bin /M
-  setx PATH "%PATH%;%JAVA_HOME%" /M
+  setx PATH %PATH%;%JAVA_HOME% /M
 )
 echo.
 echo  =================================================================
@@ -217,6 +225,13 @@ echo.
 rem Install slack
 echo Installing slack
 call slack.exe
+echo.
+echo  =================================================================
+
+echo.
+rem Install Node JS
+echo Installing NodeJS
+msiexec /i node_v20.18.0_x64.msi
 echo.
 echo  =================================================================
 
