@@ -6,7 +6,7 @@
 3. [Commit Guidelines](./commit-guidelines.md)
 4. [Pull Request Guidelines](./commit-guidelines.md)
 5. [Development Environment Setup](./dev_env_setup/dev_env_setup.md)
-
+6. [Frontend project setup](./Frontend/)
 
 ### Maven build
 ![Maven build](https://github.com/Arc-i-Tech/Arc-i-Tech.github.io/actions/workflows/maven.yml/badge.svg?branch=main)
