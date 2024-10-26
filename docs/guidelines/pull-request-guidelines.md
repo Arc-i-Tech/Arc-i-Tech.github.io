@@ -17,10 +17,12 @@ Please, go through these steps before you submit a PR.
    - if in case such **epic/ user-story** not available at the moment then select any of ***-main** branch as target, in the `Draft Pull Request` final **target/ base** can be decided based on work done in PR.
 5. Link a related **issue** for this PR.
    - Related **issue** is nothing but for which issue this PR is created.
-   - Use **closes #issue_no** as last line in your PR description to link issue.
+   - Use **`closes #issue_no`** as last line in your PR description to link issue.
    - _Additionally in the **Development** section as well link related issue._
-6. Once your PR is ready add reviewers. Add <img src="images/team_reviewer.png" alt="Team Reviewer" width="25%" height="100%"> **[Arc-i-tech/reviewers](https://github.com/orgs/Arc-i-Tech/teams/reviewers)** as reviewer so that members of **reviewers** team can submit their reviews.
-   -  For any `Pull Request` targeting **epic/ *-main** branch approvals from **2** reviewers is mandatory to get pull request approved.
+6. Once your PR is ready add reviewers. Reviewer must be owner/ assignee of parent **issue**
+   -  If PR target branch is **user-story** branch then, then **1** reviewer is sufficient. _(Reviewers: from parent issue)._
+   -  For any `Pull Request` targeting __epic/ *-main__ branch approvals from **2** reviewers is mandatory to get pull request approved. _(Reviewers: from parent issue and **reviewers** team)._
+   -  For any `Pull Request` targeting __epic/ *-main__ branch add team **[Arc-i-Tech/reviewers](https://github.com/orgs/Arc-i-Tech/teams/reviewers)**<img src="images/team_reviewer.png" alt="Team Reviewer" width="25%" height="100%">  as reviewer so that members of **reviewers** team can submit their reviews.
 7. Reviewers will review th `Pull Request` and can do either of these:
    - **Comment**: Any general comment for your PR. Suggesting for any guidelines etc.
      - PR can't be merged/ accepted with approval.
