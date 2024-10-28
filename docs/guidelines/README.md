@@ -1,0 +1,6 @@
+# Guidelines to work with Git & GitHub
+
+Follow below guidelines to start working with Git & GitHub for **Arc-i-Tech** project.
+1. [Branch Creation Guidelines](./branch-creation-guidelines.md)
+2. [Commit guidelines](./commit-guidelines.md)
+3. [Pull Request Guidelines](./pull-request-guidelines.md)
