@@ -22,8 +22,8 @@ Please, go through these steps before you submit a PR.
 6. Once your PR is ready add reviewers. Reviewer must be owner/ assignee of parent **issue**
    -  If PR target branch is **user-story** branch then, then **1** reviewer is sufficient. _(Reviewers: from parent issue)._
    -  For any `Pull Request` targeting __epic/ *-main__ branch approvals from **2** reviewers is mandatory to get pull request approved. _(Reviewers: from parent issue and **reviewers** team)._
-   -  For any `Pull Request` targeting __epic/ *-main__ branch add team **[Arc-i-Tech/reviewers](https://github.com/orgs/Arc-i-Tech/teams/reviewers)**<img src="images/team_reviewer.png" alt="Team Reviewer" width="25%" height="100%">  as reviewer so that members of **reviewers** team can submit their reviews.
-7. Reviewers will review th `Pull Request` and can do either of these:
+   -  For any `Pull Request` targeting __epic/ *-main__ branch add team **[Arc-i-Tech/reviewers](https://github.com/orgs/Arc-i-Tech/teams/reviewers)** <img src="images/team_reviewer.png" alt="Team Reviewer" width="25%" height="100%">  as reviewer so that members of **reviewers** team can submit their reviews.
+7. Reviewers will review th `Pull Request` and can do either of follow:
    - **Comment**: Any general comment for your PR. Suggesting for any guidelines etc.
      - PR can't be merged/ accepted with approval.
    - **Approve**: PR is approved with all the changes and after resolving conversations if any.
