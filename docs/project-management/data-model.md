@@ -15,11 +15,36 @@ flowchart LR;
   t3[Task-3]
   t4[Task-4]
   t5[Task-5]
+  t6[....]
+  t7[....]
+  t8[....]
   b1[Bug-1]
   b2[Bug-2]
   b3[Bug-3]
   b4[Bug-4]
   
+  style f1 fill:#bfd4f2,stroke:#bfd4f2
+  style e1 fill:#2AF53A,stroke:#2AF53A
+  style e2 fill:#2AF53A,stroke:#2AF53A
+  style e3 fill:#2AF53A,stroke:#2AF53A
+  style us1 fill:#6BDC23,stroke:#6BDC23
+  style us2 fill:#6BDC23,stroke:#6BDC23
+  style us3 fill:#6BDC23,stroke:#6BDC23
+  style us4 fill:#6BDC23,stroke:#6BDC23
+  style us5 fill:#6BDC23,stroke:#6BDC23
+  style t1 fill:#8DE4E4,stroke:#8DE4E4
+  style t2 fill:#8DE4E4,stroke:#8DE4E4
+  style t3 fill:#8DE4E4,stroke:#8DE4E4
+  style t4 fill:#8DE4E4,stroke:#8DE4E4
+  style t5 fill:#8DE4E4,stroke:#8DE4E4
+  style t6 fill:#8DE4E4,stroke:#8DE4E4
+  style t7 fill:#8DE4E4,stroke:#8DE4E4
+  style t8 fill:#8DE4E4,stroke:#8DE4E4
+  style b1 fill:#d73a4a,stroke:#d73a4a
+  style b2 fill:#d73a4a,stroke:#d73a4a
+  style b3 fill:#d73a4a,stroke:#d73a4a
+  style b4 fill:#d73a4a,stroke:#d73a4a
+
   f1 --> e1
   f1 --> e2
   f1 --> e3
@@ -34,10 +59,10 @@ flowchart LR;
   us1 --> b1
   us1 --> t2
   us1 --> b2
-  us1 --> ...
+  us1 --> t6
   us2 --> t3
   us2 --> t4
   us4 --> b3
-  us2 --> ....
-  us4 --> .....
+  us2 --> t7
+  us4 --> t8
 ```
