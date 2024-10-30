@@ -5,3 +5,4 @@ Follow below guidelines to start working with Git & GitHub for **Arc-i-Tech** pr
 2. [Commit guidelines](./commit-guidelines.md)
 3. [Pull Request Guidelines](./pull-request-guidelines.md)
 4. [Merge Conflict Resolution](./conflict-resolution-guidelines.md)
+5. [Review Guidelines](./review-guidelines.md)
