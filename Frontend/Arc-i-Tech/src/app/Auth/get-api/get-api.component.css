@@ -1,0 +1,129 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #DBE2EF !important;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 10px;
+}
+
+.box {
+    width: 93%;
+    max-width: 600px;
+    min-height: 500px;
+    margin: 2% auto;
+    border-radius: 10px;
+    background-color: #112D4E !important;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    padding: 20px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    font-size: 2.5em;
+    color: #F9F7F7 !important;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    color: #F9F7F7 !important;
+    margin-bottom: 5px;    
+    margin-top: 30px;
+    font-size: 1.2em;
+    padding-left: 65px;
+}
+
+.input-group input[type="text"],
+input[type="password"] {
+    width: 80%;
+    padding: 15px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-left: 10%;
+}
+
+.input-group input[type=submit] {
+    width: 40%;
+    height: 55px;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    margin-left: 30%;
+    border-radius: 10px;
+    background-color: #3f72af;
+    color: white;
+    font-size: 1.2em;
+    border: none;
+    cursor: pointer;
+}
+
+.input-group input[type=submit]:hover {
+    background-color: #9bb8ee !important;
+}
+
+.extra-links {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.extra-links a {
+    color: #007bff;
+    text-decoration: none;
+    padding: 20px;
+    margin: 0 5px;
+}
+
+.extra-links a:hover {
+    text-decoration: underline;
+}
+
+/* Media Queries for Responsiveness */
+
+/* Small devices (phones, 600px and down) */
+@media (max-width: 600px) {
+    .box {
+        width: 100%;
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 2em;
+    }
+
+    .input-group label {
+        font-size: 1em;
+    }
+
+    .input-group input[type="text"],
+    input[type="password"] {
+        width: 90%;
+        margin-left: 5%;
+    }
+
+    .input-group input[type=submit] {
+        width: 60%;
+        margin-left: 20%;
+    }
+}
+
+/* Large devices (desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .box {
+        width: 50%;
+    }
+}
