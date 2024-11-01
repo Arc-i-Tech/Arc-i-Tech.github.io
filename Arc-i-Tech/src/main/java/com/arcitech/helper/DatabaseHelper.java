@@ -1,5 +1,7 @@
 /**
- * 
+ * Copyright (c) 2024, Arc-i-Tech. All rights reserved.
+ * visit www.arc-i-tech.in
+ *
  */
 package com.arcitech.helper;
 
@@ -10,7 +12,10 @@ import java.sql.Statement;
 import java.util.Scanner;
 
 /**
+ * Provide helps with Database
+ * 
  * @author Ajay G.
+ * 
  */
 public class DatabaseHelper {
 	public static final String DB_NAME = "arcitech_db";
