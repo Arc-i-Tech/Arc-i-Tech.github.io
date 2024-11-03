@@ -20,11 +20,6 @@ import com.arcitech.repository.UserRepository;
  */
 @Service
 public class UserServiceImplement implements UserService{
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 */
 	
 	@Autowired
 	UserRepository userRepository;
@@ -34,30 +29,27 @@ public class UserServiceImplement implements UserService{
 	
 	@Override
 	public String addUser(User user) {
-		UserAuth msg = userAuthRepository.findByUsername(user.getUsername());
-		if(msg!=null)
-		{
-			return "user already exist..";
-		}
-		
-		
-		if(user==null)
-		{
-			return "user not save successfully";
-		}
-		else
-		{
-			userRepository.save(user);
-			String GeneratedPassword = RandomPasswordGenerater.getAlphaNumericString(7);
-			UserAuth userAuth = new UserAuth();
-			userAuth.setUsername(user.getUsername());
-			userAuth.setPassword(GeneratedPassword);
-			userAuthRepository.save(userAuth);
-			return "user save successfully";
-		}
-		
-	}
+	    if (user == null) {
+	        return "User not saved successfully";
+	    }
 
+	    // Check if the user already exists
+	    UserAuth existingAuth = userAuthRepository.findByUsername(user.getUsername());
+	    if (existingAuth != null) {
+	        return "User already exists.";
+	    }
+	    // Save the User entity first
+	    userRepository.save(user);
+	    String generatedPassword = RandomPasswordGenerater.getAlphaNumericString(7);
+	    UserAuth userAuth = new UserAuth();
+	    userAuth.setUsername(user.getUsername());
+	    userAuth.setPassword(generatedPassword);
+	    userAuth.setUser(user); // Associate the user with UserAuth
+	    // Save UserAuth with the associated User
+	    userAuthRepository.save(userAuth);
+
+	    return "User saved successfully";
+	}
 	/**
 	 * {@inheritDoc}
 	 *
@@ -69,7 +61,6 @@ public class UserServiceImplement implements UserService{
 		{
 			return null;
 		}
-		
 		return user;
 	}
 
