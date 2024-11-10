@@ -1,4 +1,4 @@
-- Node 22
+- Node 20.18 (LTS)
 - Angular 18
 - JavaScript ES6
 - TypeScript 5.4
