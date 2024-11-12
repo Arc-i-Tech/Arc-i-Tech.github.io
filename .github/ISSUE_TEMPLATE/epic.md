@@ -7,23 +7,30 @@ assignees: ''
 
 ---
 
-## EPIC
+## Epic Title
+- Describe the high-level objective or outcome of this epic.
 
-
-### Background
+### Background/ Goals
 <!-- Description about epic, why it is needed -->
+- Explain why this epic is important and what it aims to accomplish.
 
-### Rollout plan
+## Rollout plan
 <!-- When it be released -->
 
-### User Stories
+## Tasks/ User Stories
 <!-- List all user stories considered in this epic -->
 
-#### Later
+### Later
 <!-- User stories not included in the first iteration -->
 
-### Detailes
+## Details
 <!-- Additional details on epic -->
 
-### Additional Context
-<!-- Meeting notes/ screenshots etc -->
+## Success Metrics
+- Define the success criteria or metrics for the epic's completion.
+
+## Related Epics or Dependencies
+- Mention other epics, projects, or dependencies.
+
+## Additional Notes
+- Add any other relevant context, designs, or links.

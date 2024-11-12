@@ -7,27 +7,35 @@ assignees: ''
 
 ---
 
-
 **As a `<your role>`,**
 
-**I want `<objective>`,**
+**I want `<goal or desired action>`,**
 
-**so I `<benefits>`.**
+**so that `<benefit or reason>`.**
 
 --- 
 
-### Description
+## Description
 <!-- Short and concise description -->
 
 
-### Acceptance Criteria
+## Acceptance Criteria
 <!-- Acceptance criteria -->
 
-### Designs
+## Definition of Done
+- [ ] Code is implemented and reviewed.
+- [ ] Tests (unit/integration) are written and passing.
+- [ ] Documentation (if applicable) is updated.
+- [ ] Deployed to staging/production and validated.
+
+## Designs
 <!-- Designs relating to this story -->
 
-### Decisions
+## Decisions
 <!-- Any important decisions -->
 
-### Subtask
+## Subtask
 <!-- What work need to be done to complete this story -->
+
+## Related Issues or Tasks
+- Link any tasks or subtasks that are related to this user story.
