@@ -1,23 +1,28 @@
 ---
 name: ':rocket: Feature Request'
-about: 'Valuable :chart_with_upwards_trend: suggetion or feature for project.'
+about: 'Valuable suggestion or feature for project.'
 title: '[Feature/ Enhancement]'
-labels: 'feature/ enhancement'
+labels: 'feature, enhancement'
 assignees: ''
 
 ---
 
-## Is your feature request related to a problem? Please describe.
-<!-- A clear and concise description of what the problem is. Ex. I'm always frustrated when [...] -->
+## Feature Summary
+- Briefly describe the feature and its purpose.
 
+## Goals & Objectives
+- Describe the main goals this feature aims to achieve.
+- Include any measurable outcomes, if applicable.
 
-## Describe the solution you'd like.
-<!-- A clear and concise description of what you want to happen. -->
-
+## Requirements
+- List any specific requirements or conditions necessary for implementing this feature.
 
 ## Describe alternatives you've considered.
 <!-- A clear and concise description of any alternative solutions or features you've considered. -->
 
-## Additional context
-<!-- Teachability, Documentation, Adoption, Migration Strategy -->
-<!-- Add any other context or screenshots about the feature request here. -->
+## Acceptance Criteria
+- [ ] Clear, concise criteria that define when the feature is complete
+- [ ] Include user-facing changes if applicable
+
+## Additional Context
+- Add any other relevant information, designs, links, or screenshots.

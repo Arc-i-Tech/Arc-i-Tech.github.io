@@ -1,8 +1,8 @@
 ---
-name: ':lady_beetle: Bug Report'
+name: ':lady_beetle: Defect'
 about: 'Help us to improve quality and security.'
-title: '[BUG]'
-labels: 'bug'
+title: '[DEFECT]'
+labels: 'defect'
 assignees: ''
 
 ---
@@ -36,6 +36,9 @@ assignees: ''
 - [ ] Critical (blocks functionality)
 - [ ] Major (significantly impacts functionality)
 - [ ] Minor (does not significantly impact functionality)
+
+## Impact
+- Describe how the defect affects users or system functionality.
 
 ## Additional context
 <!-- Add any other context about the problem here. -->
