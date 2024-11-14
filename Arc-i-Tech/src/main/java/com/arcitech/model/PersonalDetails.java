@@ -27,6 +27,8 @@ public abstract class PersonalDetails extends CommonFields {
 	private int city;
 	@Column(nullable = false)
 	private int pincode;
+	@Column(unique = true, nullable = false)
+	private String email;
 
 	/**
 	 * @return the name
@@ -110,6 +112,20 @@ public abstract class PersonalDetails extends CommonFields {
 	 */
 	public void setPincode(int pincode) {
 		this.pincode = pincode;
+	}
+
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 }
