@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { GetApiComponent } from './Auth/get-api/get-api.component';
-
+import { ResetPassComponent } from './reset-pass/reset-pass.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,GetApiComponent],
+  imports: [RouterOutlet, ResetPassComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   title = 'application';
 }
+

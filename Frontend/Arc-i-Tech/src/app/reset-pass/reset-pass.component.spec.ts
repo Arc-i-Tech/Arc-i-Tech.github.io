@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ResetPassComponent } from './reset-pass.component';
 
-import { GetApiComponent } from './get-api.component';
-
-describe('GetApiComponent', () => {
-  let component: GetApiComponent;
-  let fixture: ComponentFixture<GetApiComponent>;
+describe('ResetPassComponent', () => {
+  let component: ResetPassComponent;
+  let fixture: ComponentFixture<ResetPassComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GetApiComponent]
+      imports: [ResetPassComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(GetApiComponent);
+    fixture = TestBed.createComponent(ResetPassComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
