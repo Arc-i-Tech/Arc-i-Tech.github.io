@@ -1,12 +1,3 @@
----
-name: 'Hot Fix'
-about: 'Quick fix is ready!'
-title: 'Hot-Fix: '
-labels: ''
-assignees: ''
-
----
-
 ### To be removed when PR is created
 **:memo: IMPORTANT: Please do not create a Pull Request without creating an issue first.**
 - _Any changes needs to be discussed before proceeding, failure to do so may result in the rejection of the pull request._
