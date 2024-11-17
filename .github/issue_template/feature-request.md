@@ -1,5 +1,5 @@
 ---
-name: ':rocket: Feature Request'
+name: 'Feature Request'
 about: 'Valuable suggestion or feature for project.'
 title: '[Feature/ Enhancement]'
 labels: 'feature, enhancement'

@@ -1,5 +1,5 @@
 ---
-name: ':lady_beetle: Bug Report'
+name: 'Bug Report'
 about: 'Help us to improve quality and security.'
 title: '[BUG]'
 labels: 'bug'

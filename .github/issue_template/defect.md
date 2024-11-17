@@ -1,5 +1,5 @@
 ---
-name: ':lady_beetle: Defect'
+name: 'Defect'
 about: 'Help us to improve quality and security.'
 title: '[DEFECT]'
 labels: 'defect'

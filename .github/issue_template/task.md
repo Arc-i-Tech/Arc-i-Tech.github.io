@@ -1,5 +1,5 @@
 ---
-name: ':lady_beetle: Task'
+name: 'Task'
 about: 'Task to breakdown workload.'
 title: 'Task-'
 labels: 'task'
