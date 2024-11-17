@@ -29,9 +29,9 @@ public class SecurityConfiguration implements WebMvcConfigurer {
             .cors().and()
             .csrf(csrf -> csrf.disable())
             .authorizeRequests(authz -> authz
-                .antMatchers("/login/**", "/addUsers", "/deleteUser/**", "/updateUser").permitAll()
-                .anyRequest().authenticated()
-            )
+            	    .antMatchers("/login/**", "/addUsers", "/deleteUser/**", "/updateUser").permitAll()
+            	    .anyRequest().authenticated()
+            	)
             .formLogin()
                 .loginPage("/login")
                 .loginProcessingUrl("/home")
@@ -57,6 +57,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
         registry.addMapping("/**")
             .allowedOrigins("http://localhost:8000")
             .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
+            
             .allowedHeaders("Authorization", "Content-Type")
             .allowCredentials(true);
     }
