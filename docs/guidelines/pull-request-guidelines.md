@@ -3,8 +3,15 @@ Please, go through these steps before you submit a PR.
 
 1. Make sure that your PR is not a **duplicate**.
 2. Follow `pull request` **template** for PR creation.
-   - Template give information about what description should added, which checklist should be completed for PR.
-   - _PR templates are open for any suggestions or updates_
+   - Template give information about what description should added, which checklist should be completed for PR. And this is **open for any alteration**
+   - Create a Pull Request
+     Use one of the following templates for your pull request:
+     - [Standard/ Default Pull Request](https://github.com/Arc-i-Tech/Arc-i-Tech.github.io/compare/main...dev-main?expand=1&template=standard.md)
+     - [Feature Pull Request](https://github.com/Arc-i-Tech/Arc-i-Tech.github.io/compare/main...dev-main?expand=1&template=feature.md)
+     - [Bugfix Pull Request](https://github.com/Arc-i-Tech/Arc-i-Tech.github.io/compare/main...dev-main?expand=1&template=bug-fix.md)
+     - [Documentation Pull Request](https://github.com/Arc-i-Tech/Arc-i-Tech.github.io/compare/main...dev-main?expand=1&template=documentation.md)
+     - [Hot-Fix Pull Request](https://github.com/Arc-i-Tech/Arc-i-Tech.github.io/compare/main...dev-main?expand=1&template=hot-fix.md)
+   - _:memo: PR templates are open for any suggestions or updates_
 3. If **work is not finished** then avoid creating PR.
    - If it is necessary to create PR even if work not finished then create `Draft Pull Request`.
    - Below can be possible reasons for creating `Draft Pull Request`:
