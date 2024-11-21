@@ -43,9 +43,6 @@ public class UserRegistrationController {
 		else{
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		
-//		return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-//				.orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 	
 	@PostMapping("/adduser")
