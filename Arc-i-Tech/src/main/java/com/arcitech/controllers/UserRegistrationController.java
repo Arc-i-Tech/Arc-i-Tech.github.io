@@ -30,10 +30,8 @@ import com.arcitech.service.UserService;
  */
 @Controller
 public class UserRegistrationController {
-	
 	@Autowired
 	private UserService userService;
-	
 	@GetMapping("findByUserId/{id}")
 	public ResponseEntity<User> getUserById(@PathVariable Long id){
 		User user = userService.getUserById(id);
@@ -44,7 +42,6 @@ public class UserRegistrationController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
 	@PostMapping("/adduser")
 	public ResponseEntity<String> createUser(@RequestBody User user){
 		String createdUser = userService.addUser(user);

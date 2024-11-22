@@ -68,5 +68,4 @@ public class UserAuth extends CommonFields {
 	public void setUser(User user) {
 		this.user = user;
 	}
-
 }

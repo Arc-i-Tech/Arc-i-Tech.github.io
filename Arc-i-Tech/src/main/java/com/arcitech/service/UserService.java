@@ -20,5 +20,4 @@ public interface UserService {
 	 * @return
 	 */
 	public User getUserById(Long id);
-
 }
