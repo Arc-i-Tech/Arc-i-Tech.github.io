@@ -32,11 +32,9 @@ public class ValidationCheckingPage {
 		logger.info("Name is " + name);
 
 		// Password And Confirm Password Validation
-		String newPassword = "#ajstyle@Gmail.com";
-		String confirmPassword = "#ajstyle@Gmail.com";
 
-		boolean passwordAndConfirmPassword = PasswordAndConfirmPasswordValidation.PasswordValidations(newPassword,
-				confirmPassword);
+		boolean passwordAndConfirmPassword = PasswordAndConfirmPasswordValidation.PasswordValidations("#ajstyle@Gmail.com",
+				"#ajstyle@Gmail.com");
 
 		logger.info("Password and Confirm Pssword " + passwordAndConfirmPassword);
 
