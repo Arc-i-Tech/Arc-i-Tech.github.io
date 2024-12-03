@@ -38,14 +38,12 @@ public class UserServiceImplement implements UserService{
 	    if (existingAuth != null) {
 	        return "User already exists.";
 	    }
-	    // Save the User entity first
 	    userRepository.save(user);
 	    String generatedPassword = RandomPasswordGenerater.getAlphaNumericString(7);
 	    UserAuth userAuth = new UserAuth();
 	    userAuth.setUsername(user.getUsername());
 	    userAuth.setPassword(generatedPassword);
-	    userAuth.setUser(user); // Associate the user with UserAuth
-	    // Save UserAuth with the associated User
+	    userAuth.setUser(user); 
 	    userAuthRepository.save(userAuth);
 
 	    return "User saved successfully";

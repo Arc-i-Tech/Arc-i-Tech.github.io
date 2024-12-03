@@ -12,17 +12,21 @@ import java.security.SecureRandom;
  * 
  */
 public class RandomPasswordGenerater {
-	
-	public static String getAlphaNumericString(int n) 
-	{ 
+
+	private RandomPasswordGenerater() {
+		throw new UnsupportedOperationException("Random Password Genrated..");
+	}
+
+	public static String getAlphaNumericString(int n) {
 		String alphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvxyz";
 
 		SecureRandom random = new SecureRandom();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < n; i++) {
-        int randomIndex = random.nextInt(alphaNumericString.length());
-        char randomChar = alphaNumericString.charAt(randomIndex);
-        sb.append(randomChar);
-        }return sb.toString(); 
-	} 
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < n; i++) {
+			int randomIndex = random.nextInt(alphaNumericString.length());
+			char randomChar = alphaNumericString.charAt(randomIndex);
+			sb.append(randomChar);
+		}
+		return sb.toString();
+	}
 }
