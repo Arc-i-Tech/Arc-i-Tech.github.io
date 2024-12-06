@@ -10,7 +10,6 @@ package com.arcitech.service;
  * 
  */
 public interface UserService {
-
-	  public   String deleteUserProfile(long id);
+	public String deleteUserProfile(long id);
 	
 }

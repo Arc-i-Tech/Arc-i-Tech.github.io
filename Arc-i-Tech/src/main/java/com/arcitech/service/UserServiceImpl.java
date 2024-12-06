@@ -17,10 +17,7 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
   private  UserRepository userRepository;
-	
-	
-
-	  private static final Logger LOGGER = Logger.getLogger(UserServiceImpl.class);
+private static final Logger LOGGER = Logger.getLogger(UserServiceImpl.class);
 
   @Override
   public String deleteUserProfile(long id) {

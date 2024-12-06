@@ -27,7 +27,6 @@ public class UserController {
 	@DeleteMapping("{id}")
 	public ResponseEntity<?> deleteUserProfile(@PathVariable("id") long id) {
 		String msg = userService.deleteUserProfile(id);
-
 		if (msg == null)
 			return new ResponseEntity<String>(msg, HttpStatus.BAD_REQUEST);
 		else
