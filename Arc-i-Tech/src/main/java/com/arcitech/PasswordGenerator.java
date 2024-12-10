@@ -12,6 +12,11 @@ import java.security.SecureRandom;
  * 
  */
 public class PasswordGenerator {
+	
+	 private PasswordGenerator()
+	 {
+		 throw new UnsupportedOperationException("Password Generation");
+	 }
 	public static String getAlphaNumericString(int n) {
 
 		String alphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvxyz";

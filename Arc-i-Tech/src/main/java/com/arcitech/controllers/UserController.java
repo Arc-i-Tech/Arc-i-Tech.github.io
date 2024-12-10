@@ -5,7 +5,6 @@
  */
 package com.arcitech.controllers;
 
-
 import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +43,7 @@ public class UserController {
 	@PostMapping("/addUsers")
 	public ResponseEntity<String> addUser(@RequestBody User user, Principal principal) {
 
-		System.err.println(user.getUsername());
 		String msg = userService.addUser(user);
-		System.err.println(msg);
 
 		if (principal != null) {
 			UserDetails userDetails = customDetailService.loadUserByUsername(principal.getName());
@@ -76,15 +73,10 @@ public class UserController {
 
 	@PostMapping("/login")
 	public ResponseEntity<String> userLogin(@RequestBody UserAuth userAuth) {
-		System.out.println("Login attempt for username: " + userAuth.getUsername());
 		String msg = userService.userAuthLogin(userAuth);
 		return new ResponseEntity<>(msg, msg != null && !msg.isEmpty() ? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST);
 	}
 
-	@GetMapping("/")
-	public String welcome() {
 
-		return "welcome message";
-	}
 
 }

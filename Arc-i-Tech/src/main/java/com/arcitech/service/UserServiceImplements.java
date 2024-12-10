@@ -28,8 +28,6 @@ public class UserServiceImplements implements UserService {
 
 	@Override
 	public String userAuthLogin(UserAuth userAuth) {
-		System.out.println(userAuth.toString());
-
 		UserAuth user = authRepository.findByUsername(userAuth.getUsername());
 
 		if (user != null && passwordEncoder.matches(userAuth.getPassword(), user.getPassword())) {
