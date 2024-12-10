@@ -5,6 +5,7 @@
  */
 package com.arcitech.model;
 
+
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -24,9 +25,11 @@ public abstract class PersonalDetails extends CommonFields {
 	@Column(unique = true, nullable = false)
 	private int moNo;
 	@Column(nullable = false)
-	private int city;
+	private String city;
 	@Column(nullable = false)
 	private int pincode;
+	@Column(unique = true, nullable = false)
+	private String email;
 
 	/**
 	 * @return the name
@@ -87,14 +90,14 @@ public abstract class PersonalDetails extends CommonFields {
 	/**
 	 * @return the city
 	 */
-	public int getCity() {
+	public String getCity() {
 		return city;
 	}
 
 	/**
 	 * @param city the city to set
 	 */
-	public void setCity(int city) {
+	public void setCity(String city) {
 		this.city = city;
 	}
 
@@ -110,6 +113,20 @@ public abstract class PersonalDetails extends CommonFields {
 	 */
 	public void setPincode(int pincode) {
 		this.pincode = pincode;
+	}
+
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 }
