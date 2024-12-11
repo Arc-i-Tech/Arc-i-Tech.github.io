@@ -30,7 +30,7 @@ public class ForgotPasswordService {
 	@Autowired
 	JavaMailSender javaMailSender;
 
-	private final int minutes = 10;
+	  int minutes = 10;
 
 	public String generateToken() {
 		return UUID.randomUUID().toString();
@@ -40,7 +40,7 @@ public class ForgotPasswordService {
 		return LocalDateTime.now().plusMinutes(0);
 	}
 
-	public void sendEmail(String to, String subjects, String emailLink)
+	public void sendEmail(String to, String subject, String emailLink)
 			throws MessagingException, UnsupportedEncodingException {
 		MimeMessage message = javaMailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
@@ -48,17 +48,16 @@ public class ForgotPasswordService {
 		String emailContent = "<p>hello</p>" + "Click the link below to reset password" + "<p><a href=\"" + emailLink
 				+ "\">Change my Passowrd </a></p>" + "<br>" + "Ignore This Email if you did not made the request";
 		helper.setText(emailContent, true);
-		helper.setFrom("ajstyle@gmail.com", "This valid Support");
+		helper.setFrom(subject);
 		helper.setTo(to);
 		javaMailSender.send(message);
-
 	}
 
 	public boolean isExpired(ForgatePasswordToken forgatePasswordToken) {
 		return LocalDateTime.now().isAfter(forgatePasswordToken.getExpireTimel());
 	}
 
-	public String checkValidity(ForgatePasswordToken forgatePasswordToken, Model model) {
+	public String checkValidity(ForgatePasswordToken forgatePasswordToken) {
 		if (forgatePasswordToken == null) {
 			return "error page";
 		} else if (forgatePasswordToken.isUsed()) {
