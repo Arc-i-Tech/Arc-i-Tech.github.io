@@ -30,7 +30,7 @@ public class ForgotPasswordService {
 	@Autowired
 	JavaMailSender javaMailSender;
 
-	private final int MINUTES = 10;
+	private final int minutes = 10;
 
 	public String generateToken() {
 		return UUID.randomUUID().toString();
@@ -40,7 +40,7 @@ public class ForgotPasswordService {
 		return LocalDateTime.now().plusMinutes(0);
 	}
 
-	public void sendEmail(String to, String subject, String emailLink)
+	public void sendEmail(String to, String subjects, String emailLink)
 			throws MessagingException, UnsupportedEncodingException {
 		MimeMessage message = javaMailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
