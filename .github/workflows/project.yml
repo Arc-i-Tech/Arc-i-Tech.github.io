@@ -37,7 +37,7 @@ jobs:
           else if( "${{ github.event_name }}" == "pull_request" ) {
             console.log('PullReuqest number:' + '${{ github.event.number }}')
           }
-          console.log("${{ toJSON(github) }}");
+          // console.log("${{ toJSON(github) }}");
 
     - name: Check run
       id: check-run
