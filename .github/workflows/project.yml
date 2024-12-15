@@ -437,9 +437,9 @@ jobs:
       with:
         github-token: ${{ secrets.ACCESS_TOKEN }}
         script: |
-          const ids = ${{ needs.get-details.outputs.ids }}
-          const resp = await github.graphql(`query getClosingIssueIDs {
-            node(id: ids["I_PR_ID"] ) {
+          const vars = ${{ needs.get-details.outputs.ids }}
+          const resp = await github.graphql(`query getClosingIssueIDs($I_PR_ID: ID!) {
+            node(id: $I_PR_ID ) {
               ... on PullRequest {
                 id
                 title
@@ -461,7 +461,7 @@ jobs:
                 }
               }
             }
-          }`)
+          }`, vars)
 
           var closingIssues = resp.node.closingIssuesReferences.nodes;
           if( closingIssues.length <= 0 ) {
