@@ -540,7 +540,7 @@ jobs:
 
           const vars = ${{ needs.get-details.outputs.ids }}
 
-          var isFound = false
+          var isFoundAll = false
           var isOver = false
           vars.cursor = ""
           var itemNodes = []
