@@ -29,11 +29,12 @@ jobs:
       uses: actions/github-script@v7
       with: 
         script:
-          console.log("Triggering actor:" + ${{ github.triggering_actor }})
-          if( "${{ github.event_name }}" == 'issues' ) {
+          console.log("Triggering actor:" + "${{ github.triggering_actor }}")
+
+          if( "${{ github.event_name }}" == "issues" ) {
             console.log('Issue number:' + ${{ github.event.issue.number }})
           }
-          else if( "${{ github.event_name }}" == 'pull_request' ) {
+          else if( "${{ github.event_name }}" == "pull_request" ) {
             console.log('PullReuqest number:' + ${{ github.event.number }})
           }
           console.log("${{ toJSON(github) }}");
@@ -777,50 +778,55 @@ jobs:
             return false
           }
 
-  remove-label-add-comment:
+  add-remove-label-comment:
     needs: [check-valid-run, issue-automation, pr-automation]
     if: always()
     runs-on: ubuntu-latest
     steps:
-    - name: Find labels and options and message
-      id: find-labels-options
+    - name: Collect labels and comments
+      id: collet-labels-comments
       uses: actions/github-script@v7
       with:
         script: |
+          var COMMENTS = []
           if( ${{ needs.issue-automation.outputs.result }} ){
             core.setOutput( 'LABELS', '${{ needs.issue-automation.outputs.LABELS }}' )
-            core.setOutput( 'COMMENT', '' )
+            COMMENTS.push('')
             core.setOutput( 'OPTION', '${{ needs.issue-automation.outputs.OPTION }}' )
           }
           else if( ${{ needs.pr-automation.outputs.result }} ) {
             core.setOutput( 'LABELS', '' )
-            core.setOutput( 'COMMENT', '${{ needs.pr-automation.outputs.COMMENT }}' )
+            COMMENTS.push('${{ needs.pr-automation.outputs.COMMENT }}')            
+            COMMENTS.push('${{ needs.pr-automation.outputs.COMMENT1 }}')
           }
           else  {
+            COMMENTS.push('${{ needs.check-valid-run.outputs.COMMENT }}')
             core.setOutput( 'LABELS', '${{ needs.check-valid-run.outputs.LABELS }}' )
-            core.setOutput( 'COMMENT', '${{ needs.check-valid-run.outputs.COMMENT }}' )
             core.setOutput( 'OPTION', '${{ needs.check-valid-run.outputs.OPTION }}' )
           }
+          core.setOutput( 'COMMENTS', JSON.stringify(COMMENTS) )
 
     - name: Remove Label
       id: remove-label
-      if: steps.find-labels-options.outputs.LABELS != ''
+      if: steps.collet-labels-comments.outputs.LABELS != ''
       uses: buildsville/add-remove-label@v2.0.1
       with:
         token: ${{ secrets.ACCESS_TOKEN }}
-        labels: ${{ steps.find-labels-options.outputs.LABELS }}
-        type: ${{ steps.find-labels-options.outputs.OPTION }}
+        labels: ${{ steps.collet-labels-comments.outputs.LABELS }}
+        type: ${{ steps.collet-labels-comments.outputs.OPTION }}
 
     - name: Comment on Issue
       id: issue-comment
-      if: steps.find-labels-options.outputs.COMMENT != ''
       uses: actions/github-script@v7
       with:
         github-token: ${{ secrets.ACCESS_TOKEN }}
         script: |
-          github.rest.issues.createComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: context.issue.number,
-            body: "${{ steps.find-labels-options.outputs.COMMENT }}"
-          })
+          const COMMENTS = ${{ steps.collet-labels-comments.outputs.COMMENTS }}
+          for(var i=0; i < COMMENTS.length; i++) {
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: COMMENTS[i]
+            })
+          }
