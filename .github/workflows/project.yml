@@ -32,10 +32,10 @@ jobs:
           console.log("Triggering actor:" + "${{ github.triggering_actor }}")
 
           if( "${{ github.event_name }}" == "issues" ) {
-            console.log('Issue number:' + ${{ github.event.issue.number }})
+            console.log('Issue number:' + '${{ github.event.issue.number }}')
           }
           else if( "${{ github.event_name }}" == "pull_request" ) {
-            console.log('PullReuqest number:' + ${{ github.event.number }})
+            console.log('PullReuqest number:' + '${{ github.event.number }}')
           }
           console.log("${{ toJSON(github) }}");
 
