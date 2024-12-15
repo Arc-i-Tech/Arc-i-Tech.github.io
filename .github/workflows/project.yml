@@ -827,10 +827,13 @@ jobs:
         script: |
           const COMMENTS = ${{ steps.collet-labels-comments.outputs.COMMENTS }}
           for(var i=0; i < COMMENTS.length; i++) {
-            github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: COMMENTS[i]
-            })
+            if(COMMENTS[i] != "") {
+              github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: COMMENTS[i]
+              })
+              console.log("Commented on: " + context.issue.number)
+            }
           }
