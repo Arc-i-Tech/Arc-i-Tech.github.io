@@ -232,7 +232,7 @@ jobs:
   issue-automation:
     needs: get-details
     if: needs.get-details.outputs.result != 'false' && github.event_name == 'issues'
-    name: Issue automation- ${{ github.event.issue.number }}
+    name: Issue automation
     runs-on: ubuntu-latest
 
     outputs:
@@ -682,9 +682,10 @@ jobs:
           const vars = ${{ steps.collect-inputs.outputs.ids }}
           vars["FIELD_ID"] = "${{ steps.collect-inputs.outputs.FIELD_ID }}"
           vars["OPTION_ID"] = optionNode[0].id
+          var updateIssueStatusResp;
           for(var i=0; i < ITEMS.length; i++) {
             vars["ITEM_ID"] = ITEMS[i].id
-            const UpdateIssueStatusResp = await github.graphql(`mutation UpdateIssueStatus($ORG_ID: String!, $PRJ_ID: ID!, $ITEM_ID: ID!, $FIELD_ID: ID!, $OPTION_ID: String!) {
+            updateIssueStatusResp = await github.graphql(`mutation UpdateIssueStatus($ORG_ID: String!, $PRJ_ID: ID!, $ITEM_ID: ID!, $FIELD_ID: ID!, $OPTION_ID: String!) {
               updateProjectV2ItemFieldValue( input: {
                 clientMutationId:$ORG_ID
                 projectId:$PRJ_ID
@@ -701,7 +702,7 @@ jobs:
               }
             }`, vars)
             if( '${{ github.event_name }}' == 'pull_request' ) {
-              if( UpdateIssueStatusResp.updateProjectV2ItemFieldValue.clientMutationId == vars.ORG_ID ) {
+              if( updateIssueStatusResp.updateProjectV2ItemFieldValue.clientMutationId == vars.ORG_ID ) {
                 console.log("Issue(" + ITEMS[i].content.number + ") Status changed to: " + optionNode[0].name)
               }
               else {
@@ -710,7 +711,7 @@ jobs:
             }
           }
           if( '${{ github.event_name }}' == 'issues' ) {
-            if( UpdateIssueStatusResp.updateProjectV2ItemFieldValue.clientMutationId == vars.ORG_ID ) {
+            if( updateIssueStatusResp.updateProjectV2ItemFieldValue.clientMutationId == vars.ORG_ID ) {
               console.log("Issue Status changed to: " + optionNode[0].name)
               return true
             }
@@ -792,12 +793,12 @@ jobs:
       with:
         script: |
           var COMMENTS = []
-          if( ${{ needs.issue-automation.outputs.result }} ){
+          if( '${{ github.event_name }}' == 'issues' && '${{ needs.issue-automation.result }}' == 'success' ){
             core.setOutput( 'LABELS', '${{ needs.issue-automation.outputs.LABELS }}' )
             COMMENTS.push('')
             core.setOutput( 'OPTION', '${{ needs.issue-automation.outputs.OPTION }}' )
           }
-          else if( ${{ needs.pr-automation.outputs.result }} ) {
+          else if( '${{ github.event_name }}' == 'pull_request' ) {
             core.setOutput( 'LABELS', '' )
             COMMENTS.push('${{ needs.pr-automation.outputs.COMMENT }}')            
             COMMENTS.push('${{ needs.pr-automation.outputs.COMMENT1 }}')
