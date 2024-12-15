@@ -422,12 +422,13 @@ jobs:
     outputs:
       PRJ: ${{ needs.get-details.outputs.PRJ }}
       ids: ${{ needs.get-details.outputs.ids }}
-      COMMENT: ${{ steps.reopened.outputs.COMMENT }}
+      COMMENT: $${{ steps.check-associated-issues.outputs.COMMENT }}
+      COMMENT1: ${{ steps.reopened.outputs.COMMENT }}
       OPTION_NODE: ${{ steps.find-ref-issues-target-status.outputs.OPTION_NODE }}
       FIELD_ID: ${{ steps.find-ref-issues-target-status.outputs.FIELD_ID }}
       UPDATE_STATUS: ${{ steps.find-ref-issues-target-status.outputs.UPDATE_STATUS }}
       ITEMS: ${{ steps.get-open-ref-items.outputs.ITEMS }}
-      COMMENT1: ${{ steps.get-open-ref-items.outputs.COMMENT }}
+      COMMENT2: ${{ steps.get-open-ref-items.outputs.COMMENT }}
       result: ${{ steps.job-result.outputs.result }}
 
     steps:
@@ -467,12 +468,13 @@ jobs:
           if( closingIssues.length <= 0 ) {
             core.setOutput('COMMENT', "This pull request does not reference any closing issues.</br>Link reference closing issues to proceed further with this PR.");
             console.log("pull request: " + resp.node.number +" does not reference any closing issues.")
-            return false;
+            return false
           }
           console.log("Pull Request is associate with below github issues.");
           for(var i = 0; i < closingIssues.length; i++) {
             console.log(closingIssues[i].number + ":" + closingIssues[i].state + ":" + closingIssues[i].title)
           }
+          core.setOutput('COMMENT', '')
           core.setOutput("CLOSING_ISSUES", JSON.stringify(closingIssues))
           core.setOutput("PR_ASSIGNEES", JSON.stringify(resp.node.assignees.nodes))
           return true
@@ -503,7 +505,6 @@ jobs:
 
     - name: Find reference issues target Status
       id: find-ref-issues-target-status
-      if: steps.reopened.outputs.result != 'false'
       uses: actions/github-script@v7
       with:
         script: |
@@ -802,6 +803,7 @@ jobs:
             core.setOutput( 'LABELS', '' )
             COMMENTS.push('${{ needs.pr-automation.outputs.COMMENT }}')            
             COMMENTS.push('${{ needs.pr-automation.outputs.COMMENT1 }}')
+            COMMENTS.push('${{ needs.pr-automation.outputs.COMMENT2 }}')
           }
           else  {
             COMMENTS.push('${{ needs.check-valid-run.outputs.COMMENT }}')
