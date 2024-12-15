@@ -471,7 +471,7 @@ jobs:
           }
           console.log("Pull Request is associate with below github issues.");
           for(var i = 0; i < closingIssues.length; i++) {
-            console.log(closedRefIssues[i].number + ":" + closedRefIssues[i].state + ":" + closedRefIssues[i].title)
+            console.log(closingIssues[i].number + ":" + closingIssues[i].state + ":" + closingIssues[i].title)
           }
           core.setOutput("CLOSING_ISSUES", JSON.stringify(closingIssues))
           core.setOutput("PR_ASSIGNEES", JSON.stringify(resp.node.assignees.nodes))
