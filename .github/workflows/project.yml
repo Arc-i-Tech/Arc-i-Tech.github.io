@@ -582,7 +582,7 @@ jobs:
               }
             }`, vars)
 
-            const filteredNodes = getItemIdResp.node.items.nodes.filter((node) => node.content.__typename == '${{ needs.get-details.outputs.type }}' && openRefIssueNos.includes(node.content.number) )
+            const filteredNodes = getItemIdResp.node.items.nodes.filter((node) => node.content.__typename == 'Issue' && openRefIssueNos.includes(node.content.number) )
             itemNodes.push(...filteredNodes)
 
             if( itemNodes.length == openRefIssueNos.length ) {
