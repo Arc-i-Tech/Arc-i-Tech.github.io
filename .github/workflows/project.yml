@@ -469,7 +469,10 @@ jobs:
             console.log("pull request: " + resp.node.number +" does not reference any closing issues.")
             return false;
           }
-          console.log("Pull Request is associate with github issues.");
+          console.log("Pull Request is associate with below github issues.");
+          for(var i = 0; i < closingIssues.length; i++) {
+            console.log(closedRefIssues[i].number + ":" + closedRefIssues[i].state + ":" + closedRefIssues[i].title)
+          }
           core.setOutput("CLOSING_ISSUES", JSON.stringify(closingIssues))
           core.setOutput("PR_ASSIGNEES", JSON.stringify(resp.node.assignees.nodes))
           return true
