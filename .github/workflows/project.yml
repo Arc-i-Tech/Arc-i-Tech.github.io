@@ -653,8 +653,8 @@ jobs:
             core.setOutput('OPTION_NODE', '${{ needs.issue-automation.outputs.OPTION_NODE }}')
             core.setOutput('FIELD_ID', '${{ needs.issue-automation.outputs.FIELD_ID }}')
             core.setOutput('UPDATE_STATUS', '${{ needs.issue-automation.outputs.UPDATE_STATUS }}')
-            var ITEMS = [ '${{ needs.issue-automation.outputs.ITEM }}' ]
-            core.setOutput('ITEMS', ITEMS)
+            var ITEMS = [ ${{ needs.issue-automation.outputs.ITEM }} ]
+            core.setOutput('ITEMS', JSON.stringify(ITEMS))
             core.setOutput('PRJ', '${{ needs.issue-automation.outputs.PRJ }}')
             core.setOutput('ids', '${{ needs.issue-automation.outputs.ids }}')
           }
