@@ -535,7 +535,7 @@ jobs:
         github-token: ${{ secrets.ACCESS_TOKEN }}
         script: |
           const closingIssues = ${{ steps.check-associated-issues.outputs.CLOSING_ISSUES }}
-          var openRefIssues = closedRefIssues.filter((issue) => issue.state == "OPEN")
+          var openRefIssues = closingIssues.filter((issue) => issue.state == "OPEN")
           var openRefIssueNos = openRefIssues.map((issue) => issue.number )
 
           const vars = ${{ needs.get-details.outputs.ids }}
