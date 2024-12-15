@@ -21,9 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.arcitech.model.User;
 import com.arcitech.service.UserService;
-
-
-
 /**
  * @author Priya
  * 
@@ -42,9 +39,16 @@ public class UserRegistrationController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
+
 	@PostMapping("/adduser")
-	public ResponseEntity<String> createUser(@RequestBody User user){
-		String createdUser = userService.addUser(user);
-		return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-		}
+	public ResponseEntity<String> createUser(@RequestBody User user) {
+	    String response = userService.addUser(user);
+	    if (response.contains("successfully")) {
+	        return new ResponseEntity<>(response, HttpStatus.CREATED);
+	    } else if (response.contains("already exists")) {
+	        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+	    } else {
+	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
 }
