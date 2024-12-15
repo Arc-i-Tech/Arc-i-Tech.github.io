@@ -439,7 +439,7 @@ jobs:
         script: |
           const ids = ${{ needs.get-details.outputs.ids }}
           const resp = await github.graphql(`query getClosingIssueIDs {
-            node(id: ids.I_PR_ID ) {
+            node(id: ids["I_PR_ID"] ) {
               ... on PullRequest {
                 id
                 title
