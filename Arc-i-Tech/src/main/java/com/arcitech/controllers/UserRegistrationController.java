@@ -27,8 +27,10 @@ import com.arcitech.service.UserService;
  */
 @Controller
 public class UserRegistrationController {
+	
 	@Autowired
 	private UserService userService;
+	
 	@GetMapping("findByUserId/{id}")
 	public ResponseEntity<User> getUserById(@PathVariable Long id){
 		User user = userService.getUserById(id);

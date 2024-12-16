@@ -5,28 +5,30 @@
  */
 package com.arcitech.helper;
 
-import java.security.SecureRandom;
-
 /**
  * @author Priya
  * 
  */
 public class RandomPasswordGenerater {
+	
+	public static String getAlphaNumericString(int n) 
+	{ 
+		String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+			+ "0123456789"
+			+ "abcdefghijklmnopqrstuvxyz"; 
+			// create StringBuffer size of AlphaNumericString 
+		StringBuilder sb = new StringBuilder(n); 
 
-	private RandomPasswordGenerater() {
-		throw new UnsupportedOperationException("Random Password Genrated..");
-	}
-
-	public static String getAlphaNumericString(int n) {
-		String alphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvxyz";
-
-		SecureRandom random = new SecureRandom();
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < n; i++) {
-			int randomIndex = random.nextInt(alphaNumericString.length());
-			char randomChar = alphaNumericString.charAt(randomIndex);
-			sb.append(randomChar);
-		}
-		return sb.toString();
-	}
+		for (int i = 0; i < n; i++) { 
+			// generate a random number between 
+			// 0 to AlphaNumericString variable length 
+			int index 
+			= (int)(AlphaNumericString.length() 
+			* Math.random()); 
+			// add Character one by one in end of sb 
+			sb.append(AlphaNumericString 
+					.charAt(index)); 
+		} 
+		return sb.toString(); 
+	} 
 }
