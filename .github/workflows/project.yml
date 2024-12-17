@@ -467,7 +467,9 @@ jobs:
 
           var closingIssues = resp.node.closingIssuesReferences.nodes;
           if( closingIssues.length <= 0 ) {
-            core.setOutput('COMMENT', "This pull request does not reference any closing issues.</br>Link reference closing issues to proceed further with this PR.");
+            if( "${{ github.event.action }}" != "closed" ){
+              core.setOutput('COMMENT', "This pull request does not reference any closing issues.</br>Link reference closing issues to proceed further with this PR.");
+            }
             console.log("pull request: " + resp.node.number +" does not reference any closing issues.")
             return false
           }
