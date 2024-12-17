@@ -1,5 +1,13 @@
 ### Project automation
--ONLY assignee and admin  allowed to change "started working" status
+
+#Why proction automation written
+- Before project automation Develpoer doing project management manually
+- problem with manual intervention is more error prone system.
+- Develpoer need not to change board view's from one to other side.
+- New , product backlog ,EPIC ,sprint backlog, In progress,Blocked, in review and Done Are the tabs used in project. 
+
+#How Project automation working with assignee and label
+-Only assignee and admin  allowed to change "started working" status
 -Without an assignee cannot be labeled
 -Only the assignee can remove label
 -If issue is unassigned and there is no other assignee remove label
