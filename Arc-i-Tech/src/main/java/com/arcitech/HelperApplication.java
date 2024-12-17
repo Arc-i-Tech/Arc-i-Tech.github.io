@@ -1,5 +1,7 @@
 /**
- * 
+ * Copyright (c) 2024, Arc-i-Tech. All rights reserved.
+ * visit www.arc-i-tech.in
+ *
  */
 package com.arcitech;
 
@@ -9,7 +11,9 @@ import com.arcitech.helper.ApplicationPropertiesHelper;
 import com.arcitech.helper.DatabaseHelper;
 
 /**
+ * @author Ajay G
  * 
+ * Helper Application to provide help with various setups and configurations
  */
 public class HelperApplication {
 	public static void main(String[] args) throws Exception {

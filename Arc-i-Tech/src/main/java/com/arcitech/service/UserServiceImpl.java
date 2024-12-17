@@ -24,6 +24,10 @@ import org.springframework.stereotype.Service;
 import com.arcitech.model.UserAuth;
 import com.arcitech.repository.UserAuthRepository;
 
+/**
+ * @author Ajay G
+ * 
+ */
 @Service
 public class UserServiceImpl implements UserDetailsService {
 

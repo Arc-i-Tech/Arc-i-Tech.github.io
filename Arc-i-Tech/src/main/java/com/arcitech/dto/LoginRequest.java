@@ -8,6 +8,8 @@ package com.arcitech.dto;
 /**
  * @author Ajay G
  * 
+ * DTO for login request.
+ * 
  */
 public class LoginRequest {
 	private String username;

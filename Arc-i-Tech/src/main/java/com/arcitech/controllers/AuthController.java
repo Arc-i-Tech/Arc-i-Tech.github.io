@@ -28,6 +28,7 @@ import com.arcitech.repository.UserRepository;
 /**
  * @author Ajay G
  * 
+ * AUthetication controller for providing authentication
  */
 @RestController
 @RequestMapping("/api/auth")

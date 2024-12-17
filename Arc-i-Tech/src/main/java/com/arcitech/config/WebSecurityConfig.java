@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2024, Arc-i-Tech. All rights reserved.
+ * visit www.arc-i-tech.in
+ *
+ */
 package com.arcitech.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +18,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.arcitech.service.UserServiceImpl;
 
+/**
+ * @author Ajay G
+ * 
+ * Web security config to control authentication and authorization.
+ */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {

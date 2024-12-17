@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2024, Arc-i-Tech. All rights reserved.
+ * visit www.arc-i-tech.in
+ *
+ */
 package com.arcitech;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +14,11 @@ import com.arcitech.model.User;
 import com.arcitech.model.UserAuth;
 import com.arcitech.repository.UserAuthRepository;
 import com.arcitech.repository.UserRepository;
-
+/**
+ * @author Ajay G
+ * 
+ * Initialize data for fisrt time or if database tables are empty.
+ */
 @Component
 public class DataInitializer implements CommandLineRunner {
 
@@ -26,6 +35,9 @@ public class DataInitializer implements CommandLineRunner {
 		}
 	}
 
+	/**
+	 * Initializes User and UserAuth
+	 */
 	private void initializeUsers() {
 		User user = new User();
 		user.setUsername("ajayg2808");

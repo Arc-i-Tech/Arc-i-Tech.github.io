@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2024, Arc-i-Tech. All rights reserved.
+ * visit www.arc-i-tech.in
+ *
+ */
 package com.arcitech;
 
 import org.springframework.boot.SpringApplication;
