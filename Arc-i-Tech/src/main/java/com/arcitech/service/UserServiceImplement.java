@@ -10,7 +10,7 @@ import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.arcitech.helper.RandomPasswordGenerater;
+import com.arcitech.helper.RandomPasswordGenerator;
 import com.arcitech.model.User;
 import com.arcitech.model.UserAuth;
 import com.arcitech.repository.UserAuthRepository;
@@ -50,7 +50,7 @@ public class UserServiceImplement implements UserService{
 
 	    try {
 	        userRepository.save(user);
-	        String generatedPassword = RandomPasswordGenerater.getAlphaNumericString(7);
+	        String generatedPassword = RandomPasswordGenerator.getAlphaNumericString(7);
 	        
 	        UserAuth userAuth = new UserAuth();
 	        userAuth.setUsername(user.getUsername());
