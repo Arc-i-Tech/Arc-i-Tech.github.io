@@ -22,11 +22,6 @@ import com.arcitech.repository.UserRepository;
  */
 @Service
 public class UserServiceImplement implements UserService{
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 */
 	
 	@Autowired
 	UserRepository userRepository;
@@ -78,7 +73,6 @@ public class UserServiceImplement implements UserService{
 		{
 			return null;
 		}
-		
 		return user;
 	}
 
