@@ -1,0 +1,5 @@
+node --version
+npm install -g @angular/cli@18
+ng version
+ng new Arc-i-Tech --routing
+npm install
