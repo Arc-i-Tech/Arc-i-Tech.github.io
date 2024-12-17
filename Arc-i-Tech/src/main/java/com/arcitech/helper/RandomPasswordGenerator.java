@@ -18,7 +18,7 @@ public class RandomPasswordGenerator {
 	}
 	public static String getAlphaNumericString(int n) 
 	{ 
-		String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvxyz"; 
+		String alphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvxyz"; 
 		SecureRandom random = new SecureRandom();
 		
 		// create StringBuffer size of AlphaNumericString 
@@ -27,8 +27,8 @@ public class RandomPasswordGenerator {
 		for (int i = 0; i < n; i++) { 
 			// generate a random number between 
 			// 0 to AlphaNumericString variable length 
-			int randomIndex = random.nextInt(AlphaNumericString.length());
-	           char randomChar = AlphaNumericString.charAt(randomIndex);
+			int randomIndex = random.nextInt(alphaNumericString.length());
+	           char randomChar = alphaNumericString.charAt(randomIndex);
 	           sb.append(randomChar);
 		} 
 		return sb.toString(); 
