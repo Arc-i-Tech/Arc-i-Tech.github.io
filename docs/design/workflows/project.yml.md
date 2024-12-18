@@ -20,7 +20,7 @@ title: Github Workflow Current
       s30[find-item] --> |ITEM|s31[find-target-status] --> |OPTION, LABELS, OPTION_NODE, FIELD_ID, UPDATE_STATUS|s32[job-result]
     end
     subgraph pr-automation
-      s40[check-associated-issues] --> |COMMENT, CLOSING_ISSUES, PR_ASSIGNEES|s41[reopened] --> |COMMENT|s42[find-ref-issues-target-status] --> |OPTION_NODE, FIELD_ID, UPDATE_STATUS|s43[get-open-ref-items] --> |COMMENT, ITEMS, openRefIssueNos|s44[check-and-assign-pr] --> s45[handle-closed-pr] --> s46[job-result]
+      s40[check-associated-issues] --> |COMMENT, CLOSING_ISSUES, PR_ASSIGNEES|s41[reopened] --> |COMMENT|s42[find-ref-issues-target-status] --> |OPTION_NODE, FIELD_ID, UPDATE_STATUS|s43[get-open-ref-items] --> |COMMENT, ITEMS, openRefIssueNos|s44[check-pr-assignees] --> |ASSIGN_PR, ASSIGNEES, COMMENT|s45[assign-pr]--> s45[handle-closed-pr] --> s46[job-result]
     end
     subgraph update-status-sprint
       s50[collect-inputs] --> |OPTION_NODE, FIELD_ID, UPDATE_STATUS, ITEMS, PRJ, ids|s51[update-status] --> s52[update-sprint] --> s53[job-result]
@@ -37,6 +37,6 @@ title: Github Workflow Current
     issue-automation --> |output-result, job-result, OPTION_NODE, FIELD_ID, UPDATE_STATUS, ITEM, PRJ, ids|update-status-sprint
     issue-automation --> |job-result, LABELS, OPTION|add-remove-label-comment
     pr-automation --> |output-result, job-result, OPTION_NODE, FIELD_ID, UPDATE_STATUS, ITEMS, PRJ, ids|update-status-sprint
-    pr-automation --> |COMMENT. COMMENT1, COMMENT2|add-remove-label-comment
+    pr-automation --> |COMMENT. COMMENT1, COMMENT2, COMMENT3|add-remove-label-comment
 
 ```
