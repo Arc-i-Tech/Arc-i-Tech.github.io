@@ -651,7 +651,7 @@ jobs:
         else
           for i in $numbers; 
           do 
-            gh issue comment $i --body "Pull Request #${{github.event.number}} closed without merging."  --repo ${{ github.repository }};
+            gh issue comment $i --body "Linked Pull Request: #${{github.event.number}} closed without merging.<br>Have look into it."  --repo ${{ github.repository }};
           done
         fi
     
