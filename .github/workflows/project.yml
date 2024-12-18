@@ -680,7 +680,7 @@ jobs:
             for(let issue of issueDetails ) {
               if(issue.assignees.length > 0) {
                 cmt += "<br>Asignees of issue #" + issue.number;
-                for(let a in issue.assignees ) {
+                for(let a of issue.assignees ) {
                   cmt += "<br>@" + a
                   console.log(issue.number + "-" + a)
                 }
