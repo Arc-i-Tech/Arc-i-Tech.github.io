@@ -690,7 +690,7 @@ jobs:
     - name: Assign PR
       id: assign-pr
       if: steps.check-pr-assignees.outputs.result != 'false' && steps.check-pr-assignees.outputs.ASSIGN_PR == 'true'
-      uses: kentaro-m/assign-issue@v2
+      uses: kentaro-m/auto-assign-action@v2
       with:
         token: ${{ secrets.ACCESS_TOKEN }}
         assignees: ${{ steps.check-pr-assignees.outputs.ASSIGNEES }}
