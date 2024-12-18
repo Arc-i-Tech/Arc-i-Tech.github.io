@@ -680,7 +680,7 @@ jobs:
             for(let issue of issueDetails ) {
               if(issue.assignees.length > 0) {
                 cmt += "<br>Asignees of issue #" + issue.number;
-                for(let a in issue.asignees ) {
+                for(let a in issue.assignees ) {
                   cmt += "<br>@" + a
                   console.log(issue.number + "-" + a)
                 }
@@ -848,10 +848,10 @@ jobs:
           const prj = ${{ steps.collect-inputs.outputs.PRJ }}
           const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == "🏃 Sprint".toUpperCase())
           const vars = ${{ steps.collect-inputs.outputs.ids }}
-          const ITEM = ${{ steps.collect-inputs.outputs.ITEM }}
+          const ITEMS = ${{ steps.collect-inputs.outputs.ITEMS }}
           vars["FIELD_ID"] = fieldNode[0].id
           vars["ITR_ID"] = fieldNode[0].configuration.iterations[0].id
-          vars["ITEM_ID"] = ITEM.id
+          vars["ITEM_ID"] = ITEMS[0].id
           var q1 = ""
           var q2 = ""
           var q3 = ""
