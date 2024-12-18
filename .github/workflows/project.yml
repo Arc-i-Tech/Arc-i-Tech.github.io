@@ -681,9 +681,9 @@ jobs:
             var isFound = false;
             for(let issue of issueDetails ) {
               if(issue.assignees.length > 0) {
-                cmt += "\nAsignees of issue #" + issue.number;
+                cmt += "<br>Asignees of issue #" + issue.number;
                 for(let a of issue.assignees ) {
-                  cmt += "\n- @" + a
+                  cmt += "<br>- @" + a
                   nums += issue.number + "-" + a + "\n"
                   isFound = true;
                 }
