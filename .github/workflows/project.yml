@@ -690,12 +690,15 @@ jobs:
     - name: Assign PR
       id: assign-pr
       if: steps.check-pr-assignees.outputs.result != 'false' && steps.check-pr-assignees.outputs.ASSIGN_PR == 'true'
-      uses: gustavofreze/auto-assign@1.1.4
-        with:
-          github_token: '${{ secrets.GITHUB_TOKEN }}'
-          assignees: '${{ steps.check-pr-assignees.outputs.ASSIGNEES }}'
-          allow_self_assign: 'true'
-          assignment_options: 'PULL_REQUEST'
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      run : |
+        ASSIGNEES='${{ steps.check-pr-assignees.outputs.ASSIGNEES }}'
+        curl -X POST \
+          -H "Authorization: token $GITHUB_TOKEN" \
+          -H "Content-Type: application/json" \
+          -d "{\"assignees\": $ASSIGNEES}" \
+          "${{ github.event.pull_request.url }}/assignees"
 
     - name: Handle closed pull request
       id: handle-closed-pr
