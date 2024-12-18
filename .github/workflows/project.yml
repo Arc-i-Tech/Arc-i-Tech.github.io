@@ -430,6 +430,7 @@ jobs:
       UPDATE_STATUS: ${{ steps.find-ref-issues-target-status.outputs.UPDATE_STATUS }}
       ITEMS: ${{ steps.get-open-ref-items.outputs.ITEMS }}
       COMMENT2: ${{ steps.get-open-ref-items.outputs.COMMENT }}
+      COMMENT3: ${{ steps.check-pr-assignees.outputs.COMMENT }}
       result: ${{ steps.job-result.outputs.result }}
 
     steps:
@@ -625,13 +626,76 @@ jobs:
           core.setOutput('openRefIssueNos', JSON.stringify(openRefIssueNos));
           return true
 
-    - name: Check and assign PR
-      id: check-and-assign-pr
+    - name: Check pull request asignees
+      id: check-pr-assignees
       if: steps.check-associated-issues.outputs.result != 'false'
       uses: actions/github-script@v7
       with:
-        script:
-          console.log("TODO:- Write a step to assign PR")
+        script: |
+          const closingIssues = ${{ steps.check-associated-issues.outputs.CLOSING_ISSUES }}
+          const closingIssueIds = closingIssues.map(issue => issue.id)
+          const prAssignees = ${{ steps.check-associated-issues.outputs.PR_ASSIGNEES }}
+          const prAssigneeIds = prAssignees.map(assignee => assignee.login)
+          var issues = []
+          var vars = {};
+          for(let id of closingIssueIds) {
+            vars["ISSUE_ID"] = id;
+            const resp = await github.graphql(`query getIssueAssignees($ISSUE_ID: ID!) {
+              node(id: $ISSUE_ID ) {
+                ... on Issue {
+                  number,
+                  title
+                  assignees(first:10) {
+                    nodes {
+                      name
+                      login
+                    }
+                  }
+                }
+              }
+            }`, vars);
+            issues.push(resp.node)
+          }
+
+          if(prAssignees.length == 0 ) {
+            // Assign PR
+            var issueAssigneeIds = issues.flatMap(issue => issue.assignees.nodes.map(node => node.login));
+            core.setOutput("ASSIGN_PR", "true")
+            core.setOutput("ASSIGNEES", issueAssigneeIds.join(","))
+            console.log("Pull Request:#${{ github.event.number }} do not have any assignees.")
+            return true;
+          }
+          else {
+            // Add Comment
+            const issueDetails = issues.map(issue => ({
+              number: issue.number,
+              assignees: issue.assignees.nodes
+                .map(node => node.login)
+                .filter(login => !prAssigneeIds.includes(login))
+            }));
+            var cmt = ""
+            console.log("Below issue owners are not assigned to pull request:${{ github.event.number }}")
+            for(let issue of issueDetails ) {
+              if(issue.assignees.length > 0) {
+                cmt += "<br>Asignees of issue #" + issue.number;
+                for(let a in issue.asignees ) {
+                  cmt += "<br>@" + a
+                  console.log(issue.number + "-" + a)
+                }
+              }
+            }
+            core.setOutput("COMMENT", "Below issue owners are not assigned to this pull request:" + cmt)
+          }
+
+    - name: Assign PR
+      id: assign-pr
+      if: steps.check-pr-assignees.outputs.result != 'false' && steps.check-pr-assignees.outputs.ASSIGN_PR == 'true'
+      uses: gustavofreze/auto-assign@1.1.4
+        with:
+          github_token: '${{ secrets.GITHUB_TOKEN }}'
+          assignees: '${{ steps.check-pr-assignees.outputs.ASSIGNEES }}'
+          allow_self_assign: 'true'
+          assignment_options: 'PULL_REQUEST'
 
     - name: Handle closed pull request
       id: handle-closed-pr
@@ -833,6 +897,7 @@ jobs:
             COMMENTS.push('${{ needs.pr-automation.outputs.COMMENT }}')            
             COMMENTS.push('${{ needs.pr-automation.outputs.COMMENT1 }}')
             COMMENTS.push('${{ needs.pr-automation.outputs.COMMENT2 }}')
+            COMMENTS.push('${{ needs.pr-automation.outputs.COMMENT3 }}')
           }
           else  {
             COMMENTS.push('${{ needs.check-valid-run.outputs.COMMENT }}')
