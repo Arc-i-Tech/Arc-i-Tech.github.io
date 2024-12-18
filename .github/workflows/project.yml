@@ -661,7 +661,7 @@ jobs:
             // Assign PR
             var issueAssigneeIds = issues.flatMap(issue => issue.assignees.nodes.map(node => node.login));
             core.setOutput("ASSIGN_PR", "true")
-            core.setOutput("ASSIGNEES", issueAssigneeIds.join(","))
+            core.setOutput("ASSIGNEES", JSON.stringify(issueAssigneeIds))
             console.log("Pull Request:#${{ github.event.number }} do not have any assignees.")
             return true;
           }
@@ -695,7 +695,7 @@ jobs:
       run : |
         ASSIGNEES='${{ steps.check-pr-assignees.outputs.ASSIGNEES }}'
         curl -X POST \
-          -H "Authorization: token $GITHUB_TOKEN" \
+          -H "Authorization: Bearer $GITHUB_TOKEN" \
           -H "Content-Type: application/json" \
           -d "{\"assignees\": $ASSIGNEES}" \
           "${{ github.event.pull_request.url }}/assignees"
