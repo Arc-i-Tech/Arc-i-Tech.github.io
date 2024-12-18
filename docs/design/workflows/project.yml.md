@@ -11,22 +11,22 @@ title: Github Workflow Current
 ---
   flowchart LR
     subgraph check-valid-run
-      st1[actor-info] --> st2[check-run] --> |OPTION, LABELS, COMMENT, NUM, type|st3[job-result]
+      s10[actor-info] --> st11[check-run] --> |OPTION, LABELS, COMMENT, NUM, type|s12[job-result]
     end
     subgraph get-details
-      s4[get-required-ids] --> |PRJ_ID, ids|s5[fetch-project-details] --> |PRJ|s6[job-result]
+      s20[get-required-ids] --> |PRJ_ID, ids|s21[fetch-project-details] --> |PRJ|s22[job-result]
     end
     subgraph issue-automation
-      s7[find-item] --> |ITEM|s8[find-target-status] --> |OPTION, LABELS, OPTION_NODE, FIELD_ID, UPDATE_STATUS|s9[job-result]
+      s30[find-item] --> |ITEM|s31[find-target-status] --> |OPTION, LABELS, OPTION_NODE, FIELD_ID, UPDATE_STATUS|s32[job-result]
     end
     subgraph pr-automation
-      s10[check-associated-issues] --> |COMMENT, CLOSING_ISSUES, PR_ASSIGNEES|s11[reopened] --> |COMMENT|s12[find-ref-issues-target-status] --> |OPTION_NODE, FIELD_ID, UPDATE_STATUS|s13[get-open-ref-items] --> |COMMENT, ITEMS|s14[check-and-assign-pr] --> s15[job-result]
+      s40[check-associated-issues] --> |COMMENT, CLOSING_ISSUES, PR_ASSIGNEES|s41[reopened] --> |COMMENT|s42[find-ref-issues-target-status] --> |OPTION_NODE, FIELD_ID, UPDATE_STATUS|s43[get-open-ref-items] --> |COMMENT, ITEMS, openRefIssueNos|s44[check-and-assign-pr] --> s45[handle-closed-pr] --> s46[job-result]
     end
     subgraph update-status-sprint
-      s16[collect-inputs] --> |OPTION_NODE, FIELD_ID, UPDATE_STATUS, ITEMS, PRJ, ids|s17[update-status] --> s18[update-sprint] --> s19[job-result]
+      s50[collect-inputs] --> |OPTION_NODE, FIELD_ID, UPDATE_STATUS, ITEMS, PRJ, ids|s51[update-status] --> s52[update-sprint] --> s53[job-result]
     end
     subgraph add-remove-label-comment
-      s20[find-labels-options] --> |LABELS, OPTION, COMMENTS|s21[remove-label] --> s22[issue-comment]
+      s60[find-labels-options] --> |LABELS, OPTION, COMMENTS|s61[remove-label] --> s62[issue-comment]
     end
     
 
