@@ -675,18 +675,23 @@ jobs:
                 .map(node => node.login)
                 .filter(login => !prAssigneeIds.includes(login))
             }));
-            if( issueDetails.length > 0) {
-              var cmt = ""
-              console.log("Below issue owners are not assigned to pull request:${{ github.event.number }}")
-              for(let issue of issueDetails ) {
-                if(issue.assignees.length > 0) {
-                  cmt += "<br>Asignees of issue #" + issue.number;
-                  for(let a of issue.assignees ) {
-                    cmt += "<br>- @" + a
-                    console.log(issue.number + "-" + a)
-                  }
+            
+            var cmt = ""
+            var nums = ""
+            var isFound = false;
+            for(let issue of issueDetails ) {
+              if(issue.assignees.length > 0) {
+                cmt += "\nAsignees of issue #" + issue.number;
+                for(let a of issue.assignees ) {
+                  cmt += "\n- @" + a
+                  nums += issue.number + "-" + a + "\n"
+                  isFound = true;
                 }
               }
+            }
+            if( isFound ) {
+              console.log("Below issue owners are not assigned to pull request:${{ github.event.number }}")
+              console.log(nums)
               core.setOutput("COMMENT", "Below issue owners are not assigned to this pull request:" + cmt)
             }
           }
