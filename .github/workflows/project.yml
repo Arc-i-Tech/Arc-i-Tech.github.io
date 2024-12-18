@@ -490,7 +490,7 @@ jobs:
         github-token: ${{ secrets.ACCESS_TOKEN }}
         script: |
           const closingIssues = ${{ steps.check-associated-issues.outputs.CLOSING_ISSUES }}
-          var closedRefIssues = closedRefIssues.filter((issue) => issue.state != "OPEN")
+          var closedRefIssues = closingIssues.filter((issue) => issue.state != "OPEN")
           var cmt = ""
           for(let i of closedRefIssues) {
             cmt += "<br>#" + i.number
@@ -508,7 +508,7 @@ jobs:
 
     - name: Find reference issues target Status
       id: find-ref-issues-target-status
-      if: steps.check-associated-issues.outputs.result != 'false'
+      if: steps.check-associated-issues.outputs.result != 'false' && github.event.action != 'closed'
       uses: actions/github-script@v7
       with:
         script: |
@@ -519,7 +519,7 @@ jobs:
           if( ${{ github.event.pull_request.draft }} || "${{ github.event.action }}" == "converted_to_draft") {
             targetOptionVal = "🏗 In progress"
           }
-          else if( ( "${{ github.event.action }}" == "ready_for_review" || reviewers.length > 0 || reviewerTeams.length > 0 ) && "${{ github.event.action }}" != "closed" ) {
+          else if( "${{ github.event.action }}" == "ready_for_review" || reviewers.length > 0 || reviewerTeams.length > 0 ) {
             targetOptionVal = "👀 In review"
           }
           else {
@@ -633,18 +633,28 @@ jobs:
         script:
           console.log("TODO:- Write a step to assign PR")
 
-    - name: Close reference issues
-      id: close-ref-issues
-      if: steps.check-associated-issues.outputs.result != 'false' && github.event.action == 'closed'
+    - name: Handle closed pull request
+      id: handle-closed-pr
+      if: steps.check-associated-issues.outputs.result != 'false' && github.event.action == 'closed' && github.event.pull_request.merged
       env:
         GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       shell: bash
       run : |
-        for i in ${{ steps.get-open-ref-items.outputs.openRefIssueNos }} ;
-        do
-          echo $i
-        done
-
+        input="${{ steps.get-open-ref-items.outputs.openRefIssueNos }}";
+        numbers=$(echo "$input" | sed 's/[][]//g' | sed 's/,/ /g');
+        if [[ "${{ github.event.pull_request.merged }}" == "true" ]]; 
+        then
+          for i in $numbers; 
+          do 
+            gh issue close $i --comment "Closed by #${{github.event.number}}";
+          done
+        else
+          for i in $numbers; 
+          do 
+            gh issue comment $i --body "Pull Request #${{github.event.number}} closed without merging.";
+          done
+        fi
+    
     - name: Job result
       id: job-result
       uses: actions/github-script@v7
