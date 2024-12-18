@@ -646,12 +646,12 @@ jobs:
         then
           for i in $numbers; 
           do 
-            gh issue close $i --comment "Closed by #${{github.event.number}}";
+            gh issue close $i --comment "Closed by #${{github.event.number}}" --repo ${{ github.repository }};
           done
         else
           for i in $numbers; 
           do 
-            gh issue comment $i --body "Pull Request #${{github.event.number}} closed without merging.";
+            gh issue comment $i --body "Pull Request #${{github.event.number}} closed without merging."  --repo ${{ github.repository }};
           done
         fi
     
