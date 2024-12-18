@@ -430,6 +430,7 @@ jobs:
       UPDATE_STATUS: ${{ steps.find-ref-issues-target-status.outputs.UPDATE_STATUS }}
       ITEMS: ${{ steps.get-open-ref-items.outputs.ITEMS }}
       COMMENT2: ${{ steps.get-open-ref-items.outputs.COMMENT }}
+      COMMENT3: ${{ steps.check-pr-assignees.outputs.COMMENT }}
       result: ${{ steps.job-result.outputs.result }}
 
     steps:
@@ -625,13 +626,106 @@ jobs:
           core.setOutput('openRefIssueNos', JSON.stringify(openRefIssueNos));
           return true
 
-    - name: Check and assign PR
-      id: check-and-assign-pr
+    - name: Check pull request asignees
+      id: check-pr-assignees
       if: steps.check-associated-issues.outputs.result != 'false'
       uses: actions/github-script@v7
       with:
-        script:
-          console.log("TODO:- Write a step to assign PR")
+        github-token: ${{ secrets.ACCESS_TOKEN }}
+        script: |
+          const closingIssues = ${{ steps.check-associated-issues.outputs.CLOSING_ISSUES }}
+          const closingIssueIds = closingIssues.map(issue => issue.id)
+          const prAssignees = ${{ steps.check-associated-issues.outputs.PR_ASSIGNEES }}
+          const prAssigneeIds = prAssignees.map(assignee => assignee.login)
+          var issues = []
+          var vars = {};
+          for(let id of closingIssueIds) {
+            vars["ISSUE_ID"] = id;
+            const resp = await github.graphql(`query getIssueAssignees($ISSUE_ID: ID!) {
+              node(id: $ISSUE_ID ) {
+                ... on Issue {
+                  number,
+                  title
+                  assignees(first:10) {
+                    nodes {
+                      id
+                      name
+                      login
+                    }
+                  }
+                }
+              }
+            }`, vars);
+            issues.push(resp.node)
+          }
+
+          if(prAssignees.length == 0 ) {
+            // Assign PR
+            var issueAssigneeIds = issues.flatMap(issue => issue.assignees.nodes.map(node => node.id));
+            core.setOutput("ASSIGN_PR", "true")
+            core.setOutput("ASSIGNEES", JSON.stringify(issueAssigneeIds))
+            console.log("Pull Request:#${{ github.event.number }} do not have any assignees.")
+            return true;
+          }
+          else {
+            // Add Comment
+            const issueDetails = issues.map(issue => ({
+              number: issue.number,
+              assignees: issue.assignees.nodes
+                .map(node => node.login)
+                .filter(login => !prAssigneeIds.includes(login))
+            }));
+            
+            var cmt = ""
+            var nums = ""
+            var isFound = false;
+            for(let issue of issueDetails ) {
+              if(issue.assignees.length > 0) {
+                cmt += "<br>Asignees of issue #" + issue.number;
+                for(let a of issue.assignees ) {
+                  cmt += "<br>- @" + a
+                  nums += issue.number + "-" + a + "\n"
+                  isFound = true;
+                }
+              }
+            }
+            if( isFound ) {
+              console.log("Below issue owners are not assigned to pull request:${{ github.event.number }}")
+              console.log(nums)
+              core.setOutput("COMMENT", "Below issue owners are not assigned to this pull request:" + cmt)
+            }
+          }
+
+    - name: Assign PR
+      id: assign-pr
+      if: steps.check-pr-assignees.outputs.result != 'false' && steps.check-pr-assignees.outputs.ASSIGN_PR == 'true'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.ACCESS_TOKEN }}
+        script: |
+          const vars = ${{ needs.get-details.outputs.ids }}
+          vars["USER_IDS"] = ${{ steps.check-pr-assignees.outputs.ASSIGNEES }}
+           const assifnPrResp = await github.graphql(`mutation assignPR($ORG_ID: String!, $I_PR_ID: ID!, $USER_IDS: [ID!]!) {
+            addAssigneesToAssignable(input: {
+              clientMutationId:$ORG_ID
+              assignableId: $I_PR_ID,
+              assigneeIds: $USER_IDS
+            }) {
+              clientMutationId
+               assignable {
+                ... on PullRequest
+                {
+                  id
+                  number
+                }
+              }
+            }
+          }`, vars)
+          
+          if( assifnPrResp.addAssigneesToAssignable.clientMutationId == vars.ORG_ID && assifnPrResp.addAssigneesToAssignable.assignable.id == vars.I_PR_ID) {
+            console.log( "Asignees added to pull request:" + assifnPrResp.addAssigneesToAssignable.assignable.number )
+            return true
+          }
 
     - name: Handle closed pull request
       id: handle-closed-pr
@@ -761,10 +855,10 @@ jobs:
           const prj = ${{ steps.collect-inputs.outputs.PRJ }}
           const fieldNode = prj.fields.nodes.filter((node) => node.name.toUpperCase() == "🏃 Sprint".toUpperCase())
           const vars = ${{ steps.collect-inputs.outputs.ids }}
-          const ITEM = ${{ steps.collect-inputs.outputs.ITEM }}
+          const ITEMS = ${{ steps.collect-inputs.outputs.ITEMS }}
           vars["FIELD_ID"] = fieldNode[0].id
           vars["ITR_ID"] = fieldNode[0].configuration.iterations[0].id
-          vars["ITEM_ID"] = ITEM.id
+          vars["ITEM_ID"] = ITEMS[0].id
           var q1 = ""
           var q2 = ""
           var q3 = ""
@@ -833,6 +927,7 @@ jobs:
             COMMENTS.push('${{ needs.pr-automation.outputs.COMMENT }}')            
             COMMENTS.push('${{ needs.pr-automation.outputs.COMMENT1 }}')
             COMMENTS.push('${{ needs.pr-automation.outputs.COMMENT2 }}')
+            COMMENTS.push('${{ needs.pr-automation.outputs.COMMENT3 }}')
           }
           else  {
             COMMENTS.push('${{ needs.check-valid-run.outputs.COMMENT }}')
