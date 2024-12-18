@@ -661,7 +661,7 @@ jobs:
             // Assign PR
             var issueAssigneeIds = issues.flatMap(issue => issue.assignees.nodes.map(node => node.login));
             core.setOutput("ASSIGN_PR", "true")
-            core.setOutput("ASSIGNEES", JSON.stringify(issueAssigneeIds))
+            core.setOutput("ASSIGNEES", issueAssigneeIds.join(","))
             console.log("Pull Request:#${{ github.event.number }} do not have any assignees.")
             return true;
           }
@@ -690,15 +690,10 @@ jobs:
     - name: Assign PR
       id: assign-pr
       if: steps.check-pr-assignees.outputs.result != 'false' && steps.check-pr-assignees.outputs.ASSIGN_PR == 'true'
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      run : |
-        ASSIGNEES='${{ steps.check-pr-assignees.outputs.ASSIGNEES }}'
-        curl -X POST \
-          -H "Authorization: Bearer $GITHUB_TOKEN" \
-          -H "Content-Type: application/json" \
-          -d "{\"assignees\": $ASSIGNEES}" \
-          "${{ github.event.pull_request.url }}/assignees"
+      uses: kentaro-m/assign-issue@v2
+      with:
+        token: ${{ secrets.ACCESS_TOKEN }}
+        assignees: ${{ steps.check-pr-assignees.outputs.ASSIGNEES }}
 
     - name: Handle closed pull request
       id: handle-closed-pr
