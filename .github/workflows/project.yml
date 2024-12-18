@@ -5,7 +5,7 @@ on:
     types: [labeled, unlabeled, assigned, unassigned]
 
   pull_request:
-    types: [reopened, ready_for_review, converted_to_draft]
+    types: [reopened, ready_for_review, converted_to_draft, closed]
 
 jobs:
   check-valid-run:
@@ -34,7 +34,6 @@ jobs:
           else if( "${{ github.event_name }}" == "pull_request" ) {
             console.log('PullReuqest number:' + '${{ github.event.number }}')
           }
-          console.log(`${{ toJSON(github) }}`)
 
     - name: Check run
       id: check-run
@@ -418,7 +417,7 @@ jobs:
   
   pr-automation:
     needs: get-details
-    if: needs.get-details.outputs.result != 'false' && ( github.event_name == 'pull_request' || github.event_name == 'pull_request_review' ) && github.event.action != 'opened'
+    if: needs.get-details.outputs.result != 'false' && github.event_name == 'pull_request' 
     runs-on: ubuntu-latest
 
     outputs:
@@ -468,7 +467,9 @@ jobs:
 
           var closingIssues = resp.node.closingIssuesReferences.nodes;
           if( closingIssues.length <= 0 ) {
-            core.setOutput('COMMENT', "This pull request does not reference any closing issues.</br>Link reference closing issues to proceed further with this PR.");
+            if( "${{ github.event.action }}" != "closed" ){
+              core.setOutput('COMMENT', "This pull request does not reference any closing issues.</br>Link reference closing issues to proceed further with this PR.");
+            }
             console.log("pull request: " + resp.node.number +" does not reference any closing issues.")
             return false
           }
@@ -489,17 +490,17 @@ jobs:
         github-token: ${{ secrets.ACCESS_TOKEN }}
         script: |
           const closingIssues = ${{ steps.check-associated-issues.outputs.CLOSING_ISSUES }}
-          var closedRefIssues = closedRefIssues.filter((issue) => issue.state != "OPEN")
+          var closedRefIssues = closingIssues.filter((issue) => issue.state != "OPEN")
           var cmt = ""
           for(let i of closedRefIssues) {
             cmt += "<br>#" + i.number
           }
           if( closedRefIssues.length == closingIssues.length ) {
-            core.setOutput('COMMENT', "Refence issue of this pull request are not in `OPEN` state:" + cmt + "<br>Is this pull request is still valid?")
+            core.setOutput('COMMENT', "Reference issue of this pull request are not in `OPEN` state:" + cmt + "<br>Is this pull request is still valid?")
             return false
           }
           else if( closedRefIssues.length > 0) {
-            core.setOutput('COMMENT', "Some of refence issue of this pull request are not in `OPEN` state:" + cmt + "<br>Is this pull request is still valid?")
+            core.setOutput('COMMENT', "Some of reference issue of this pull request are not in `OPEN` state:" + cmt + "<br>Is this pull request is still valid?")
             return true;
           }
           core.setOutput('COMMENT', "")
@@ -507,7 +508,7 @@ jobs:
 
     - name: Find reference issues target Status
       id: find-ref-issues-target-status
-      if: steps.check-associated-issues.outputs.result != 'false'
+      if: steps.check-associated-issues.outputs.result != 'false' && github.event.action != 'closed'
       uses: actions/github-script@v7
       with:
         script: |
@@ -517,8 +518,8 @@ jobs:
           var targetOptionVal = ""
           if( ${{ github.event.pull_request.draft }} || "${{ github.event.action }}" == "converted_to_draft") {
             targetOptionVal = "🏗 In progress"
-          } 
-          else if("${{ github.event.action }}" == "ready_for_review" || reviewers.length > 0 || reviewerTeams.length > 0 ) {
+          }
+          else if( "${{ github.event.action }}" == "ready_for_review" || reviewers.length > 0 || reviewerTeams.length > 0 ) {
             targetOptionVal = "👀 In review"
           }
           else {
@@ -533,7 +534,7 @@ jobs:
           core.setOutput("FIELD_ID", fieldNode[0].id)
           core.setOutput("UPDATE_STATUS", "true")
 
-          console.log("Target Status value: " + targetOptionVal + " for OPEN refence issue closing by Pull Request: " + ${{ github.event.number }})
+          console.log("Target Status value: " + targetOptionVal + " for OPEN reference issue closing by Pull Request: " + ${{ github.event.number }})
 
     - name: Get open reference items
       id: get-open-ref-items
@@ -604,7 +605,7 @@ jobs:
             }
           }
           
-          if( isFoundAll == true) {
+          if( isFoundAll == true && itemNodes.length != 0) {
             console.log("All issue found in ${{ vars.MAIN_PRJ }} project.")
           }
           else if ( itemNodes.length != 0) {
@@ -621,6 +622,7 @@ jobs:
           }
           core.setOutput('ITEMS', JSON.stringify(itemNodes))
           core.setOutput('COMMENT', "");
+          core.setOutput('openRefIssueNos', JSON.stringify(openRefIssueNos));
           return true
 
     - name: Check and assign PR
@@ -631,6 +633,28 @@ jobs:
         script:
           console.log("TODO:- Write a step to assign PR")
 
+    - name: Handle closed pull request
+      id: handle-closed-pr
+      if: steps.check-associated-issues.outputs.result != 'false' && github.event.action == 'closed'
+      env:
+        GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      shell: bash
+      run : |
+        input="${{ steps.get-open-ref-items.outputs.openRefIssueNos }}";
+        numbers=$(echo "$input" | sed 's/[][]//g' | sed 's/,/ /g');
+        if [[ "${{ github.event.pull_request.merged }}" == "true" ]]; 
+        then
+          for i in $numbers; 
+          do 
+            gh issue close $i --comment "Closed by #${{github.event.number}}" --repo ${{ github.repository }};
+          done
+        else
+          for i in $numbers; 
+          do 
+            gh issue comment $i --body "Linked Pull Request: #${{github.event.number}} closed without merging.<br>Have look into it."  --repo ${{ github.repository }};
+          done
+        fi
+    
     - name: Job result
       id: job-result
       uses: actions/github-script@v7
