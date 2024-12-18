@@ -631,6 +631,7 @@ jobs:
       if: steps.check-associated-issues.outputs.result != 'false'
       uses: actions/github-script@v7
       with:
+        github-token: ${{ secrets.ACCESS_TOKEN }}
         script: |
           const closingIssues = ${{ steps.check-associated-issues.outputs.CLOSING_ISSUES }}
           const closingIssueIds = closingIssues.map(issue => issue.id)
@@ -647,6 +648,7 @@ jobs:
                   title
                   assignees(first:10) {
                     nodes {
+                      id
                       name
                       login
                     }
@@ -659,9 +661,9 @@ jobs:
 
           if(prAssignees.length == 0 ) {
             // Assign PR
-            var issueAssigneeIds = issues.flatMap(issue => issue.assignees.nodes.map(node => node.login));
+            var issueAssigneeIds = issues.flatMap(issue => issue.assignees.nodes.map(node => node.id));
             core.setOutput("ASSIGN_PR", "true")
-            core.setOutput("ASSIGNEES", issueAssigneeIds.join(","))
+            core.setOutput("ASSIGNEES", JSON.stringify(issueAssigneeIds))
             console.log("Pull Request:#${{ github.event.number }} do not have any assignees.")
             return true;
           }
@@ -690,10 +692,33 @@ jobs:
     - name: Assign PR
       id: assign-pr
       if: steps.check-pr-assignees.outputs.result != 'false' && steps.check-pr-assignees.outputs.ASSIGN_PR == 'true'
-      uses: kentaro-m/auto-assign-action@v2
+      uses: actions/github-script@v7
       with:
-        token: ${{ secrets.ACCESS_TOKEN }}
-        assignees: ${{ steps.check-pr-assignees.outputs.ASSIGNEES }}
+        github-token: ${{ secrets.ACCESS_TOKEN }}
+        script: |
+          const vars = ${{ needs.get-details.outputs.ids }}
+          vars["USER_IDS"] = ${{ steps.check-pr-assignees.outputs.ASSIGNEES }}
+           const assifnPrResp = await github.graphql(`mutation assignPR($ORG_ID: String!, $I_PR_ID: ID!, $USER_IDS: [ID!]!) {
+            addAssigneesToAssignable(input: {
+              clientMutationId:$ORG_ID
+              assignableId: $I_PR_ID,
+              assigneeIds: $USER_IDS
+            }) {
+              clientMutationId
+               assignable {
+                ... on PullRequest
+                {
+                  id
+                  number
+                }
+              }
+            }
+          }`, vars)
+          
+          if( assifnPrResp.addAssigneesToAssignable.clientMutationId == vars.ORG_ID && assifnPrResp.addAssigneesToAssignable.assignable.id == vars.I_PR_ID) {
+            console.log( "Asignees added to pull request:" + assifnPrResp.addAssigneesToAssignable.assignable.number )
+            return true
+          }
 
     - name: Handle closed pull request
       id: handle-closed-pr
