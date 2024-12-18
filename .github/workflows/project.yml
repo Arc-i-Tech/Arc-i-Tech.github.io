@@ -675,18 +675,20 @@ jobs:
                 .map(node => node.login)
                 .filter(login => !prAssigneeIds.includes(login))
             }));
-            var cmt = ""
-            console.log("Below issue owners are not assigned to pull request:${{ github.event.number }}")
-            for(let issue of issueDetails ) {
-              if(issue.assignees.length > 0) {
-                cmt += "<br>Asignees of issue #" + issue.number;
-                for(let a of issue.assignees ) {
-                  cmt += "<br>@" + a
-                  console.log(issue.number + "-" + a)
+            if( issueDetails.length > 0) {
+              var cmt = ""
+              console.log("Below issue owners are not assigned to pull request:${{ github.event.number }}")
+              for(let issue of issueDetails ) {
+                if(issue.assignees.length > 0) {
+                  cmt += "<br>Asignees of issue #" + issue.number;
+                  for(let a of issue.assignees ) {
+                    cmt += "<br>- @" + a
+                    console.log(issue.number + "-" + a)
+                  }
                 }
               }
+              core.setOutput("COMMENT", "Below issue owners are not assigned to this pull request:" + cmt)
             }
-            core.setOutput("COMMENT", "Below issue owners are not assigned to this pull request:" + cmt)
           }
 
     - name: Assign PR
