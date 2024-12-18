@@ -635,7 +635,7 @@ jobs:
 
     - name: Handle closed pull request
       id: handle-closed-pr
-      if: steps.check-associated-issues.outputs.result != 'false' && github.event.action == 'closed' && github.event.pull_request.merged
+      if: steps.check-associated-issues.outputs.result != 'false' && github.event.action == 'closed'
       env:
         GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       shell: bash
