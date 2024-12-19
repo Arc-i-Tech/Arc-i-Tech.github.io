@@ -77,6 +77,14 @@
 
     ![16](https://github.com/user-attachments/assets/2c77ae46-a7d6-4f77-9883-dc548dfb7d87)
 
+30. Open Windows Command Prompt and verify **Git** installation
+    ```bash
+    git --version
+    ```
+    You will get below output if installation is successful:
+    ```bash
+    git version 2.47.1.windows.1
+    ```
 
 ## Setup GitHub Desktop
 - `TODO`
