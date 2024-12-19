@@ -39,3 +39,4 @@ _Note: Java JDK or Eclipse installation do not touch your earlier installation i
 5. [GitHub Desktop](./gh_desktop.md)
 6. [Slack](./slack.md)
 7. [Node JS](./NodeJS.md)
+8. [Git](./Git.md)
