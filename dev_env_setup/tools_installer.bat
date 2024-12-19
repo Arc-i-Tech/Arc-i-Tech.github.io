@@ -102,6 +102,13 @@ curl "https://nodejs.org/dist/v20.18.0/node-v20.18.0-x64.msi" -o node_v20.18.0_x
 echo.
 echo =================================================================
 
+echo. 
+rem Download Git 
+echo Downloading Git 2.47.1
+curl -L https://github.com/git-for-windows/git/releases/download/v2.47.1.windows.1/Git-2.47.1-64-bit.exe -o Git.exe
+echo.
+echo =================================================================
+
 rem install tools
 goto install
 
@@ -163,6 +170,7 @@ echo  4. VS Code
 echo  5. Github Desktop
 echo  6. Slack
 echo  7. Node JS
+echo  8. Git
 echo.
 echo  =================================================================
 
@@ -232,6 +240,13 @@ echo.
 rem Install Node JS
 echo Installing NodeJS
 msiexec /i node_v20.18.0_x64.msi
+echo.
+echo  =================================================================
+
+echo.
+rem Git
+echo Installing Git
+call Git.exe
 echo.
 echo  =================================================================
 
