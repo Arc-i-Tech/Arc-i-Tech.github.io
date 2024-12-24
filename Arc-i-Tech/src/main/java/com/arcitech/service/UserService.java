@@ -5,13 +5,14 @@
  */
 package com.arcitech.service;
 
+import java.util.Optional;
+
 import com.arcitech.model.User;
 
 /**
- * @author Priya
+ * @author Ajay G
  * 
  */
 public interface UserService {
-	public User userUpdate(User user);
-
+	public Optional<User> getUser(String username);
 }
