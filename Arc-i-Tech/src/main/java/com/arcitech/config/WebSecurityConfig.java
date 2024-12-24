@@ -38,10 +38,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests().antMatchers("/api/auth/login", "/api/auth/logout").permitAll()
-				.anyRequest().authenticated().and().formLogin().loginPage("/login").defaultSuccessUrl("/home", true)
-				.and().logout().logoutUrl("/api/auth/logout").logoutSuccessUrl("/login?logout").and()
-				.sessionManagement().maximumSessions(1).expiredUrl("/login?expired");
+		http.csrf().disable().authorizeRequests()
+		.antMatchers("/api/auth/login", "/api/auth/logout").permitAll()
+		.antMatchers("/api/user/**").authenticated()
+		.anyRequest().authenticated()
+		.and()
+		.formLogin()
+		.loginPage("/login")
+		.defaultSuccessUrl("/home", true)
+		.and()
+		.logout()
+		.logoutUrl("/api/auth/logout")
+		.logoutSuccessUrl("/login?logout")
+		.and()
+		.sessionManagement()
+		.maximumSessions(1)
+		.expiredUrl("/login?expired");
 	}
 
 	@Bean

@@ -15,4 +15,10 @@ import com.arcitech.model.User;
  */
 public interface UserService {
 	public Optional<User> getUser(String username);
+	
+	public Optional<User> updateUser(User user);
+
+	public boolean isPresent(String username);
+
+	public boolean isPresent(Long id);
 }

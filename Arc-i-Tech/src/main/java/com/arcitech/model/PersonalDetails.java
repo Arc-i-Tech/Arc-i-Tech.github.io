@@ -111,5 +111,23 @@ public abstract class PersonalDetails extends CommonFields {
 	public void setPincode(int pincode) {
 		this.pincode = pincode;
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 */
+	@Override
+	public Object copy(Object obj) {
+		if (obj instanceof PersonalDetails) {
+			PersonalDetails personalDetails = (PersonalDetails) obj;
+			personalDetails.setAddress(this.getAddress());
+			personalDetails.setCity(this.getCity());
+			personalDetails.setDob(this.getDob());
+			personalDetails.setMoNo(this.getMoNo());
+			personalDetails.setName(this.getName());
+			personalDetails.setPincode(this.getPincode());
+			return super.copy(personalDetails);
+		}
+		throw new UnsupportedOperationException("Object type mismatch.");
+	}
 }
