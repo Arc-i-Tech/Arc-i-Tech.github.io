@@ -6,19 +6,25 @@
 package com.arcitech.service;
 
 import com.arcitech.model.User;
+import com.arcitech.model.UserAuth;
 
 /**
  * @author Priya
  * 
  */
 public interface UserService {
-	public String addUser (User user);
+	public UserAuth addUser (User user);
 
 	/**
 	 * @param id
 	 * @return
 	 */
 	public User getUserById(Long id);
+
+	/**
+	 * @param id
+	 * @return
+	 */
 
 }
 

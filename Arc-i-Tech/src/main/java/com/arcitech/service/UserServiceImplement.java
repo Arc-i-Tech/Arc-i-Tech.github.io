@@ -32,34 +32,39 @@ public class UserServiceImplement implements UserService {
 	private static final Logger logger = LoggerFactory.logger(UserServiceImplement.class); 
 
 	@Override
-	public String addUser(User user) {
+	public UserAuth addUser(User user) {
+		// Check if user is null or required fields are missing
 		if (user == null && 
 		        user.getUsername() == null && user.getUsername().isEmpty() && 
 		        user.getName() == null && user.getName().isEmpty() &&
 		        user.getCity() == null && user.getCity().isEmpty() && 
 		        user.getPincode() <= 0 && 
 		        user.getMoNo() <= 0) {
-		        return "User not saved successfully. Please ensure all required fields are filled.";
+		        return null;  // Invalid user data
 		    }
+		// Check if the username already exists
 		UserAuth existingAuth = userAuthRepository.findByUsername(user.getUsername());
 	    if (existingAuth != null) {
-	        return "User not saved successfully. Username already exists.";
+	        return existingAuth;
 	    }
 
 	    try {
+	    	// Save the user to the user repository
 	        userRepository.save(user);
+	        // Generate a random password for the new user
 	        String generatedPassword = RandomPasswordGenerator.getAlphaNumericString(7);
-	        
+	        // Create a new UserAuth object for authentication details
 	        UserAuth userAuth = new UserAuth();
 	        userAuth.setUsername(user.getUsername());
 	        userAuth.setPassword(generatedPassword);
 	        userAuth.setUser(user); 
-	        
+	        // Save the authentication details to the userAuth repository
 	        userAuthRepository.save(userAuth);
-	        return "User saved successfully. Generated password: " + generatedPassword;
+	        return userAuth;
 	    } catch (Exception e) {
+	    	// Log the error and return null in case of failure
 	    	logger.error("Error saving user: " + e.getMessage());
-	    	return "User not saved successfully. Please check your input and try again.";
+	    	return null;
 	    }
 	}
 	

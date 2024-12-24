@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.arcitech.model.User;
+import com.arcitech.model.UserAuth;
 import com.arcitech.service.UserService;
 
 /**
@@ -29,7 +30,9 @@ public class UserRegistrationController {
 	
 	@GetMapping("findByUserId/{id}")
 	public ResponseEntity<User> getById(@PathVariable Long id){
+		// Retrieve the user by ID using the service method
 		User user = userService.getUserById(id);
+		// If the user is found, return 200 OK, else return 404 Not Found
 		if(user==null) {
 			return new ResponseEntity<>(user, HttpStatus.OK);
 		}
@@ -37,15 +40,17 @@ public class UserRegistrationController {
 			return new ResponseEntity<>(user, HttpStatus.NOT_FOUND);
 			}
 	}
+	// Create a new user
 	@PostMapping("/adduser")
-	public ResponseEntity<String> createUser(@RequestBody User user) {
-	    String response = userService.addUser(user);
-	    if (response.contains("successfully")) {
-	        return new ResponseEntity<>(response, HttpStatus.CREATED);
-	    } else if (response.contains("already exists")) {
-	        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
-	    } else {
-	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	public ResponseEntity<UserAuth> createUser(@RequestBody User user) {
+		// Call the service method to add the user
+		UserAuth userAuth = userService.addUser(user);
+		// If user creation was successful, return 201 Created, else return 500 Internal Server Error
+	    if (userAuth!=null) {
+	        return new ResponseEntity<>(userAuth, HttpStatus.CREATED);
+	    }
+	    else {
+	        return new ResponseEntity<>(userAuth, HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
 	}
 
