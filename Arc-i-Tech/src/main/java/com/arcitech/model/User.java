@@ -64,4 +64,19 @@ public class User extends PersonalDetails {
 		this.enabled = enabled;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 *
+	 */
+	@Override
+	public Object copy(Object obj) {
+		if (obj instanceof User) {
+			User user = (User) obj;
+			user.setEnabled(this.isEnabled());
+			user.setUsername(this.getUsername());
+			user.createdAt = this.getCreatedAt();
+			return super.copy(user);
+		}
+		throw new UnsupportedOperationException("Object type mismatch.");
+	}
 }
