@@ -26,8 +26,9 @@ import com.arcitech.service.UserService;
  * 
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
+	private static final String USERNAME_STR = "{\"Username\":\"";
 
 	@Autowired
 	private UserService userService;
@@ -36,19 +37,19 @@ public class UserController {
 	public ResponseEntity<?> addUser(@RequestBody User user, @PathVariable String username) {
 		if (user == null) {
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON)
-					.body("{\"Username\":\"" + username + "\",\n\"error\":\"Null or Empty user details.\"}");
+					.body(USERNAME_STR + username + "\",\n\"error\":\"Null or Empty user details.\"}");
 		}
 
 		String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
 
 		if (!username.equalsIgnoreCase(loggedInUsername)) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).contentType(MediaType.APPLICATION_JSON)
-					.body("{\"Username\":\"" + username + "\",\n\"error\":\"You can only update your own details.\"}");
+					.body(USERNAME_STR + username + "\",\n\"error\":\"You can only update your own details.\"}");
 		}
 
 		if (!(userService.isPresent(username) && userService.isPresent(user.getId()))) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON)
-					.body("{\"Username\":\"" + username + "\",\n\"error\":\"Username not found.\"}");
+					.body(USERNAME_STR + username + "\",\n\"error\":\"Username not found.\"}");
 		}
 
 		Optional<User> updatedUser = userService.updateUser(user);
@@ -57,7 +58,7 @@ public class UserController {
 			return ResponseEntity.ok(updatedUser);
 		} else {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON)
-					.body("{\"Username\":\"" + username + "\",\n\"error\":\"Update failed.\"}");
+					.body(USERNAME_STR + username + "\",\n\"error\":\"Update failed.\"}");
 		}
 	}
 
