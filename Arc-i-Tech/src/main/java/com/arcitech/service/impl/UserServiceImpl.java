@@ -63,13 +63,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean userAlreadyExists(User user) {
 		UserAuth existingAuth = userAuthRepository.findByUsername(user.getUsername());
-	    if (existingAuth != null) {
-	        return true;
-	    }
-
-	    return false;
+	    return existingAuth != null; 
 	}
-	
+
 }
 
 		
