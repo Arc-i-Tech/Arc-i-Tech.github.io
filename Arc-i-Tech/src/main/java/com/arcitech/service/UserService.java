@@ -14,17 +14,11 @@ import com.arcitech.model.UserAuth;
  */
 public interface UserService {
 	public UserAuth addUser (User user);
+	public boolean userAlreadyExists(User user);
 
 	/**
 	 * @param id
 	 * @return
 	 */
-	public User getUserById(Long id);
-
-	/**
-	 * @param id
-	 * @return
-	 */
-
 }
 
