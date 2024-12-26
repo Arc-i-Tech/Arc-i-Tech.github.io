@@ -27,6 +27,7 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
+	private static final String USERNAME_KEY  = "username"; 
 	
 	@PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createUser(@RequestBody User user) {
@@ -37,19 +38,22 @@ public class UserController {
             return ResponseEntity
                 .status(HttpStatus.NOT_ACCEPTABLE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body("{\"Username\":\"" + user.getUsername() + "\",\"error\":\"User Already Exists..\"}");
+                .body(
+                        "{" + USERNAME_KEY + ":\"" + user.getUsername() +"\",\"message\":\"User Already Exists..\"}");
         } else {
             UserAuth userAuth = userService.addUser(user);
             if (userAuth != null) {
                 return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body("{\"Username\":\"" + user.getUsername() + "\",\"message\":\"User added successfully\"}");
+                    .body(
+                            "{" + USERNAME_KEY + ":\"" + user.getUsername()  + "\",\"message\":\"User added successfully\"}");
             } else {
                 return ResponseEntity
                     .status(HttpStatus.BAD_GATEWAY)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body("{\"Username\":\"" + user.getUsername() + "\",\"error\":\"User could not be saved\"}");
+                    .body(
+                            "{" + USERNAME_KEY + ":\"" + user.getUsername()  + "\",\"error\":\"User could not be saved\"}");
             }
         }
     }
