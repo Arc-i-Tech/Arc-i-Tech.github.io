@@ -5,6 +5,8 @@
  */
 package com.arcitech.service.impl;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +31,7 @@ public class UserServiceImpl implements UserService {
 	UserAuthRepository userAuthRepository;
 	
 	@Override
-	public UserAuth addUser(User user) {
+	public User addUser(User user) {
 		// Check if user is null or required fields are missing
 		if (user == null && 
 		        user.getUsername() == null && user.getUsername().isEmpty() && 
@@ -50,8 +52,9 @@ public class UserServiceImpl implements UserService {
 	        userAuth.setPassword(generatedPassword);
 	        userAuth.setUser(user); 
 	        userAuthRepository.save(userAuth);
-	        return userAuth;
+	        return user;
 	    } catch (Exception e) {
+	    	e.printStackTrace();
 	    	 return null;
 	    }
 	}
@@ -62,10 +65,14 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public boolean userAlreadyExists(User user) {
-		UserAuth existingAuth = userAuthRepository.findByUsername(user.getUsername());
-	    return existingAuth != null; 
+		if (user == null || user.getUsername() == null || user.getUsername().isEmpty()) {
+            throw new IllegalArgumentException("Invalid user data");
+        }
+		Optional existingAuth = userAuthRepository.findByUsername(user.getUsername());
+	    return existingAuth.isPresent(); 
 	}
 
+	
 }
 
 		

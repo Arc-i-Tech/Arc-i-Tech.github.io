@@ -5,6 +5,8 @@
  */
 package com.arcitech.controllers;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,29 +34,48 @@ public class UserController {
 	@PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createUser(@RequestBody User user) {
         // Check if user already exists
+		if (user == null || user.getUsername() == null || user.getUsername().isEmpty()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+					Map.of("error","Invalid input: username is required."));
+		}
+		try {
         boolean exists = userService.userAlreadyExists(user);
 
         if (exists) {
-            return ResponseEntity
-                .status(HttpStatus.NOT_ACCEPTABLE)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(
-                        "{" + USERNAME_KEY + ":\"" + user.getUsername() +"\",\"message\":\"User Already Exists..\"}");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                    		Map.of(
+                                    USERNAME_KEY, user.getUsername(),
+                                    "error", "User already exists."
+                                )
+                            );
+
         } else {
-            UserAuth userAuth = userService.addUser(user);
+            User userAuth = userService.addUser(user);
             if (userAuth != null) {
-                return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(
-                            "{" + USERNAME_KEY + ":\"" + user.getUsername()  + "\",\"message\":\"User added successfully\"}");
+                return ResponseEntity.status(HttpStatus.CREATED).body(
+                		Map.of(
+                                USERNAME_KEY, user.getUsername(),
+                                "message", "User added successfully."
+                            )
+                        );
             } else {
-                return ResponseEntity
-                    .status(HttpStatus.BAD_GATEWAY)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(
-                            "{" + USERNAME_KEY + ":\"" + user.getUsername()  + "\",\"error\":\"User could not be saved\"}");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    		Map.of(
+                                    USERNAME_KEY, user.getUsername(),
+                                    "error", "Failed to add user due to invalid data."
+                                )
+                            );
             }
         }
-    }
+        }catch(Exception e) {
+        	 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                     Map.of(
+                         "error", "An unexpected error occurred.",
+                         "details", e.getMessage()
+                     )
+                 );
+        }
+    
 }
+}
+	

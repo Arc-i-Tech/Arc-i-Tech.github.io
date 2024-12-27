@@ -13,7 +13,7 @@ import com.arcitech.model.UserAuth;
  * 
  */
 public interface UserService {
-	public UserAuth addUser (User user);
+	public User addUser (User user);
 	public boolean userAlreadyExists(User user);
 
 	/**
