@@ -30,13 +30,15 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	private static final String USERNAME_KEY  = "username"; 
+	private static final String ERROR_KEY  = "error"; 
+	private static final String MESSAGE_KEY  = "message"; 
 	
 	@PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createUser(@RequestBody User user) {
         // Check if user already exists
 		if (user == null || user.getUsername() == null || user.getUsername().isEmpty()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-					Map.of("error","Invalid input: username is required."));
+					Map.of(ERROR_KEY,"Invalid input: username is required."));
 		}
 		try {
         boolean exists = userService.userAlreadyExists(user);
@@ -45,7 +47,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
                     		Map.of(
                                     USERNAME_KEY, user.getUsername(),
-                                    "error", "User already exists."
+                                    ERROR_KEY, "User already exists."
                                 )
                             );
 
@@ -55,14 +57,14 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.CREATED).body(
                 		Map.of(
                                 USERNAME_KEY, user.getUsername(),
-                                "message", "User added successfully."
+                                MESSAGE_KEY, "User added successfully."
                             )
                         );
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     		Map.of(
                                     USERNAME_KEY, user.getUsername(),
-                                    "error", "Failed to add user due to invalid data."
+                                    ERROR_KEY, "Failed to add user due to invalid data."
                                 )
                             );
             }
@@ -70,7 +72,7 @@ public class UserController {
         }catch(Exception e) {
         	 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                      Map.of(
-                         "error", "An unexpected error occurred.",
+                         ERROR_KEY, "An unexpected error occurred.",
                          "details", e.getMessage()
                      )
                  );

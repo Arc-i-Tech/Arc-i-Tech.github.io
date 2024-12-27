@@ -6,7 +6,6 @@
 package com.arcitech.service;
 
 import com.arcitech.model.User;
-import com.arcitech.model.UserAuth;
 
 /**
  * @author Priya

@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
 		if (user == null || user.getUsername() == null || user.getUsername().isEmpty()) {
             throw new IllegalArgumentException("Invalid user data");
         }
-		Optional existingAuth = userAuthRepository.findByUsername(user.getUsername());
+		Optional<?> existingAuth = userAuthRepository.findByUsername(user.getUsername());
 	    return existingAuth.isPresent(); 
 	}
 
