@@ -23,7 +23,6 @@ public class User extends PersonalDetails {
 	private LocalDate createdAt;
 
 	private boolean enabled;
-
 	@PrePersist
 	protected void onCreate() {
 		this.createdAt = LocalDate.now();
@@ -63,5 +62,4 @@ public class User extends PersonalDetails {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-
 }
