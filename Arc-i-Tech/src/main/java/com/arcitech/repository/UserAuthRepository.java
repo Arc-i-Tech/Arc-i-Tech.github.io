@@ -8,15 +8,13 @@ package com.arcitech.repository;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import com.arcitech.model.UserAuth;
 
 /**
- * @author Priya
+ * @author Ajay G
  * 
  */
-@Repository
 public interface UserAuthRepository extends JpaRepository<UserAuth, Long> {
 	Optional<?> findByUsername(String username);
 }

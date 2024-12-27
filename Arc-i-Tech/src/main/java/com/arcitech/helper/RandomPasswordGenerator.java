@@ -15,7 +15,8 @@ public class RandomPasswordGenerator {
 	private RandomPasswordGenerator() {
 		throw new UnsupportedOperationException("Password Generation");
 	}
-	public static String getAlphaNumericString(int n) 
+
+	public static String getPassword(int n) 
 	{ 
 		String alphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvxyz"; 
 		SecureRandom random = new SecureRandom();

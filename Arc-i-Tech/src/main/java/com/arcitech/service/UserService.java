@@ -5,6 +5,8 @@
  */
 package com.arcitech.service;
 
+import java.util.Optional;
+
 import com.arcitech.model.User;
 
 /**
@@ -12,12 +14,8 @@ import com.arcitech.model.User;
  * 
  */
 public interface UserService {
-	public User addUser (User user);
-	public boolean userAlreadyExists(User user);
+	public Optional<User> addUser(User user);
 
-	/**
-	 * @param id
-	 * @return
-	 */
+	public boolean isExists(String username);
+
 }
-

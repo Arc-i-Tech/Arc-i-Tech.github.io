@@ -26,36 +26,27 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	UserRepository userRepository;
-	
+
 	@Autowired
 	UserAuthRepository userAuthRepository;
-	
+
 	@Override
-	public User addUser(User user) {
-		// Check if user is null or required fields are missing
-		if (user == null && 
-		        user.getUsername() == null && user.getUsername().isEmpty() && 
-		        user.getName() == null && user.getName().isEmpty() &&
-		        user.getCity() == null && user.getCity().isEmpty() && 
-		        user.getPincode() <= 0 && 
-		        user.getMoNo() == null && user.getMoNo().isEmpty()) {
-		       	return null;
-		    }
-	    try {
-	    	// Save the user to the user repository
-	        userRepository.save(user);
-	        // Generate a random password for the new user
-	        String generatedPassword = RandomPasswordGenerator.getAlphaNumericString(7);
-	        // Create a new UserAuth object for authentication details
-	        UserAuth userAuth = new UserAuth();
-	        userAuth.setUsername(user.getUsername());
-	        userAuth.setPassword(generatedPassword);
-	        userAuth.setUser(user); 
-	        userAuthRepository.save(userAuth);
-	        return user;
-	    } catch (Exception e) {
-	    	 return null;
-	    }
+	public Optional<User> addUser(User user) {
+		// Save the user to the user repository
+		User savedUser = this.userRepository.save(user);
+
+		// Generate a random password for the new user
+		String generatedPassword = RandomPasswordGenerator.getPassword(8);
+
+		// Create and Save UserAuth for authentication details
+		UserAuth userAuth = new UserAuth();
+		userAuth.setUsername(savedUser.getUsername());
+		userAuth.setPassword(generatedPassword);
+		userAuth.setUser(user);
+
+		this.userAuthRepository.save(userAuth);
+
+		return Optional.of(savedUser);
 	}
 
 	/**
@@ -63,15 +54,8 @@ public class UserServiceImpl implements UserService {
 	 *
 	 */
 	@Override
-	public boolean userAlreadyExists(User user) {
-		if (user == null || user.getUsername() == null || user.getUsername().isEmpty()) {
-            throw new IllegalArgumentException("Invalid user data");
-        }
-		Optional<?> existingAuth = userAuthRepository.findByUsername(user.getUsername());
-	    return existingAuth.isPresent(); 
+	public boolean isExists(String username) {
+		return userAuthRepository.findByUsername(username).isPresent();
 	}
 
-	
 }
-
-		
