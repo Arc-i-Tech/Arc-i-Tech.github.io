@@ -10,8 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
-import com.arcitech.model.interfaces.IAuth;
-
 /**
  * @author Ajay G
  * 
@@ -21,7 +19,7 @@ public class UserAuth extends CommonFields implements IAuth {
 
 	@Column(unique = true, nullable = false)
 	private String username;
-
+	
 	@Column(nullable = false)
 	private String password;
 

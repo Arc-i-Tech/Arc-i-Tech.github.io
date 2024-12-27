@@ -19,10 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.arcitech.service.impl.AuthServiceImpl;
 
 /**
- * Web security config to control authentication and authorization.
- * 
  * @author Ajay G
  * 
+ * Web security config to control authentication and authorization.
  */
 @Configuration
 @EnableWebSecurity
