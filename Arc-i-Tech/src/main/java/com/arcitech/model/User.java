@@ -23,6 +23,7 @@ public class User extends PersonalDetails {
 	private LocalDate createdAt;
 
 	private boolean enabled;
+	
 
 	@PrePersist
 	protected void onCreate() {

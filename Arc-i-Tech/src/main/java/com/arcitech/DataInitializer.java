@@ -47,9 +47,11 @@ public class DataInitializer implements CommandLineRunner {
 		user.setMoNo("9156974513");
 		user.setCity("Kaij");
 		user.setPincode(431123);
+
 		userRepository.save(user);
 
 		UserAuth userAuth = new UserAuth();
+
 		userAuth.setUsername(user.getUsername());
 		userAuth.setPassword(new BCryptPasswordEncoder().encode("ajay1234"));
 		userAuth.setUser(user);
