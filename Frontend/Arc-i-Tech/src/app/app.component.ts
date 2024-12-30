@@ -6,11 +6,10 @@ import { ResetPassComponent } from './reset-pass/reset-pass.component';
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, ResetPassComponent],
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'Arc-i-Tech';
+  title = 'application';
 }
 
