@@ -13,6 +13,8 @@ import java.util.Set;
  * 
  */
 public class Email {
+	public static final Email DEFAULT_ARC_I_TECH_SENDER = new Builder().withSender("do-not-reply@arc-i-tech.in")
+			.build();
 	private String sender;
 	private Set<String> recipients = new HashSet<>();
 	private String subject;
@@ -59,8 +61,12 @@ public class Email {
 		}
 	}
 
-	public static final Email DEFAULT_ARC_I_TECH_SENDER = new Builder().withSender("do-not-reply@arc-i-tech.in")
-			.build();
+	/**
+	 * 
+	 */
+	public Email() {
+		super();
+	}
 
 	/**
 	 * @return the sender
@@ -94,7 +100,7 @@ public class Email {
 	 * @param recipient
 	 */
 	public void setRecipient(String recipient) {
-		if(this.recipients == null ) {
+		if (this.recipients == null) {
 			this.recipients = new HashSet<>();
 		}
 		this.recipients.add(recipient);
