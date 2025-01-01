@@ -16,5 +16,5 @@ import com.arcitech.model.UserAuth;
  * 
  */
 public interface UserAuthRepository extends JpaRepository<UserAuth, Long> {
-	Optional<?> findByUsername(String username);
+	Optional<UserAuth> findByUsername(String username);
 }
