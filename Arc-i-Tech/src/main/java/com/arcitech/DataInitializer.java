@@ -45,6 +45,7 @@ public class DataInitializer implements CommandLineRunner {
 		user.setUsername("ajayg2808");
 		user.setName("Ajay Gaikwad");
 		user.setMoNo("9156974513");
+		user.setEmail("ajayg.love1473@gmail.com");
 		user.setCity("Kaij");
 		user.setPincode(431123);
 

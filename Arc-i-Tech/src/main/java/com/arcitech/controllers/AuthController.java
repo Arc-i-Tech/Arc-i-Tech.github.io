@@ -30,10 +30,11 @@ import com.arcitech.dto.ResetPasswordRequest;
 import com.arcitech.dto.SendOtpRequest;
 import com.arcitech.model.User;
 import com.arcitech.model.UserAuth;
+import com.arcitech.service.EmailService;
+import com.arcitech.service.OTPService;
 import com.arcitech.service.UserService;
 import com.arcitech.service.impl.AuthServiceImpl;
-import com.arcitech.service.impl.OTPService;
-import com.arcitech.service.impl.SMSService;
+import com.arcitech.utils.Email;
 import com.arcitech.utils.OTP;
 
 /**
@@ -63,7 +64,7 @@ public class AuthController {
 	private OTPService otpService;
 
 	@Autowired
-	private SMSService smsService;
+	private EmailService emailService;
 
 	@PostMapping("/login")
 	public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest, HttpSession session) {
@@ -101,6 +102,13 @@ public class AuthController {
 		return ResponseEntity.ok("User logged out successfully");
 	}
 
+	/**
+	 * Send OTP to registered email address.
+	 * 
+	 * @param sendOtpRequest
+	 * @param httpSession
+	 * @return
+	 */
 	@PostMapping("/send-otp")
 	public ResponseEntity<?> sendOtp(@RequestBody SendOtpRequest sendOtpRequest, HttpSession httpSession) {
 		Optional<User> user = this.userService.getUser(sendOtpRequest.getUsername());
@@ -109,11 +117,15 @@ public class AuthController {
 			OTP otp = otpService.generateOTP(6);
 			httpSession.setAttribute(sendOtpRequest.getUsername(), otp);
 
-			smsService.sendSMS(user.get().getMoNo(), "Your OTP to reset Password is: " + otp.getOtpString());
-			String maskedMoNo = new StringBuilder(user.get().getMoNo()).replace(2, 8, "****").toString();
-			return ResponseEntity.status(HttpStatus.OK)
-					.body(Map.of(USERNAME_KEY, sendOtpRequest.getUsername(), MESSAGE_KEY,
-							"OTP sent successfully to registered mobile number.", "Mobile No", maskedMoNo));
+			Email email = new Email.Builder(Email.DEFAULT_ARC_I_TECH_SENDER).withRecipient(user.get().getEmail())
+					.withBody("Hello " + user.get().getName() + ",\nYour OTP to reset Password is: "
+							+ otp.getOtpString() + "\nIt is valid for 5 minutes.\n\nRegards,")
+					.withSubject("Reset Password").build();
+			emailService.sendEmail(email);
+			String maskedEmail = new StringBuilder(user.get().getEmail())
+					.replace(3, user.get().getEmail().lastIndexOf('@') - 2, "****").toString();
+			return ResponseEntity.status(HttpStatus.OK).body(Map.of(USERNAME_KEY, sendOtpRequest.getUsername(),
+					MESSAGE_KEY, "OTP sent successfully to registered email.", "Email", maskedEmail));
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON)
 				.body(Map.of(USERNAME_KEY, sendOtpRequest.getUsername(), ERROR_KEY, "User not found."));

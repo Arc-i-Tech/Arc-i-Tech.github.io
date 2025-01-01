@@ -23,6 +23,8 @@ public abstract class PersonalDetails extends CommonFields {
 	private String address;
 	@Column(unique = true, nullable = false)
 	private String moNo;
+	@Column(unique = true, nullable = false)
+	private String email;
 	@Column(nullable = false)
 	private String city;
 	@Column(nullable = false)
@@ -82,6 +84,20 @@ public abstract class PersonalDetails extends CommonFields {
 	 */
 	public void setMoNo(String moNo) {
 		this.moNo = moNo;
+	}
+
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	/**

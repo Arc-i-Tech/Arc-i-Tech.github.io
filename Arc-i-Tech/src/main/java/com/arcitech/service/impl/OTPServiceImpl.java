@@ -9,6 +9,7 @@ import java.security.SecureRandom;
 
 import org.springframework.stereotype.Service;
 
+import com.arcitech.service.OTPService;
 import com.arcitech.utils.OTP;
 
 /**
@@ -16,7 +17,7 @@ import com.arcitech.utils.OTP;
  * 
  */
 @Service
-public class OTPService {
+public class OTPServiceImpl implements OTPService {
 
 	private static final SecureRandom RANDOM = new SecureRandom();
 
