@@ -1,4 +1,4 @@
-name: Comment gid
+name: Issue Tree
 
 on:
   workflow_dispatch:
@@ -17,12 +17,16 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  grasp_issue:
+  issue_tree:
     runs-on: ubuntu-latest
-    name: Grasp issue dependencies
+    name: Issue dependencies tree
     steps:
-      - uses: actions/checkout@v3
-      - uses: k-nasa/gid@main
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v3
+      - name: Draw Tree on epic
+        id: draw-tree-on-epic
+        uses: k-nasa/gid@main
         with:
           label: 'epic'
           github_token: ${{ secrets.ACCESS_TOKEN }}
