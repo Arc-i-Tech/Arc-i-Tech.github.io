@@ -1,0 +1,105 @@
+/* Container with Grid for Desktop */
+.container .main-dashboard {
+  display: grid;
+  grid-template-columns: 250px auto; /* Sidebar and main content */
+  gap: 20px;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Right Sidebar */
+.container .main-dashboard  .right-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  height: 100vh;
+}
+
+/* Right Sidebar Content */
+.container .main-dashboard  .right-bar .right-bar-content .right-bar-body ul {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+}
+
+.container .main-dashboard  .right-bar .right-bar-content .right-bar-body ul li {
+  list-style: none;
+  padding: 10px;
+}
+
+.container .main-dashboard  .right-bar .right-bar-content  .right-bar-body ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+.container .main-dashboard .left-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+  width: 100%;
+}
+
+/* RESPONSIVE DESIGN */
+
+/* Tablet View */
+@media (max-width: 1024px) {
+  .container .main-dashboard {
+    grid-template-columns: 1fr; /* Stack elements */
+  }
+
+  .container .main-dashboard  .right-bar {
+    height: auto;
+    width: 100%;
+    padding: 20px;
+  }
+
+  .container .main-dashboard  .right-bar .right-bar-body ul {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+/* Mobile View */
+@media (max-width: 768px) {
+ .container .main-dashboard {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container .main-dashboard .right-bar {
+    width: 100%;
+    height: auto;
+    padding: 15px;
+  }
+
+  .container .main-dashboard  .right-bar .right-bar-body ul {
+    flex-direction: column;
+  }
+}
+
+.container .status-bar {
+  text-align: center;
+  padding: 10px;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+.container
+  .main-dashboard
+  .right-bar
+  .right-bar-content
+  .right-bar-header
+  .brand-logo
+  .icon {
+  background-image: url("../assets/logo/Arc-i-Tech-logo-wo-bg.png");
+  width: 60px;
+  height: 60px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
