@@ -1,35 +1,39 @@
+<!-- src/app/components/register/register.component.html -->
 
-<div class="reg-form theme-bg-primary"> 
-    <div class="header-text theme-text-quaternary">
-        <h1><b>Registration</b></h1>
+<section class="theme-bg-quaternary">
+
+<div class="register-container  theme-bg-secondary theme-text-quaternary">
+  <h3 class="">Arc-i-Tech</h3>
+  <h1>Sign Up</h1>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="fname">Full Name</label>
+      <input id="fname" class="theme-border-light-primary" formControlName="fname" placeholder="Enter your name" />
     </div>
-    <form (ngSubmit)="onSubmit()">
-    <div class="form-fields theme-text-quaternary">
-        <label for="fname">Enter Name</label>
-        <input type="text" id="fname" name="fname" [(ngModel)]="user.fname" placeholder="Enter Name Here" >
-
-        <label for="username">Enter Username</label>
-        <input type="text" id="username" name="username" [(ngModel)]="user.username" placeholder="Enter Username Here" >
-
-        <label for="Address">Enter Address</label>
-        <input type="textbox" id="Address" name="address" [(ngModel)]="user.address" placeholder="Enter Name Here" >
-
-        <label for="mob" class="test">Mobile Number</label>
-        <input 
-          type="number" id="mob" name="mobNo" [(ngModel)]="user.mob" placeholder="Enter mobile number" required>        
-
-        <div class="container">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input id="username" class="theme-border-light-primary" formControlName="username" placeholder="Enter username" />
+    </div>
+    <div class="form-group">
+      <label for="address">Address</label>
+      <input id="address" class="theme-border-light-primary" formControlName="address" placeholder="Enter address" />
+    </div>
+    <div class="form-group">
+      <label for="mob">Mobile Number</label>
+      <input id="mob" class="theme-border-light-primary" formControlName="mob" placeholder="10-digit mobile" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
         <label for="city">City</label>
-        <input type="text" id="city" name="city" [(ngModel)]="user.city" placeholder="City" >
-
-        <label for="pcode" class="test2">Pincode</label>
-        <input type="number" id="pcode" name="pin" [(ngModel)]="user.pcode" placeholder="Pincode" >
-        </div>
-
-        <button type="submit" class="theme-bg-secondary"><b>Register</b></button>
-       <h3>
-        {{message}}
-       </h3>
+        <input id="city" class="theme-border-light-primary" formControlName="city" placeholder="City" />
+      </div>
+      <div class="form-group">
+        <label for="pcode">Pincode</label>
+        <input id="pcode" class="theme-border-light-primary" formControlName="pcode" placeholder="6-digit pincode" />
+      </div>
     </div>
-    </form>
+    <button type="submit" class="theme-text-quaternary theme-bg-primary">Register</button>
+  </form>
 </div>
+
+</section>
