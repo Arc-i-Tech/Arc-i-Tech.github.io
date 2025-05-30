@@ -1,33 +1,51 @@
-
+// src/app/components/register/register.component.ts
 import { Component } from '@angular/core';
-import { User } from './User';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 import { RegistrationService } from '../service/registration.service';
-import { FormsModule } from '@angular/forms';
+import { User } from './User';
+
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+  styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
-   user: User = new User ('','','',0,'',0)
-   message: string='';
-   
-   constructor(private userService:RegistrationService){}
-  onSubmit(): void {
-        
-    this.userService.userRegister(this.user).subscribe({
-      next: (response) => {
-        this.message = 'Registered Successfully!';
-        console.log(response); 
-      },
-      error: (error) => {
-        this.message = "Something went wrong";
-        console.error(this.message); 
-      }
+  registerForm: FormGroup;
+
+  constructor(
+    private fb: FormBuilder,
+    private registrationService: RegistrationService,
+    private toastr: ToastrService
+  ) {
+    this.registerForm = this.fb.group({
+      fname:    ['', Validators.required],
+      username: ['', [Validators.required, Validators.minLength(4)]],
+      address:  ['', Validators.required],
+      mob:      ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
+      city:     ['', Validators.required],
+      pcode:    ['', [Validators.required, Validators.pattern(/^\d{6}$/)]]
     });
   }
-  
+
+  onSubmit() {
+    if (this.registerForm.valid) {
+      const user: User = this.registerForm.value;
+      this.registrationService.userRegister(user).subscribe({
+        next: () => {
+          this.toastr.success('Registration successful!', 'Success');
+          this.registerForm.reset();
+        },
+        error: err => {
+          this.toastr.error('Registration failed. Please try again.', 'Error');
+        }
+      });
+    } else {
+      this.toastr.warning('Please fill all required fields correctly.', 'Warning');
+    }
+  }
 }

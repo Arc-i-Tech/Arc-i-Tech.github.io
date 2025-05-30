@@ -1,150 +1,41 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-.reg-form {
-    width: 90%;
-    max-width: 800px;
-    min-height: 500px;
-    margin: 2% auto;
-    border-radius: 10px;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, 
-                rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, 
-                rgba(0, 0, 0, 0.09) 0px -3px 5px;
-    padding: 20px;
+section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
-.reg-form .header-text {
-    text-align: center;
-    padding-top: 20px;
-    padding-bottom: 20px;
+.register-container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-.reg-form .header-text h1 {
-    font-size: 2.5em;
+.register-container h1 {
+  text-align: center;
+  margin-bottom: 24px;
 }
-.reg-form .form-fields {
-    width: 100%;
-    padding: 0 5%;
+.register-container form .form-group  {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
 }
-.reg-form .form-fields label {
-    margin-top: 10px;
-    font-size: 1.2em;
-    padding-left: 10px;
-    display: block;
+.register-container form .form-group label {
+  margin-bottom: 4px;
+  font-weight: 500;
 }
-.reg-form .form-fields input[type="text"], 
-input[type="email"], 
-input[type="number"], 
-input[type="textbox"] {
-    width: 100%;
-    height: 40px;
-    margin-top: 10px;
-    margin-bottom: 25px;
-    border-radius: 10px;
-    padding-left: 20px;
-    font-size: 1em;
+.register-container form .form-group input {
+  padding: 8px;
+  border-radius: 4px;
 }
-.reg-form .form-fields .container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    margin: auto;
-    margin-top: 20px;
+.register-container form .form-row {
+  display: flex;
+  gap: 16px;
 }
-.reg-form .form-fields .container label {
-    padding-right: 10px;
-    padding-top: 7px;
-}
-.reg-form .form-fields .container #pcode, #city {
-    flex: 1;
-    width: 45%; 
-    height: 40px;
-    border-radius: 10px;
-    padding-left: 20px;
-    margin-right: 5px;
-    font-size: 1em;
-}
-.reg-form .form-fields button {
-    width: 40%;
-    height: 50px;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    margin-left: 30%;
-    border-radius: 10px;
-    font-size: 1.2em;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-.reg-form .form-fields button:hover {
-    background-color: #9BB8EE;
-}
-@media (min-width: 1024px) {
-    .reg-form {
-        max-width: 900px; 
-    }
-    .reg-form .header-text h1 {
-        font-size: 3em;
-    }
-    .reg-form .form-fields button {
-        width: 30%; 
-        margin-left: 35%;
-    }
-}
-@media (max-width: 768px) {
-    .reg-form {
-        width: 95%;
-        margin: 5% auto;
-    }
-    .reg-form .header-text h1 {
-        font-size: 2em;
-    }
-    .reg-form .form-fields label {
-        font-size: 1.1em;
-    }
-    .reg-form .form-fields button {
-        width: 80%;
-        margin-left: 10%;
-    }
-    .reg-form .form-fields input[type="text"], 
-    input[type="email"], 
-    input[type="number"], 
-    input[type="textbox"] {
-        width: 95%;
-        font-size: 1em;
-    }
-    .reg-form .form-fields .container #pcode, #city {
-        width: 45%;
-        margin-right: 0;
-        margin-bottom: 15px;
-    }
-    .reg-form .form-fields .container {
-        display: block;
-    }
-}
-@media (max-width: 480px) {
-    .reg-form {
-        width: 95%;
-        margin: 5% auto;
-    }
-    .reg-form .header-text h1 {
-        font-size: 1.8em;
-    }
-    .reg-form .form-fields label {
-        font-size: 1.1em;
-    }
-    .reg-form .form-fields button {
-        width: 90%;
-        margin-left: 5%;
-    }
-    .reg-form .form-fields input[type="text"], 
-    input[type="email"], 
-    input[type="number"], 
-    input[type="textbox"] {
-        width: 100%;
-        font-size: 0.9em;
-    }
-    .reg-form .form-fields .container #pcode, #city {
-        width: 100%;
-        margin-bottom: 15px;
-    }
-    .reg-form .form-fields .container {
-        display: block;
-    }
+.register-container form button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
