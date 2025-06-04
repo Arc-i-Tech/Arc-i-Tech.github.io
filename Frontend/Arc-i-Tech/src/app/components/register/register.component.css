@@ -39,3 +39,11 @@ section {
   border-radius: 4px;
   cursor: pointer;
 }
+.reg-form input::placeholder {
+  color: #ccc;
+}
+
+.card {
+  background-color: #3F72AF; /* theme-bg-secondary */
+  border: none;
+}

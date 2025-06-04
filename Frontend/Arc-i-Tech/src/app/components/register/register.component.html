@@ -1,39 +1,60 @@
-<!-- src/app/components/register/register.component.html -->
+<div class="reg-form theme-bg-primary text-white min-vh-100 d-flex justify-content-center align-items-center py-5">
+  <div class="card shadow-lg p-3 rounded-4 w-100" style="max-width: 600px;">
+    <div class="header-text theme-text-quaternary text-center mb-4">
+      <h2><b>Register</b></h2>
+    </div>
 
-<section class="theme-bg-quaternary">
+    <!-- Bootstrap Alert -->
+    <div *ngIf="message" class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" (click)="message=''"></button>
+    </div>
 
-<div class="register-container  theme-bg-secondary theme-text-quaternary">
-  <h3 class="">Arc-i-Tech</h3>
-  <h1>Sign Up</h1>
-  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label for="fname">Full Name</label>
-      <input id="fname" class="theme-border-light-primary" formControlName="fname" placeholder="Enter your name" />
-    </div>
-    <div class="form-group">
-      <label for="username">Username</label>
-      <input id="username" class="theme-border-light-primary" formControlName="username" placeholder="Enter username" />
-    </div>
-    <div class="form-group">
-      <label for="address">Address</label>
-      <input id="address" class="theme-border-light-primary" formControlName="address" placeholder="Enter address" />
-    </div>
-    <div class="form-group">
-      <label for="mob">Mobile Number</label>
-      <input id="mob" class="theme-border-light-primary" formControlName="mob" placeholder="10-digit mobile" />
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label for="city">City</label>
-        <input id="city" class="theme-border-light-primary" formControlName="city" placeholder="City" />
+    <form (ngSubmit)="onSubmit()">
+      <div class="mb-2">
+        <label class="form-label theme-text-quaternary">Full Name</label>
+        <input type="text" class="form-control" [(ngModel)]="user.fname" name="fname" placeholder="Enter full name" required>
       </div>
-      <div class="form-group">
-        <label for="pcode">Pincode</label>
-        <input id="pcode" class="theme-border-light-primary" formControlName="pcode" placeholder="6-digit pincode" />
+
+      <div class="mb-2">
+        <label class="form-label theme-text-quaternary">Username</label>
+        <input type="text" class="form-control" [(ngModel)]="user.username" name="username" placeholder="Enter username" required>
       </div>
-    </div>
-    <button type="submit" class="theme-text-quaternary theme-bg-primary">Register</button>
-  </form>
+
+      <div class="mb-2">
+        <label class="form-label theme-text-quaternary">Email</label>
+        <input type="email" class="form-control" [(ngModel)]="user.email" name="email" placeholder="Enter email" required>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label theme-text-quaternary">Password</label>
+        <input type="password" class="form-control" [(ngModel)]="user.password" name="password" placeholder="Enter password" required>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label theme-text-quaternary">Address</label>
+        <input type="text" class="form-control" [(ngModel)]="user.address" name="address" placeholder="Enter address" required>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label theme-text-quaternary">Mobile Number</label>
+        <input type="tel" class="form-control" [(ngModel)]="user.mob" name="mobNo" placeholder="Enter mobile number" pattern="[0-9]{10}" required>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-2">
+          <label class="form-label theme-text-quaternary">City</label>
+          <input type="text" class="form-control" [(ngModel)]="user.city" name="city" placeholder="Enter city" required>
+        </div>
+        <div class="col-md-6 mb-2">
+          <label class="form-label theme-text-quaternary">Pincode</label>
+          <input type="text" class="form-control" [(ngModel)]="user.pcode" name="pin" placeholder="Enter pincode" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-light w-100 mt-3">
+        <b>Register</b>
+      </button>
+    </form>
+  </div>
 </div>
-
-</section>
