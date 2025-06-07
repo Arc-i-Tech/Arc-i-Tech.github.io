@@ -1,25 +1,33 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from './user';
-import { catchError, Observable } from 'rxjs';
+import { Email } from './Email';
+import { catchError, Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PasswordService {
-  private url = 'https://localhost:8000/addUser';
+  private emailLink = 'https://localhost:8000/email';  //change url as per backend API.
+  private passwordUrl = 'https://localhost:8000/passwordUrl';      //change url as per backend API.
 
   constructor(private http: HttpClient) {}
 
-
-    userPassword(user:User): Observable<any> {
-      return this.http.post<any>(this.url, user).pipe(
-        catchError((error) => {
-          console.error('Error in API call:', error);
-          return this.http.post<any>(this.url, user);
-          console.log(user);        
-        })
-      );
-    }
-    
+  userEmail(email: Email): Observable<any> {
+    return this.http.post<any>(this.emailLink, email).pipe(
+      catchError((error) => {
+        console.error('Error sending email:', error);
+        return throwError(() => error);
+      })
+    );
   }
+
+  userPassword(user: User): Observable<any> {
+    return this.http.post<any>(this.passwordUrl, user).pipe(
+      catchError((error) => {
+        console.error('Error updating password:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+}
