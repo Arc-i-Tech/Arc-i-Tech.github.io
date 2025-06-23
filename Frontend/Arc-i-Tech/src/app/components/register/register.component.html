@@ -1,0 +1,85 @@
+<div class="min-vh-100 d-flex justify-content-center align-items-center bg-light py-5">
+  <div class="card shadow-lg rounded-4 w-100" style="max-width: 500px;">
+    <div class="card-body p-4">
+      <h3 class="text-center mb-4 text-primary">Create Your Account</h3>
+
+      <div *ngIf="message" class="alert" [ngClass]="alertType" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close float-end" (click)="message=''"></button>
+      </div>
+
+      <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+
+        <div class="mb-3">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-control" formControlName="fname">
+          <div *ngIf="submitted && f.fname.errors" class="text-danger small">Full Name is required.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-control" formControlName="username">
+          <div *ngIf="submitted && f.username.errors" class="text-danger small">Username is required.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" formControlName="email">
+          <div *ngIf="submitted && f.email.errors" class="text-danger small">
+            <span *ngIf="f.email.errors['required']">Email is required.</span>
+            <span *ngIf="f.email.errors['email']">Invalid email format.</span>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" formControlName="password">
+          <div *ngIf="submitted && f.password.errors" class="text-danger small">
+            <span *ngIf="f.password.errors['required']">Password is required.</span>
+            <span *ngIf="f.password.errors['minlength']">Minimum 6 characters required.</span>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" class="form-control" formControlName="confirmpassword">
+          <div *ngIf="submitted && f.confirmpassword.errors" class="text-danger small">Confirm password is required.</div>
+          <div *ngIf="submitted && registrationForm.errors?.['passwordMismatch']" class="text-danger small">
+              Passwords do not match.
+          </div>
+
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Mobile Number</label>
+          <input type="tel" class="form-control" formControlName="mob" placeholder="10-digit number">
+          <div *ngIf="submitted && f.mob.errors" class="text-danger small">
+            Valid 10-digit mobile number required.
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="mb-3 col-md-6">
+            <label class="form-label">City</label>
+            <input type="text" class="form-control" formControlName="city">
+            <div *ngIf="submitted && f.city.errors" class="text-danger small">City is required.</div>
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label class="form-label">Pincode</label>
+            <input type="text" class="form-control" formControlName="pcode">
+            <div *ngIf="submitted && f.pcode.errors" class="text-danger small">Pincode must be 4–6 digits.</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Address</label>
+          <textarea rows="3" class="form-control" formControlName="address"></textarea>
+          <div *ngIf="submitted && f.address.errors" class="text-danger small">Address is required.</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Register</button>
+      </form>
+    </div>
+  </div>
+</div>
