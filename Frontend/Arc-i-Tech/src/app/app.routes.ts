@@ -1,18 +1,11 @@
 import { Routes } from '@angular/router';
-import { TestUserComponent } from './dashboard/test-user/test-user.component';
-import { ServicesComponent } from './dashboard/services/services.component';
-import { UserFeedbackComponent } from './dashboard/user-feedback/user-feedback.component';
+import { MainPanelComponent } from './dashboard/main-panel/main-panel.component';
+import { User } from './User/user';
+import { LoginComponent } from './login/login.component';
 
 export const routes: Routes = [
-  {
-    path: ' ',redirectTo: '/test-user',pathMatch: 'full'
-  },
-  { path : 'test-user', component:TestUserComponent},
-  {
-    path: 'user-service',component:ServicesComponent
-  },
-  {
-    path: 'user-feedback',component:UserFeedbackComponent
-  }
+       { path:'login',component:LoginComponent},
+       {path:'dashboard', component:MainPanelComponent},
+       { path: 'user', component: User },
 
 ];
