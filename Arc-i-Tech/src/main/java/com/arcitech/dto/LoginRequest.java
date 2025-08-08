@@ -3,31 +3,17 @@
  * visit www.arc-i-tech.in
  *
  */
-package com.arcitech.model;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-
-import com.arcitech.model.interfaces.IAuth;
+package com.arcitech.dto;
 
 /**
+ * DTO for login request.
+ * 
  * @author Ajay G
  * 
  */
-@Entity
-public class UserAuth extends CommonFields implements IAuth {
-
-	@Column(unique = true, nullable = false)
+public class LoginRequest {
 	private String username;
-
-	@Column(nullable = false)
 	private String password;
-
-	@OneToOne
-	@JoinColumn(name = "user_id", nullable = false)
-	private User user;
 
 	/**
 	 * @return the username
@@ -55,20 +41,6 @@ public class UserAuth extends CommonFields implements IAuth {
 	 */
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	/**
-	 * @return the user
-	 */
-	public User getUser() {
-		return user;
-	}
-
-	/**
-	 * @param user the user to set
-	 */
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 }
