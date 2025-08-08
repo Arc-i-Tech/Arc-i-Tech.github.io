@@ -4,8 +4,8 @@ import { Component } from '@angular/core';
   selector: 'app-page-not-found',
   standalone: true,
   imports: [],
-  templateUrl: './user.html'
+  templateUrl: './user-dashboard.html'
 })
-export class User {
+export class UserDashboard {
 
 }

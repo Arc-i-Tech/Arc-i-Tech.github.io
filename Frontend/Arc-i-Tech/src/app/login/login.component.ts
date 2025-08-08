@@ -1,46 +1,44 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { UserService } from '../login-service.service';
-import { Router, RouterOutlet } from '@angular/router';
-import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  imports: [FormsModule, CommonModule],
+  templateUrl: './login.component.html'
 })
 export class LoginComponent {
-  username = '';
-  password = '';
+  username: string = '';
+  password: string = '';
+  errorMessage: string = '';
 
-  constructor(private router: Router, private userService: UserService) {}
+  constructor(private userService: UserService, private router: Router) {}
 
-  onSubmit(): void {
-    const loginPayload = {
-      username: this.username,
-      password: this.password
-    };
+  login() {
+    const payload = { username: this.username, password: this.password };
 
-    this.userService.loginUser(loginPayload).subscribe({
-      next: (res: any) => {
-        localStorage.setItem('jwtToken', res.token);
-        localStorage.setItem('userEmail', res.email);
-        localStorage.setItem('userRole', res.role);
+    this.userService.login(payload).subscribe({
+      next: (response: any) => {
+        console.log('Login Success', response);
+        localStorage.setItem('user', JSON.stringify(response));
 
-        setTimeout(() => {
-          if (res.role === 'ADMIN') {
-            this.router.navigate(['/dashboard']);
-          } else if (res.role === 'USER') {
-            this.router.navigate(['/user']);
-          } else {
-            this.router.navigate(['/home']);
-          }
-        }, 1000);
+        const role = response.role?.toLowerCase();
+        if (role === 'admin') {
+          this.router.navigate(['/dashboard']);
+        } else if (role === 'user') {
+          this.router.navigate(['/user']);
+        } else {
+                            this.router.navigate(['/dashboard']); //  without role base open the dahshboard directly
+          this.errorMessage = 'Unauthorized role!';
+        }
       },
       error: (err) => {
-        alert('Login failed: ' + (err?.error?.message || err.message));
+        console.error('Login failed', err);
+
+        this.errorMessage = 'Invalid credentials';
       }
     });
   }
