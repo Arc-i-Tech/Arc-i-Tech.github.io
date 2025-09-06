@@ -1,0 +1,32 @@
+<div class="container d-flex justify-content-center align-items-center vh-100">
+  <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
+    <h4 class="text-center mb-4">Login</h4>
+    <form (submit)="login()">
+      <div class="mb-3">
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="username"
+          name="username"
+          placeholder="Username"
+          required />
+      </div>
+      <div class="mb-3">
+        <input
+          type="password"
+          class="form-control"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="Password"
+          required />
+      </div>
+      <div class="d-grid">
+        <button type="submit" class="btn btn-primary">Login</button>
+      </div>
+    </form>
+
+    <div *ngIf="errorMessage" class="alert alert-danger mt-3" role="alert">
+      {{ errorMessage }}
+    </div>
+  </div>
+</div>

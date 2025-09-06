@@ -24,10 +24,13 @@
               {
                 "glob": "**/*",
                 "input": "public"
+
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "src/theme.css"
+
             ],
             "scripts": []
           },
@@ -92,5 +95,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "2d58707b-ed7e-4f1e-974d-19af00256699"
   }
 }

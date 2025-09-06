@@ -1,0 +1,15 @@
+<div class="d-flex flex-column vh-100">
+  <header class="bg-primary text-white p-3">
+    <app-header></app-header>
+  </header>
+
+  <div class="flex-grow-1 d-flex flex-row">
+    <aside class="bg-light p-3 border-end">
+     <app-sidebar></app-sidebar>
+    </aside>
+
+    <main class="flex-grow-1 p-4 overflow-auto">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
