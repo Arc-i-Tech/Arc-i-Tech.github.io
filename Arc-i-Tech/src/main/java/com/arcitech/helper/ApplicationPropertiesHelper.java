@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2024, Arc-i-Tech. All rights reserved.
+ * visit www.arc-i-tech.in
+ *
+ */
 package com.arcitech.helper;
 
 import java.io.BufferedReader;
@@ -21,7 +26,10 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 /**
- * @author Ajay G.
+ * Provides necessary help for configuring application properties
+ * 
+ * @author Ajay G
+ * 
  */
 public class ApplicationPropertiesHelper {
 	private static ApplicationPropertiesHelper instance;
