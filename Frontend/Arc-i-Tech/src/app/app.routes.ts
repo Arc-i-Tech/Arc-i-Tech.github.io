@@ -1,3 +1,7 @@
 import { Routes } from '@angular/router';
 
-export const routes: Routes = [];
+import { OtpVerificationComponent } from './otp-verification/otp-verfication/otp-verfication.component';
+
+export const routes: Routes = [
+  { path: '', component: OtpVerificationComponent }
+];
