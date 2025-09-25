@@ -1,0 +1,63 @@
+<div class="username-wrapper">
+  <div class="username-card">
+    <h2 class="username-title">Reset Password (Manual)</h2>
+
+    <form [formGroup]="resetForm" (ngSubmit)="onSubmit()" novalidate>
+      <div class="form-field">
+        <label for="ru-username">Email / Username</label>
+        <input
+          id="ru-username"
+          type="email"
+          formControlName="username"
+          placeholder="Enter your registered email"
+        />
+        <div class="field-error" *ngIf="resetForm.get('username')?.invalid && (resetForm.get('username')?.dirty || resetForm.get('username')?.touched)">
+          Please enter a valid email address.
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="ru-otp">OTP</label>
+        <input
+          id="ru-otp"
+          type="text"
+          maxlength="6"
+          formControlName="otpStr"
+          placeholder="Enter 6-digit OTP"
+        />
+        <div class="field-error" *ngIf="resetForm.get('otpStr')?.invalid && (resetForm.get('otpStr')?.dirty || resetForm.get('otpStr')?.touched)">
+          Enter the 6-digit OTP you received.
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="ru-password">New Password</label>
+        <input
+          id="ru-password"
+          type="password"
+          formControlName="newPassword"
+          placeholder="Enter new password"
+        />
+        <div class="field-error" *ngIf="resetForm.get('newPassword')?.invalid && (resetForm.get('newPassword')?.dirty || resetForm.get('newPassword')?.touched)">
+          Password must be at least 6 characters.
+        </div>
+      </div>
+
+      <button type="submit" class="primary-btn" [disabled]="resetForm.invalid">
+        Reset Password
+      </button>
+    </form>
+
+    <div
+      class="message"
+      *ngIf="message"
+      [ngClass]="{
+        success: messageType === 'success',
+        error: messageType === 'error',
+        info: messageType === 'info'
+      }"
+    >
+      {{ message }}
+    </div>
+  </div>
+</div>

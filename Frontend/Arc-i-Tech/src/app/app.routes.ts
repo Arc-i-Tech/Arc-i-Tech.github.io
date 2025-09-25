@@ -1,13 +1,7 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { ResetPassComponent } from './reset-pass/reset-pass.component';
+import { Routes } from '@angular/router';
 
-const routes: Routes = [
-  { path: '', component: ResetPassComponent }
+import { OtpVerificationComponent } from './otp-verification/otp-verfication/otp-verfication.component';
+
+export const routes: Routes = [
+  { path: '', component: OtpVerificationComponent }
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }

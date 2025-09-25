@@ -1,0 +1,136 @@
+<div class="otp-wrapper">
+  <div class="otp-card">
+    <h2 class="otp-title">Account Recovery</h2>
+
+    <div class="stepper">
+      <div class="step" [class.active]="currentStep >= 1" [class.completed]="currentStep > 1">
+        <span class="bullet">1</span>
+        <div class="step-text">
+          <p class="step-title">Identify</p>
+          <p class="step-caption">Email / Username</p>
+        </div>
+      </div>
+      <div class="step" [class.active]="currentStep >= 2" [class.completed]="currentStep > 2">
+        <span class="bullet">2</span>
+        <div class="step-text">
+          <p class="step-title">Verify</p>
+          <p class="step-caption">Enter OTP</p>
+        </div>
+      </div>
+      <div class="step" [class.active]="currentStep >= 3">
+        <span class="bullet">3</span>
+        <div class="step-text">
+          <p class="step-title">Reset</p>
+          <p class="step-caption">New Password</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-content" [ngSwitch]="currentStep">
+      <form *ngSwitchCase="1" [formGroup]="emailForm" (ngSubmit)="sendOtp()" novalidate>
+        <div class="form-field">
+          <label for="username">Email / Username</label>
+          <input
+            id="username"
+            type="email"
+            formControlName="username"
+            placeholder="Enter your registered email"
+          />
+          <div class="field-error" *ngIf="username?.invalid && (username?.dirty || username?.touched)">
+            Please enter a valid email address.
+          </div>
+        </div>
+
+        <button type="submit" class="primary-btn" [disabled]="emailForm.invalid || isSendingOtp">
+          {{ isSendingOtp ? 'Sending OTP...' : 'Send OTP' }}
+        </button>
+      </form>
+
+      <form *ngSwitchCase="2" [formGroup]="otpForm" (ngSubmit)="verifyOtp()" novalidate>
+        <p class="info-text" *ngIf="maskedEmail; else otpInstructions">
+          Enter the 6-digit OTP sent to <strong>{{ maskedEmail }}</strong>.
+        </p>
+        <ng-template #otpInstructions>
+          <p class="info-text">Enter the 6-digit OTP sent to your registered email.</p>
+        </ng-template>
+
+        <div class="form-field">
+          <label for="otpStr">One-Time Password</label>
+          <input
+            id="otpStr"
+            type="text"
+            maxlength="6"
+            formControlName="otpStr"
+            placeholder="_ _ _ _ _ _"
+          />
+          <div class="field-error" *ngIf="otpStr?.invalid && (otpStr?.dirty || otpStr?.touched)">
+            Enter the 6-digit OTP you received.
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button type="button" class="link-btn" (click)="backToEmail()">Change email</button>
+          <button type="button" class="link-btn" (click)="resendOtp()" [disabled]="isSendingOtp">
+            {{ isSendingOtp ? 'Resending...' : 'Resend OTP' }}
+          </button>
+        </div>
+
+        <button type="submit" class="primary-btn" [disabled]="otpForm.invalid || isVerifyingOtp">
+          {{ isVerifyingOtp ? 'Verifying...' : 'Verify OTP' }}
+        </button>
+      </form>
+
+      <form *ngSwitchCase="3" [formGroup]="passwordForm" (ngSubmit)="resetPassword()" novalidate>
+        <p class="info-text">
+          OTP verified for <strong>{{ activeUsername }}</strong>. Create a new password below.
+        </p>
+
+        <div class="form-field">
+          <label for="newPassword">New Password</label>
+          <input
+            id="newPassword"
+            type="password"
+            formControlName="newPassword"
+            placeholder="Enter new password"
+          />
+          <div class="field-error" *ngIf="newPassword?.invalid && (newPassword?.dirty || newPassword?.touched)">
+            Password must be at least 6 characters.
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="confirmPassword">Confirm Password</label>
+          <input
+            id="confirmPassword"
+            type="password"
+            formControlName="confirmPassword"
+            placeholder="Confirm new password"
+          />
+          <div class="field-error" *ngIf="passwordForm.hasError('passwordMismatch') && (confirmPassword?.dirty || confirmPassword?.touched)">
+            Passwords do not match.
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button type="button" class="link-btn" (click)="backToOtp()">Back to OTP</button>
+        </div>
+
+        <button type="submit" class="primary-btn" [disabled]="passwordForm.invalid || isResetting">
+          {{ isResetting ? 'Updating...' : 'Reset Password' }}
+        </button>
+      </form>
+    </div>
+
+    <div
+      class="message"
+      *ngIf="message"
+      [ngClass]="{
+        success: messageType === 'success',
+        error: messageType === 'error',
+        info: messageType === 'info'
+      }"
+    >
+      {{ message }}
+    </div>
+  </div>
+</div>
